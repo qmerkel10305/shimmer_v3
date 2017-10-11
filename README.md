@@ -19,7 +19,7 @@ Frontend
 - socket to send a "new image message" with static image path on NGINX to frontend
 - frontend calls NGINX for static image and displays
 - user does **things** to image
-- user input data is given back to python-flash to store in a separate Postgres table
+- user input data is given back to python-flask to store in a separate Postgres table
 
 Pros
 - via postgres trigger and socket connection --> almost instant frontend updates
