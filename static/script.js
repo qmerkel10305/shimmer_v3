@@ -6,8 +6,28 @@ var edit_canvas = document.createElement('canvas');
 var edit_ctx = canvas.getContext('2d');
 
 var submission;
+var current;
 var img = new Image();
 img.src = "img.jpg";
+
+function update () {
+  edit_canvas.width = canvas.width = canvas.clientWidth;
+  edit_canvas.height = canvas.height = canvas.clientHeight;
+  ctx.drawImage(img, 0, 0, edit_canvas.width, edit_canvas.height);
+
+  for (var i = 0; i < submission.targets.length; i++) {
+    var t = submission.targets[i];
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.fillRect(t.a.x * (canvas.width / img.width), t.a.y * (canvas.height / img.height),
+      t.width * (canvas.width / img.width), t.height * (canvas.height / img.height));
+  }
+
+  if (current != undefined ) {
+    ctx.fillStyle = 'rgba(127, 255, 127, 0.3)';
+    ctx.fillRect(current.a.x * (canvas.width / img.width), current.a.y * (canvas.height / img.height),
+      current.width * (canvas.width / img.width), current.height * (canvas.height / img.height));
+  }
+}
 
 img.onload = function() {
     submission = {
@@ -16,13 +36,11 @@ img.onload = function() {
       height: img.height,
       targets: []
     };
-    edit_canvas.width = canvas.width = window.innerWidth;
-    edit_canvas.height = canvas.height = window.innerHeight;
-    ctx.drawImage(img, 0, 0, edit_canvas.width, edit_canvas.height);
+    update();
 }
 
 var main = function() {
-  update();
+
       aniFrame = window.requestAnimationFrame  ||
           window.mozRequestAnimationFrame    ||
           window.webkitRequestAnimationFrame ||
@@ -31,43 +49,35 @@ var main = function() {
           aniFrame(main, canvas);
 };
 
-var ix, iy;
-var cur;
 canvas.onmousedown = function (event) {
-  cur = document.createElement("div");
-  cur.classList.add("box");
-  ix = event.x;
-  iy = event.y;
-  cur.style.left =  ix + "px";
-  cur.style.top = iy + "px";
-  document.body.appendChild(cur);
+  current = {
+    a: {
+      x: event.x * img.width / canvas.width,
+      y: event.y * img.height / canvas.height
+    },
+    b: {
+      x: event.x * img.width / canvas.width,
+      y: event.y * img.height / canvas.height
+    },
+    width: 0,
+    height: 0
+  };
 };
 
 canvas.onmousemove = function (event) {
-  if ( cur != undefined ) {
-    cur.style.width = event.x - ix + "px";
-    cur.style.height = event.y - iy + "px";
+  if ( current != undefined ) {
+    current.b.x = event.x * img.width / canvas.width;
+    current.b.y = event.y * img.height / canvas.height;
+    current.width = current.b.x - current.a.x;
+    current.height = current.b.y - current.a.y;
   }
+  update();
 };
 
 canvas.onmouseup = function (event) {
-  cur = undefined;
-
-  var target = {
-    topLeft: {
-      x: ix * img.width / window.innerWidth,
-      y: iy * img.width / window.innerHeight
-    },
-    bottomRight: {
-      x: event.x * img.width / window.innerWidth,
-      y: event.y * img.width / window.innerHeight
-    },
-    width: (event.x - ix) * (img.width / window.innerWidth),
-    height: (event.y - iy) * (img.width / window.innerHeight)
-  };
-
-  if (Math.abs(target.width) > 10 && Math.abs(target.height) > 10)
-    submission.targets.push(target);
+  if (Math.abs(current.width) > 10 && Math.abs(current.height) > 10)
+    submission.targets.push(current);
+  current = undefined;
 };
 
 document.getElementById('submit').onmouseup = function (event) {
