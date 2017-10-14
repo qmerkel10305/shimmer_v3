@@ -44,19 +44,33 @@ canvas {
   border-color: #FFF:
 }
 
+#arc_logo {
+  margin: auto;
+  display: block;
+}
+
 #submit {
   display: block;
-  padding: 10px;
-  margin: 10px;
   bottom: 0;
   right: 0;
   background-color: #AA2222;
   color: #FFDDDD;
 }
 
+.info {
+  border-radius: 5px;
+  text-align: center;
+  padding: 10px;
+  margin: 10px;
+  color: #FFEEEE;
+  background-color: #AA7777;
+}
+
 .button {
   border-radius: 5px;
   text-align: center;
+  padding: 10px;
+  margin: 10px;
 }
 
 .button:hover {
@@ -82,6 +96,6 @@ canvas {
   z-index: 10;
 }
 
-#footer:hover a {
+#footer a:hover {
   text-decoration: underline;
 }
