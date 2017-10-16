@@ -6,6 +6,17 @@ import pprint
 from flask import Flask
 app = Flask(__name__)
 
+# Sort image data in some list / tree
+# Need to import ARC library to add targets to tables
+#   --> Get targets for images so frontend can see previously inserted targets
+# Flight # will be set backend but in the future maybe frontend can select that
+
+class Target:
+    def __init__(self):
+        self.image = ''
+        self.x = 0
+        self.y = 0
+
 @app.route('/')
 def index():
     return app.send_static_file('index.html')

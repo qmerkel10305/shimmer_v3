@@ -78,6 +78,7 @@ canvas.onmouseup = function (event) {
   if (Math.abs(current.width) > 10 && Math.abs(current.height) > 10)
     submission.targets.push(current);
   current = undefined;
+  update();
 };
 
 document.getElementById('submit').onmouseup = function (event) {

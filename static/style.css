@@ -83,6 +83,20 @@ canvas {
   cursor: pointer;
 }
 
+#ctrl {
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+  /* border-collapse: collapse; */
+}
+
+#ctrl td > div {
+  border-radius: 5px;
+  text-align: center;
+  padding: 10px;
+  background-color: #F8F8F8;
+}
+
 #footer {
   padding-top: 40px;
 }
