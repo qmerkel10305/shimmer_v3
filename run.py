@@ -2,7 +2,7 @@ from flask import Flask, request
 import requests
 import json
 import pprint
-import ARC
+# import ARC
 
 from flask import Flask
 app = Flask(__name__)
@@ -29,13 +29,28 @@ def root(path):
 # Response for GET business request
 @app.route("/image", methods=['GET'])
 def getImage():
-    return "" + ARC.Target
+    return """{
+        "targets": [
+            {
+                "a": {
+                    "x": 1985.6888888888889,
+                    "y": 1084.8264462809918
+                },
+                "b": {
+                    "x": 2264.5777777777776,
+                    "y": 1314.3801652892562
+                },
+                "height": 229.55371900826435,
+                "width": 278.8888888888887
+            }
+        ]
+    }"""
 
 # Register your name
 @app.route("/target", methods=['POST'])
 def target():
     print(json.dumps(json.loads(request.data), indent=4, sort_keys=True))
-    return "thx"
+    return "{\"status\":\"ok\"}"
 
 # if '> python this.py' run Flask
 if __name__ == "__main__":
