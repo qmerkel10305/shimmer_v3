@@ -1,4 +1,5 @@
 var app = new Shimmer('classify-canvas');
+app.init();
 
 /**
  * Makes an API request

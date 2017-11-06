@@ -7,6 +7,26 @@ import pprint
 from flask import Flask
 app = Flask(__name__)
 
+targets = dict()
+
+targets["0"] = """{
+    "id": 0,
+    "targets": [
+        {
+            "a": {
+                "x": 1985.6888888888889,
+                "y": 1084.8264462809918
+            },
+            "b": {
+                "x": 2264.5777777777776,
+                "y": 1314.3801652892562
+            },
+            "height": 229.55371900826435,
+            "width": 278.8888888888887
+        }
+    ]
+}"""
+
 # Sort image data in some list / tree
 # Need to import ARC library to add targets to tables
 #   --> Get targets for images so frontend can see previously inserted targets
@@ -29,27 +49,13 @@ def root(path):
 # Response for GET business request
 @app.route("/image", methods=['GET'])
 def getImage():
-    return """{
-        "targets": [
-            {
-                "a": {
-                    "x": 1985.6888888888889,
-                    "y": 1084.8264462809918
-                },
-                "b": {
-                    "x": 2264.5777777777776,
-                    "y": 1314.3801652892562
-                },
-                "height": 229.55371900826435,
-                "width": 278.8888888888887
-            }
-        ]
-    }"""
+    return ""
 
 # Register your name
-@app.route("/target", methods=['POST'])
-def target():
-    print(json.dumps(json.loads(request.data), indent=4, sort_keys=True))
+@app.route("/target/<path:path>", methods=['POST'])
+def target(path):
+    targets[path] = request.data;
+    # print(json.dumps(json.loads(request.data), indent=4, sort_keys=True))
     return "{\"status\":\"ok\"}"
 
 # if '> python this.py' run Flask

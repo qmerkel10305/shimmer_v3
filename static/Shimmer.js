@@ -4,18 +4,23 @@
  * @param {String} canvasId the id of the canvas
  */
 function Shimmer (canvasId) {
-  this.targets = new TargetsHandler();
+  var current = {};
+  var targets = {};
 
   /** actual display canvas */
   var canvas = document.getElementById(canvasId);
-  var context = canvas.getContext('2d');
+  var ctx = canvas.getContext('2d');
   /** buffer display */
   var edit_canvas = document.createElement('canvas');
-  var edit_context =  edit_canvas.getContext('2d');
+  var edit_ctx =  edit_canvas.getContext('2d');
 
-  this.update = function () {
-    var img = targets.img;
-    var tar = targets.targets;
+  this.update = function (event) {
+    if (event != undefined ) {
+      targets.setMouse(event, canvas);
+    }
+
+    var img = targets.getImage();
+    var tar = targets.getTargets();
 
     edit_canvas.width = canvas.width = canvas.clientWidth;
     edit_canvas.height = canvas.height = canvas.clientHeight;
@@ -28,7 +33,8 @@ function Shimmer (canvasId) {
         t.width * (canvas.width / img.width), t.height * (canvas.height / img.height));
     }
 
-    if (current != undefined ) {
+    var current = targets.getCurrent();
+    if (current != undefined) {
       ctx.fillStyle = 'rgba(127, 255, 127, 0.3)';
       ctx.fillRect(current.a.x * (canvas.width / img.width), current.a.y * (canvas.height / img.height),
         current.width * (canvas.width / img.width), current.height * (canvas.height / img.height));
@@ -36,14 +42,11 @@ function Shimmer (canvasId) {
   };
 
   this.submit = function () {
-      apiRequest("POST", "/target", function() {});
-  };
-
-  this.createTarget = function (event) {
-    if (Math.abs(current.width) > 10 && Math.abs(current.height) > 10)
-      submission.targets.push(current);
-    current = undefined;
-    update();
+    console.log(targets.getImage());
+      apiRequest("POST", "/target/" + targets.img, function(err, res) {
+      }, JSON.stringify(targets.getTargets()));
+      
+    // request new image
   };
 
   /**
@@ -53,14 +56,15 @@ function Shimmer (canvasId) {
     var img = new Image();
     img.src = "img.jpg";
 
+    var self = this;
     img.onload = function() {
-        tar = new TargetHandler(img);
-        update();
+        targets = new TargetsHandler(0, img);
+        self.update();
     };
   };
 
   canvas.onmousedown = this.update;
-  canvas.onmousemove = this.submit;
-  canvas.onmouseup = this.createTarget;
+  canvas.onmousemove = this.update;
+  canvas.onmouseup = this.update;
   document.getElementById('submit').onmouseup = this.submit;
 };

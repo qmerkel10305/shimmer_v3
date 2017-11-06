@@ -1,12 +1,19 @@
 /**
  * A single image from a flight
  *
- * @param {Object} reponse the server response for getting an image
+ * @param {Object} response the server response for getting an image
  */
-var TargetsHandler  = function (reponse) {
+var TargetsHandler  = function (id, response) {
   // no backend for this yet rofl
-  var img = reponse;
+  var id = id;
+  var img = response;
   var targets = [];
+  var current = undefined;
+
+  this.getId = function () { return id; };
+  this.getImage = function () { return img; };
+  this.getTargets = function () { return targets; };
+  this.getCurrent = function () { return current; };
 
   /**
    * State of the frontend. Just .
@@ -20,7 +27,7 @@ var TargetsHandler  = function (reponse) {
     };
   };
 
-  this.makeTarget = function () {
+  this.makeTarget = function (event, canvas) {
     return {
       a: {
         x: event.x * img.width / canvas.width,
@@ -35,34 +42,21 @@ var TargetsHandler  = function (reponse) {
     };
   };
 
-  this.setMouse = function(event) {
-    if ( current != undefined ) {
+  this.setMouse = function(event, canvas) {
+    if (event.type == "mousemove") {
+      if (current == undefined) {
+        return;
+      }
       current.b.x = event.x * img.width / canvas.width;
       current.b.y = event.y * img.height / canvas.height;
       current.width = current.b.x - current.a.x;
       current.height = current.b.y - current.a.y;
-    } else {
+    } else if (event.type == "mousedown") {
+      current = this.makeTarget(event, canvas);
+    } else if (event.type == "mouseup") {
+      if (Math.abs(current.width) > 10 && Math.abs(current.height) > 10)
+        targets.push(current);
+      current = undefined;
     }
-    update();
-  };
-
-  this.createTarget = function (event) {
-    if (Math.abs(current.width) > 10 && Math.abs(current.height) > 10)
-      submission.targets.push(current);
-    current = undefined;
-    update();
-  };
-
-  this.submit = function (event) {
-    var tarpost = new XMLHttpRequest();   // new HttpRequest instance
-    tarpost.open("POST", "/target");
-    tarpost.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-
-    tarpost.onload = function (req, res) {
-      console.log(req);
-      console.log(res);
-    };
-
-    tarpost.send(JSON.stringify(submission));
   };
 };
