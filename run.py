@@ -7,6 +7,9 @@ import pprint
 from flask import Flask
 app = Flask(__name__)
 
+# Queue of images that are ready to
+# have their target's classified
+
 targets = dict()
 
 targets["0"] = """{
@@ -42,14 +45,17 @@ class Target:
 def index():
     return app.send_static_file('index.html')
 
+@app.route("/next", methods=['GET'])
+def getNext():
+    return targets["0"]
+
+@app.route("/image/<path:path>", methods=['GET'])
+def getImage(path):
+    return targets[path]
+
 @app.route('/<path:path>')
 def root(path):
     return app.send_static_file(path)
-
-# Response for GET business request
-@app.route("/image", methods=['GET'])
-def getImage():
-    return ""
 
 # Register your name
 @app.route("/target/<path:path>", methods=['POST'])

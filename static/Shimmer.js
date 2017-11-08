@@ -28,9 +28,17 @@ function Shimmer (canvasId) {
 
     for (var i = 0; i < tar.length; i++) {
       var t = tar[i];
+
+      // draw target bounding box
       ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
       ctx.fillRect(t.a.x * (canvas.width / img.width), t.a.y * (canvas.height / img.height),
         t.width * (canvas.width / img.width), t.height * (canvas.height / img.height));
+
+      // draw delete bubble
+      ctx.fillStyle = 'rgba(255, 0, 0, 1.0)';
+      ctx.beginPath();
+      ctx.arc( t.a.x * (canvas.width / img.width), t.a.y * (canvas.height / img.height), 5, 0, 2 * Math.PI);
+      ctx.fill();
     }
 
     var current = targets.getCurrent();
@@ -43,9 +51,13 @@ function Shimmer (canvasId) {
 
   this.submit = function () {
     console.log(targets.getImage());
-      apiRequest("POST", "/target/" + targets.img, function(err, res) {
-      }, JSON.stringify(targets.getTargets()));
-      
+      apiRequest("POST", "/target/" + targets.getId(), function(err, res) {
+      }, JSON.stringify(
+        { id: targets.getId(),
+          targets: targets.getTargets()
+        }
+      ));
+
     // request new image
   };
 
@@ -53,14 +65,18 @@ function Shimmer (canvasId) {
    * Submits an image and requests the next one with existing targets plotted
    */
   this.init = function() {
-    var img = new Image();
-    img.src = "img.jpg";
-
     var self = this;
-    img.onload = function() {
-        targets = new TargetsHandler(0, img);
-        self.update();
-    };
+    apiRequest("GET", "/next", function(res) {
+      var raw = JSON.parse(res.target.response);
+
+      var img = new Image();
+      img.src = "img.jpg";
+
+      img.onload = function() {
+          targets = new TargetsHandler(raw.id, raw.targets, img);
+          self.update();
+      };
+    });
   };
 
   canvas.onmousedown = this.update;

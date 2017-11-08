@@ -1,6 +1,3 @@
-var app = new Shimmer('classify-canvas');
-app.init();
-
 /**
  * Makes an API request
  *
@@ -20,3 +17,6 @@ var apiRequest = function (type, path, callback, body) {
     req.send();
   }
 };
+
+var app = new Shimmer('classify-canvas');
+app.init();
