@@ -57,7 +57,6 @@ function Shimmer (canvasId) {
           targets: targets.getTargets()
         }
       ));
-
     // request new image
   };
 
@@ -77,10 +76,12 @@ function Shimmer (canvasId) {
           self.update();
       };
     });
+
   };
 
   canvas.onmousedown = this.update;
   canvas.onmousemove = this.update;
   canvas.onmouseup = this.update;
-  document.getElementById('submit').onmouseup = this.submit;
+  window.addEventListener("resize", this.update);
+  document.getElementById('submit-button').onmouseup = this.submit;
 };
