@@ -1,31 +1,30 @@
-from flask import Flask, request
 import argparse
-import requests
 import json
-import pprint
-from DirectoryImageQueue import DirectoryImageQueue
 
-from flask import Flask
+from ShimmerQueue import ShimmerQueue
+
+from flask import Flask, request
 app = Flask(__name__)
 
 # Queue of images that are ready to
 # have their target's classified
 
-next_id = 0
+parser = argparse.ArgumentParser(epilog="You must specify either flight or directory.")
+parser.add_argument("-f", "--flight", type=int, help="Flight number")
+parser.add_argument("-d", "--directory", type=str, help="Directory to load images from")
+args = parser.parse_args()
 
-targets = dict()
+if args.flight == args.directory: # effectively an XOR
+    raise ValueError("You must specify either flight or directory.")
 
-images = DirectoryImageQueue("img")
+if args.flight:
+    from ARCImageQueue import ARCImageQueue
+    queue = ARCImageQueue(args.flight)
+elif args.directory:
+    from DirectoryImageQueue import DirectoryImageQueue
+    queue = DirectoryImageQueue(args.directory)
 
-image_list = None
-
-def image_iterator():
-    """
-    A generator used to replay the old images after the image
-    queue has been exhausted.
-    """
-    for _, img in targets.items():
-        yield img
+images = ShimmerQueue(queue)
 
 # Sort image data in some list / tree
 # Need to import ARC library to add targets to tables
@@ -45,45 +44,10 @@ def index():
 # Returns json of target data for next image and url for the next image
 @app.route("/next", methods=['GET'])
 def getNext():
-    global next_id
-    next_img = images.get_next_image()
-    if not next_img:
-        return json.dumps(getReplayImage())
-    targets[next_id] = {
-        "id": next_id,
-        "image": next_img,
-        "targets": []
-    }
-    next_id += 1
-    return json.dumps(targets[next_id - 1])
+    return json.dumps(images.get_next_image())
 
-def getReplayImage():
-    """
-    Replays images in a loop
-    """
-    global image_list
-    try:
-        next_data = next(image_list)
-    except (StopIteration, TypeError):
-        # Restart the image generator
-        image_list = image_iterator()
-        try:
-            next_data = next(image_list)
-        except StopIteration:
-            # There were no images in the queue at any point,
-            # so there is nothing to show.
-            return { "error": "No images" }
-    return next_data
-
-@app.route("/image/<int:id>", methods=['GET'])
-def getImageData(id):
-    try:
-        return json.dumps(targets[id])
-    except KeyError:
-        return json.dumps({ "error": "No such id " + id })
-
-@app.route("/image/raw/<path:path>", methods=['GET'])
-def getRawImage(path):
+@app.route("/image/<path:path>", methods=['GET'])
+def getImage(path):
     with open(path, 'rb') as f:
         return f.read()
 
@@ -93,9 +57,12 @@ def root(path):
     return app.send_static_file(path)
 
 # Post target data, path should be image id in the flight
-@app.route("/target/<path:path>", methods=['POST'])
-def target(path):
-    targets[path] = json.loads(request.data.decode("utf-8"))
+@app.route("/target/<int:id>", methods=['POST'])
+def target(id):
+    try:
+        images.targets[id] = json.loads(request.data.decode("utf-8"))
+    except IndexError:
+        return "{\"status\":\"error\"}"
     return "{\"status\":\"ok\"}"
 
 # if '> python run.py' run Flask

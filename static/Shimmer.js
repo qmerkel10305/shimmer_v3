@@ -54,7 +54,8 @@ function Shimmer (canvasId) {
       apiRequest("POST", "/target/" + targets.getId(), function(err, res) {
       }, JSON.stringify(
         { id: targets.getId(),
-          targets: targets.getTargets()
+          targets: targets.getTargets(),
+          image: targets.getImage().src
         }
       ));
     // request new image
@@ -69,7 +70,7 @@ function Shimmer (canvasId) {
       var raw = JSON.parse(res.target.response);
 
       var img = new Image();
-      img.src = "img.jpg";
+      img.src = raw.image;
 
       img.onload = function() {
           targets = new TargetsHandler(raw.id, raw.targets, img);
