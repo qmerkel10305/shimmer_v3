@@ -14,7 +14,7 @@ parser.add_argument("-f", "--flight", type=int, help="Flight number")
 parser.add_argument("-d", "--directory", type=str, help="Directory to load images from")
 args = parser.parse_args()
 
-if args.flight == args.directory: # effectively an XOR
+if bool(args.flight) == bool(args.directory): # effectively an XOR
     raise ValueError("You must specify either flight or directory.")
 
 if args.flight:
