@@ -3,7 +3,7 @@ import json
 
 from ShimmerQueue import ShimmerQueue
 
-from flask import Flask, request
+from flask import Flask, request, send_file
 app = Flask(__name__)
 
 # Queue of images that are ready to
@@ -46,10 +46,9 @@ def index():
 def getNext():
     return json.dumps(images.get_next_image())
 
-@app.route("/image/<path:path>", methods=['GET'])
-def getImage(path):
-    with open(path, 'rb') as f:
-        return f.read()
+@app.route("/image/<int:idx>", methods=['GET'])
+def getImage(idx):
+    return send_file(open(images[idx]['path'], 'rb'), mimetype='image/jpg')
 
 # Serves static files for the frontend program
 @app.route('/<path:path>')

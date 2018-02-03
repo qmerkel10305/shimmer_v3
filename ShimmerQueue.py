@@ -19,25 +19,26 @@ class ShimmerQueue(ImageQueue):
         self.replay_pos = 0
         self.targets = []
 
+    def __getitem__(self, key):
+        return self.targets[key]
+
     def get_next_image(self):
         """
         Retrieves the next image out of the queue
         """
         next_img = self.images.get_next_image()
-        if not next_img:
+        if next_img is None:
             # No more images in the queue.
             return self.get_replay_image()
         tgt = {
             "id": self.next_id,
-            "image": "image/" + next_img,
-            "targets": []
+            "image": "image/" + str(self.next_id),
+            "targets": [],
+            "path": next_img
         }
         self.targets.append(tgt)
         self.next_id += 1
         return tgt
-
-    def get_image_at(self, idx):
-        return self.images[idx]
 
     def get_replay_image(self):
         """
