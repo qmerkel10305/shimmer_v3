@@ -1,58 +1,168 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>Shimmer</title>
-        <!--link rel="icon" type="image/png" href="favicon.png" /-->
-        <link rel="stylesheet" type="text/css" href="style.css"/>
+        <link rel="stylesheet" href="style.css">
+        <script src="Dialog.js" type="application/javascript"></script>
+        <script src="TargetHandler.js" type="application/javascript"></script>
+        <script src="CreateTargetTool.js" type="application/javascript"></script>
+        <script src="Shimmer.js" type="application/javascript"></script>
+        <script src="ShimmerNav.js" type="application/javascript"></script>
     </head>
     <body>
-        <div id="image-wrapper">
-	         <canvas id="classify-canvas" />
-        </div>
-        <div id="ui-wrapper">
-            <div id="ui">
-                <img id="arc_logo" width=80 height=100 src="logo.png"/>
-                <div id="queue-info" class="info">Flight: 142</div>
-                <div id="queue-info" class="info">image: img_142_219.jpg</div>
-                <div id="queue-info" class="info">In queue: 17</div>
-                <div id="submit-button" class="button">SUBMIT</div>
-                <table id="ctrl">
-                    <tbody>
-                        <tr>
-                            <td><div>Zoom in</div></td>
-                            <td><div>Zoom out</div></td>
-                        </tr>
-                        <tr>
-                            <td><div>Fit to window</div></td>
-                            <td><div>Actual Scale</div></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div id="footer">2017 &copy; <a href="https://aerialroboticsclub.com/">NCSU Aerial Robotics Club</a></div>
+        <div id="menu">
+            <div class="menu_logo">
+                <div class="menu_title">Sh<span style="color: red;">immer</span></div>
+            </div>
+            <div class="menu_item">
+                <div class="menu_title">File</div>
+                <div class="menu_list">
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_0" class="menu_list_item menu_not">Load flight</div>
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_1" class="menu_list_item">Submit</div>
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_2" class="menu_list_item menu_not">Preferences</div>
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_3" class="menu_list_item menu_not">Log out</div>
+                    <div class="menu_list_spacer"></div>
+                </div>
+            </div>
+            <div class="menu_item">
+                <div class="menu_title">Edit</div>
+                <div class="menu_list">
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_4" class="menu_list_item">Remove all targets</div>
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_5" class="menu_list_item menu_not">Clear all shapes</div>
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_6" class="menu_list_item menu_not">Clear all colors</div>
+                    <div class="menu_list_spacer"></div>
+                </div>
+            </div>
+            <div class="menu_item">
+                <div class="menu_title">View</div>
+                <div class="menu_list">
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_7" class="menu_list_item menu_not">Fit window</div>
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_8" class="menu_list_item menu_not">Scale</div>
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_9" class="menu_list_item menu_not">Zoom</div>
+                    <div class="menu_list_spacer"></div>
+                </div>
+            </div>
+            <div class="menu_item">
+                <div class="menu_title">Dialogs</div>
+                <div class="menu_list">
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_10" class="menu_list_item">Help</div>
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_11" class="menu_list_item">Control palette</div>
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_12" class="menu_list_item">Tools palette</div>
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_13" class="menu_list_item">hide all</div>
+                    <div class="menu_list_spacer"></div>
+                </div>
             </div>
         </div>
-        <div id="promptbox-wrapper" class="hide">
-          <div id="promptbox">
-            <table id="shapes">
-              <tbody>
-                  <tr>
-                      <td><div class="shape-button">Circle</div></td>
-                      <td><div class="shape-button">Rectangle</div></td>
-                      <td><div class="shape-button">Star</div></td>
-                      <td><div class="shape-button">Triangle</div></td>
-                  </tr>
-                  <tr>
-                      <td><div class="shape-button">Octagon</div></td>
-                      <td><div class="shape-button">Pentagon</div></td>
-                      <td><div class="shape-button">Semicircle</div></td>
-                      <td><div class="shape-button">Plus</div></td>
-                  </tr>
-              </tbody>
-            </table>
-            <div id="cancel-target-button" class="button">Cancel</div>
-          </div>
+        <div id="draggable_windows">
+            <div id="help_dialog" class="window">
+                <div class="window_menu">
+                    <div class="window_close">x</div>
+                    <div class="window_title">Help</div>
+                </div>
+                <div class="window_content">
+                  - Use arrow keys to move around image<br>
+                  - Click and drag to create a target<br>
+                </div>
+            </div>
+            <div id="control_palette" class="window">
+                <div class="window_menu">
+                    <div class="window_close">x</div>
+                    <div class="window_title">Controls</div>
+                </div>
+                <div class="window_content">
+                  Previous image<br>
+                  Next Image<br>
+                  Submit Targets<br>
+                  Clear targets<br>
+                </div>
+            </div>
+            <div id="tool_palette" class="window">
+                <div class="window_menu">
+                    <div class="window_close">x</div>
+                    <div class="window_title">Tools</div>
+                </div>
+                <div class="window_content">
+                  (A)dd target<br>
+                  (R)emove target<br>
+                  (S)et shape<br>
+                  (C)olor picker<br>
+                </div>
+            </div>
+            <div id="size_alert" class="window">
+                <div class="window_menu">
+                    <div class="window_close">x</div>
+                    <div class="window_title">Warning</div>
+                </div>
+                <div class="window_content">
+                    You are using a window smaller than what Shimmer is optimized for (800x600)
+                </div>
+            </div>
+            <div id="promptbox" class="window">
+                <div class="window_menu">
+                    <div class="window_close">x</div>
+                    <div class="window_title">Classify the target</div>
+                </div>
+                <div class="window_content">
+                  <table id="shapes">
+                    <tbody>
+                        <tr>
+                            <td><div class="shape-button">Circle</div></td>
+                            <td><div class="shape-button">Rectangle</div></td>
+                            <td><div class="shape-button">Star</div></td>
+                            <td><div class="shape-button">Triangle</div></td>
+                        </tr>
+                        <tr>
+                            <td><div class="shape-button">Octagon</div></td>
+                            <td><div class="shape-button">Pentagon</div></td>
+                            <td><div class="shape-button">Semicircle</div></td>
+                            <td><div class="shape-button">Plus</div></td>
+                        </tr>
+                    </tbody>
+                  </table>
+                  <div id="cancel-target-button" class="button">Cancel</div>
+                </div>
+            </div>
         </div>
+        <canvas id="classify-canvas"></canvas>
+        <script type="text/javascript" >
+          /**
+           * Makes an API request
+           *
+           * @param {String} type HTTP method (GET, POST, PUT, etc)
+           * @param {String} path the URI of the request
+           * @param {function} callback callback when the request is completed
+           * @param {String|undefined} body the body of the HTTP
+           */
+          var apiRequest = function (type, path, callback, body) {
+            var req = new XMLHttpRequest();
+            req.open(type, path);
+            req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            req.onload = callback
+            if (body) {
+              req.send(body);
+            } else {
+              req.send();
+            }
+          };
+
+          document.addEventListener("DOMContentLoaded", function(){
+            var app = new ShimmerNav('classify-canvas');
+            app.init();
+          });
+        </script>
     </body>
-    <script src="TargetHandler.js" type="application/javascript"></script>
-    <script src="Shimmer.js" type="application/javascript"></script>
-    <script src="script.js" type="application/javascript"></script>
 </html>

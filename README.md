@@ -1,9 +1,19 @@
 Shimmer
 -------
 
+TODO
+====
+- [ ] target creation / editing
+  - [x] add a target
+  - [ ] assign a shape and color to a target
+  - [ ] be able to erase targets
+  - [ ] be able to move targets
+- [ ] backend image / target serving
+  - [ ] be able to move through the images without reloading the page
+
 Online image viewer for ARC
 
-Static Web application -- RESTAPI --> backend 
+Static Web application -- RESTAPI --> backend
                                 Postgres triggers--^
 Python Flash socket serves image and data  
 

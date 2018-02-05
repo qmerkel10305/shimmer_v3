@@ -1,9 +1,11 @@
 import argparse
 import json
+import atexit
 
 from ShimmerQueue import ShimmerQueue
 
 from flask import Flask, request, send_file
+
 app = Flask(__name__)
 
 # Queue of images that are ready to
@@ -59,11 +61,16 @@ def root(path):
 @app.route("/target/<int:id>", methods=['POST'])
 def target(id):
     try:
-        images.targets[id] = json.loads(request.data.decode("utf-8"))
+        images.targets[id]["targets"] = json.loads(request.data.decode("utf-8"))["targets"]
     except IndexError:
         return "{\"status\":\"error\"}"
     return "{\"status\":\"ok\"}"
 
 # if '> python run.py' run Flask
 if __name__ == "__main__":
+    def save_target_data():
+        with open('targets.json', 'w') as file:
+            json.dump(images.targets, file, indent=4)
+    atexit.register(save_target_data)
+
     app.run(host='0.0.0.0')

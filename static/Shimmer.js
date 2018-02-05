@@ -7,6 +7,8 @@ function Shimmer (canvasId) {
   var current = {};
   var targets = {};
 
+  var tool = new CreateTargetTool();
+
   /** actual display canvas */
   var canvas = document.getElementById(canvasId);
   var ctx = canvas.getContext('2d');
@@ -15,12 +17,17 @@ function Shimmer (canvasId) {
   var edit_ctx =  edit_canvas.getContext('2d');
 
   this.update = function (event) {
-    if (event != undefined ) {
-      targets.setMouse(event, canvas);
-    }
-
     var img = targets.getImage();
     var tar = targets.getTargets();
+    var graphics = {
+      canvas: canvas,
+      ctx: ctx,
+      img: img
+    };
+
+    if (event != undefined && event) {
+      tool['on' + event.type](event, targets, graphics);
+    }
 
     edit_canvas.width = canvas.width = canvas.clientWidth;
     edit_canvas.height = canvas.height = canvas.clientHeight;
@@ -41,30 +48,26 @@ function Shimmer (canvasId) {
       ctx.fill();
     }
 
-    var current = targets.getCurrent();
-    if (current != undefined) {
-      ctx.fillStyle = 'rgba(127, 255, 127, 0.3)';
-      ctx.fillRect(current.a.x * (canvas.width / img.width), current.a.y * (canvas.height / img.height),
-        current.width * (canvas.width / img.width), current.height * (canvas.height / img.height));
-    }
+    tool.render(targets, graphics);
   };
 
   this.submit = function () {
-    console.log(targets.getImage());
+      var data = {
+        id: targets.getId(),
+        targets: targets.getTargets(),
+        image: targets.getImage().src
+      };
+      console.log(data);
       apiRequest("POST", "/target/" + targets.getId(), function(err, res) {
-      }, JSON.stringify(
-        { id: targets.getId(),
-          targets: targets.getTargets(),
-          image: targets.getImage().src
-        }
-      ));
+      }, JSON.stringify(data));
     // request new image
+    this.loadImage();
   };
 
   /**
-   * Submits an image and requests the next one with existing targets plotted
+   * Requests a image one with existing targets plotted
    */
-  this.init = function() {
+  this.loadImage = function() {
     var self = this;
     apiRequest("GET", "/next", function(res) {
       var raw = JSON.parse(res.target.response);
@@ -80,9 +83,19 @@ function Shimmer (canvasId) {
 
   };
 
+  /**
+   * Loads a target and an image into Shimmer 
+   */
+  this.init = function () {
+    this.loadImage();
+  }
+
+  this.getTargets = function () {
+    return targets;
+  }
+
   canvas.onmousedown = this.update;
   canvas.onmousemove = this.update;
   canvas.onmouseup = this.update;
   window.addEventListener("resize", this.update);
-  document.getElementById('submit-button').onmouseup = this.submit;
 };
