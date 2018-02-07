@@ -18,7 +18,7 @@ a {
     text-decoration: none;
 }
 
-canvas {
+#shimmer-canvas {
     display: block;
     z-index: 0;
     width: 100%;
@@ -142,6 +142,25 @@ canvas {
     cursor: pointer;
 }
 
+.window_content {
+    padding: 3px;
+}
+
+.window_content div {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+    border: solid 1px transparent;
+}
+
+.window_content div:hover {
+    border: solid 1px black;
+}
+
 #help_dialog {
     left: 50px;
     top: 79px; // 50 + 29(height of navbar)
@@ -168,38 +187,34 @@ canvas {
     height: 100px;
 }
 
-#promptbox {
+#classify_target {
     display: none;
     left: 30%;
     top: 30%;
-    width: 300px;
-    height: 200px;
+    width: 440px;
+    height: 240px;
 }
 
-.window_content {
-    padding: 3px;
-}
-
-.window_content div {
+#classify-canvas {
     display: inline-block;
-    height: 24px;
-    width: 24px;
-    margin: 0;
-    padding: 0;
-    font-size: 0;
-    line-height: 0;
-    border: solid 1px transparent;
+    float: right;
+    z-index: 0;
+    width: 200px;
+    height: 200px;
+    margin: 20px;
 }
 
-.window_content div:hover {
-    border: solid 1px black;
+#shapes_table_wrapper {
+    display: inline-block;
+    width: 140px;
+    height: 240px;
 }
 
 #shapes {
-  width: 100%;
+  display: block;
+  width: 130px;
   padding-left: 10px;
   padding-right: 10px;
-  position: relative;
 }
 
 #shapes td > div {

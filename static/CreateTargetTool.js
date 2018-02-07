@@ -45,7 +45,8 @@ function CreateTargetTool() {
 
     current.width = Math.abs(current.b.x - current.a.x);
     current.height =  Math.abs(current.b.y - current.a.y);
-    tar.addTarget(current);
+
+    tar.addTarget(current, graphics);
     current = undefined;
   }
 

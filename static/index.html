@@ -114,33 +114,40 @@
                     You are using a window smaller than what Shimmer is optimized for (800x600)
                 </div>
             </div>
-            <div id="promptbox" class="window">
+            <div id="classify_target" class="window">
                 <div class="window_menu">
                     <div class="window_close">x</div>
                     <div class="window_title">Classify the target</div>
                 </div>
                 <div class="window_content">
-                  <table id="shapes">
-                    <tbody>
-                        <tr>
-                            <td><div class="shape-button">Circle</div></td>
-                            <td><div class="shape-button">Rectangle</div></td>
-                            <td><div class="shape-button">Star</div></td>
-                            <td><div class="shape-button">Triangle</div></td>
-                        </tr>
-                        <tr>
-                            <td><div class="shape-button">Octagon</div></td>
-                            <td><div class="shape-button">Pentagon</div></td>
-                            <td><div class="shape-button">Semicircle</div></td>
-                            <td><div class="shape-button">Plus</div></td>
-                        </tr>
-                    </tbody>
-                  </table>
+                  <canvas id="classify-canvas"></canvas>
+                  <div id="shapes_table_wrapper">
+                    <table id="shapes">
+                      <tbody>
+                          <tr>
+                              <td><div class="shape-button">Circle</div></td>
+                              <td><div class="shape-button">Rectangle</div></td>
+                          </tr>
+                          <tr>
+                              <td><div class="shape-button">Star</div></td>
+                              <td><div class="shape-button">Triangle</div></td>
+                          </tr>
+                          <tr>
+                              <td><div class="shape-button">Octagon</div></td>
+                              <td><div class="shape-button">Pentagon</div></td>
+                          </tr>
+                          <tr>
+                              <td><div class="shape-button">Semicircle</div></td>
+                              <td><div class="shape-button">Plus</div></td>
+                          </tr>
+                      </tbody>
+                    </table>
+                  </div>
                   <div id="cancel-target-button" class="button">Cancel</div>
                 </div>
             </div>
         </div>
-        <canvas id="classify-canvas"></canvas>
+        <canvas id="shimmer-canvas"></canvas>
         <script type="text/javascript" >
           /**
            * Makes an API request
@@ -163,7 +170,7 @@
           };
 
           document.addEventListener("DOMContentLoaded", function(){
-            var app = new ShimmerNav('classify-canvas');
+            var app = new ShimmerNav('shimmer-canvas');
             app.init();
           });
         </script>
