@@ -75,6 +75,8 @@ function Shimmer (canvasId) {
       var img = new Image();
       img.src = raw.image;
 
+      document.getElementById("img_info").innerHTML = raw.path;
+
       img.onload = function() {
           targets = new TargetsHandler(raw.id, raw.targets, img);
           self.update();
@@ -84,7 +86,7 @@ function Shimmer (canvasId) {
   };
 
   /**
-   * Loads a target and an image into Shimmer 
+   * Loads a target and an image into Shimmer
    */
   this.init = function () {
     this.loadImage();

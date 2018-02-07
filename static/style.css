@@ -46,8 +46,14 @@ canvas {
     display: inline-block;
 }
 
-.menu_item {
+.menu_item, .menu_info {
     display: inline-block;
+}
+
+.menu_info {
+    float: right;
+    margin-right: 20px;
+    font-weight: bold;
 }
 
 .menu_title {
