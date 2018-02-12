@@ -1,9 +1,6 @@
 import json
-# Queue of images that are ready to
-# have their target's classified
-from ImageQueue import ImageQueue
 
-class ShimmerQueue(ImageQueue):
+class ShimmerModel():
     """
     Queues of images for Shimmer
 
@@ -12,14 +9,19 @@ class ShimmerQueue(ImageQueue):
     """
 
     def __init__(self, queue):
-        super(ShimmerQueue, self).__init__()
         self.images = queue
         self.next_id = 0
         self.replay_pos = 0
         self.targets = []
 
-    def __getitem__(self, key):
-        return self.targets[key]
+    def img(self, idx):
+        """
+        Get image data at index idx
+
+        Arguments:
+            idx: the index to get data at
+        """
+        return self.targets[idx]
 
     def get_next_image(self):
         """
@@ -51,3 +53,15 @@ class ShimmerQueue(ImageQueue):
         img = self.targets[self.replay_pos]
         self.replay_pos += 1
         return img
+
+    def update_targets(self, id, targets):
+        """
+        Updates the targets associated with an image
+
+        Arguments:
+            id: the id of the image to update
+            targets: the updated target data to add
+
+        Returns: true if successful
+        """
+        self.targets[id]["targets"] = targets

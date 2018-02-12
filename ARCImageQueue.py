@@ -17,19 +17,19 @@ class ARCImageQueue(ImageQueue):
     def __init__(self, flight):
         super(ARCImageQueue, self).__init__()
         self.flight = ARC.Flight(flight)
-        self.queue = deque(self.flight.all_images(filenames=True))
+        self.queue = deque(self.flight.all_images())
         self.flight.start_listener()
 
     def get_next_image(self):
         """
         Retrieves the next image out of the queue
         """
-        img = self.flight.next_image(timeout=0.01, filename=True)
+        img = self.flight.next_image(timeout=0.01)
         if img:
             self.queue.append(img)
 
         try:
-            return self.queue.popleft()
+            return self.queue.popleft().jpg()
         except IndexError:
             return None
 
