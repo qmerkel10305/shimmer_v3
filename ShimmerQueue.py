@@ -9,7 +9,6 @@ class ShimmerQueue(ImageQueue):
 
     Arguments:
         queue: The underlying ImageQueue
-        queue_arg: The argument for the queue class
     """
 
     def __init__(self, queue):
@@ -30,11 +29,14 @@ class ShimmerQueue(ImageQueue):
         if next_img is None:
             # No more images in the queue.
             return self.get_replay_image()
+
+        # Each images gets a serial id that shimmer uses to track it within this session
         tgt = {
             "id": self.next_id,
             "image": "image/" + str(self.next_id),
             "targets": [],
-            "path": next_img
+            "path": next_img,
+            "flight": self.images.get_flight_id()
         }
         self.targets.append(tgt)
         self.next_id += 1

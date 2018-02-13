@@ -15,3 +15,9 @@ class ImageQueue(object):
         Retrieves the next image out of the queue
         """
         raise NotImplementedError("Image Queue subclasses implement get_next_image")
+
+    def get_flight_id(self):
+        """
+        Returns the flight id associated with the queue
+        """
+        raise NotImplementedError("Image Queue subclasses implement get_flight_id")

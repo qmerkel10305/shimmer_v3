@@ -75,7 +75,7 @@ function Shimmer (canvasId) {
       var img = new Image();
       img.src = raw.image;
 
-      document.getElementById("img_info").innerHTML = raw.path;
+      document.getElementById("img_info").innerHTML = "Flight " + raw.flight + " | Image " + raw.id;
 
       img.onload = function() {
           targets = new TargetsHandler(raw.id, raw.targets, img);

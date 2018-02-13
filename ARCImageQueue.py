@@ -32,3 +32,9 @@ class ARCImageQueue(ImageQueue):
             return self.queue.popleft()
         except IndexError:
             return None
+
+    def get_flight_id(self):
+        """
+        Returns the flight id associated with the queue
+        """
+        return self.flight.flight_id
