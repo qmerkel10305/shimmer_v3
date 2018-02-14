@@ -96,8 +96,14 @@ function Shimmer (canvasId) {
     return targets;
   }
 
+  var self = this;
   canvas.onmousedown = this.update;
   canvas.onmousemove = this.update;
   canvas.onmouseup = this.update;
   window.addEventListener("resize", this.update);
+  window.addEventListener("keydown", function (e) {
+    if (e.keyCode == 13) {
+      self.submit()
+    }
+  });
 };
