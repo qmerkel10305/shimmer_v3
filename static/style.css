@@ -152,8 +152,8 @@ a {
     width: 24px;
     margin: 0;
     padding: 0;
-    font-size: 0;
-    line-height: 0;
+    /*font-size: 0;
+    line-height: 0;*/
     border: solid 1px transparent;
 }
 
@@ -192,45 +192,53 @@ a {
     left: 30%;
     top: 30%;
     width: 440px;
-    height: 240px;
+    height: 480px;
+    color: black;
+    font-size: 12pt;
+    font-family: monospace;
 }
 
-#classify-canvas {
+#classify_target .attr {
+    height: 20px;
+    color: black;
+    width: 100%;
+    border: none;
+}
+
+#classify_target .window_content {
+    display: block;
+    width: 100%;
+    height: 400px;
+    padding: 10px;
+    margin: 0;
+}
+
+#classify_target .window_content > div {
+    border: none;
     display: inline-block;
-    float: right;
+    vertical-align: top;
+    width: 48%;
+    height: 100%;
+
+}
+
+#classify_target canvas {
+    display: inline-block;
     z-index: 0;
     width: 200px;
     height: 200px;
-    margin: 20px;
-}
-
-#shapes_table_wrapper {
-    display: inline-block;
-    width: 140px;
-    height: 240px;
-}
-
-#shapes {
-  display: block;
-  width: 130px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-#shapes td > div {
-  border-radius: 5px;
-  text-align: center;
-  padding: 10px;
-  background-color: #AA7777;
-}
-
-#shapes td > div:hover {
-  opacity: 0.5;
-  cursor: pointer;
+    background-color: black;
 }
 
 #cancel-target-button {
   background-color: #AA2222;
-  color: #FFDDDD;
-  width: 100%;
+  margin-top: 10px;
+  margin-left: 10%;
+  color: #FFFFFF;
+  width: 80%;
+  text-align: center;
+}
+
+#cancel-target-button:hover {
+  opacity: 0.3;
 }

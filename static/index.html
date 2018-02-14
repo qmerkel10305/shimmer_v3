@@ -120,30 +120,46 @@
                     <div class="window_title">Classify the target</div>
                 </div>
                 <div class="window_content">
-                  <canvas id="classify-canvas"></canvas>
-                  <div id="shapes_table_wrapper">
-                    <table id="shapes">
-                      <tbody>
-                          <tr>
-                              <td><div class="shape-button">Circle</div></td>
-                              <td><div class="shape-button">Rectangle</div></td>
-                          </tr>
-                          <tr>
-                              <td><div class="shape-button">Star</div></td>
-                              <td><div class="shape-button">Triangle</div></td>
-                          </tr>
-                          <tr>
-                              <td><div class="shape-button">Octagon</div></td>
-                              <td><div class="shape-button">Pentagon</div></td>
-                          </tr>
-                          <tr>
-                              <td><div class="shape-button">Semicircle</div></td>
-                              <td><div class="shape-button">Plus</div></td>
-                          </tr>
-                      </tbody>
-                    </table>
+                  <div class="left_content">
+                    <canvas id="classify-canvas"></canvas>
+                    <canvas id="preview-canvas"></canvas>
                   </div>
-                  <div id="cancel-target-button" class="button">Cancel</div>
+                  <div id="class_form" class="right_content">
+                    <div class="attr">Shape</div>
+                    <select class="attr-button">
+                      <option value="circle">circle</option>
+                      <option value="semicircle">semicircle</option>
+                      <option value="quarter_circle">quarter_circle</option>
+                      <option value="triangle">triangle</option>
+                      <option value="square">square</option>
+                      <option value="rectangle">rectangle</option>
+                      <option value="trapezoid">trapezoid</option>
+                      <option value="pentagon">pentagon</option>
+                      <option value="hexagon">hexagon</option>
+                      <option value="octagon">octagon</option>
+                      <option value="star">star</option>
+                      <option value="cross">cross</option>
+                    </select>
+                    <div class="attr">Orientation</div>
+                    <select class="attr-button">
+                      <option value="n">north</option>
+                      <option value="ne">north east</option>
+                      <option value="e">east</option>
+                      <option value="se">south east</option>
+                      <option value="s">south</option>
+                      <option value="sw">south west</option>
+                      <option value="w">west</option>
+                      <option value="nw">north west</option>
+                    </select>
+                    <div class="attr">Shape color</div>
+                    <input name="color" type="text" class="attr-button">
+                    <div class="attr">Character</div>
+                    <input name="color" type="text" class="attr-button">
+                    <div class="attr">Character color</div>
+                    <input name="color" type="text" class="attr-button">
+                  </div>
+                  </div>
+                  <div id="cancel-target-button" class="button">Submit</div>
                 </div>
             </div>
         </div>
