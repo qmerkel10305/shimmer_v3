@@ -222,12 +222,12 @@ a {
 
 }
 
-#classify_target canvas {
+#classify-canvas {
     display: inline-block;
     z-index: 0;
     width: 200px;
-    height: 200px;
-    background-color: black;
+    height: 400px;
+    background-color: grey;
 }
 
 #cancel-target-button {

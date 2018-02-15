@@ -121,8 +121,7 @@
                 </div>
                 <div class="window_content">
                   <div class="left_content">
-                    <canvas id="classify-canvas"></canvas>
-                    <canvas id="preview-canvas"></canvas>
+                    <canvas id="classify-canvas" width="200" height="400"></canvas>
                   </div>
                   <div id="class_form" class="right_content">
                     <div class="attr">Shape</div>
@@ -142,21 +141,43 @@
                     </select>
                     <div class="attr">Orientation</div>
                     <select class="attr-button">
-                      <option value="n">north</option>
-                      <option value="ne">north east</option>
-                      <option value="e">east</option>
-                      <option value="se">south east</option>
-                      <option value="s">south</option>
-                      <option value="sw">south west</option>
-                      <option value="w">west</option>
-                      <option value="nw">north west</option>
+                      <option value="N">north</option>
+                      <option value="NE">north east</option>
+                      <option value="E">east</option>
+                      <option value="SE">south east</option>
+                      <option value="S">south</option>
+                      <option value="SW">south west</option>
+                      <option value="W">west</option>
+                      <option value="NW">north west</option>
                     </select>
                     <div class="attr">Shape color</div>
-                    <input name="color" type="text" class="attr-button">
+                    <select class="attr-button">
+                      <option value="black">black</option>
+                      <option value="blue">blue</option>
+                      <option value="brown">brown</option>
+                      <option value="gray">gray</option>
+                      <option value="green">green</option>
+                      <option value="orange">orange</option>
+                      <option value="purple">purple</option>
+                      <option value="red">red</option>
+                      <option value="white">white</option>
+                      <option value="yellow">yellow</option>
+                    </select>
                     <div class="attr">Character</div>
                     <input name="color" type="text" class="attr-button">
                     <div class="attr">Character color</div>
-                    <input name="color" type="text" class="attr-button">
+                    <select class="attr-button">
+                      <option value="black">black</option>
+                      <option value="blue">blue</option>
+                      <option value="brown">brown</option>
+                      <option value="gray">gray</option>
+                      <option value="green">green</option>
+                      <option value="orange">orange</option>
+                      <option value="purple">purple</option>
+                      <option value="red">red</option>
+                      <option value="white">white</option>
+                      <option value="yellow">yellow</option>
+                    </select>
                   </div>
                   </div>
                   <div id="cancel-target-button" class="button">Submit</div>

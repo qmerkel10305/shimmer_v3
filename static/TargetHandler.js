@@ -16,9 +16,7 @@ var TargetsHandler  = function (id, targets, response) {
   var shapeSelector = new Dialog('classify_target');
   shapeSelector.hide();
   shapeSelector.canvas = document.getElementById('classify-canvas');
-  shapeSelector.preview = document.getElementById('preview-canvas');
   shapeSelector.ctx = shapeSelector.canvas.getContext('2d');
-  shapeSelector.pctx = shapeSelector.preview.getContext('2d');
   shapeSelector.form = document.getElementById('class_form');
 
   /**
@@ -43,7 +41,7 @@ var TargetsHandler  = function (id, targets, response) {
     shapeSelector.show();
     shapeSelector.ctx.drawImage(graphics.img,
       target.a.x, target.a.y, target.width, target.height,
-      0, 0, shapeSelector.canvas.width, shapeSelector.canvas.height);
+      0, 0, shapeSelector.canvas.width, shapeSelector.canvas.height/2);
 
     newTargetBuffer = target;
     targets.push(newTargetBuffer);
@@ -61,13 +59,10 @@ var TargetsHandler  = function (id, targets, response) {
     newTargetBuffer.alphanumeric =       shapeSelector.form.children[7].value;
     newTargetBuffer.alphanumeric_color = shapeSelector.form.children[9].value;
 
-    var canvas = shapeSelector.preview;
-    shapeSelector.pctx.clearRect(0, 0, canvas.width, canvas.height);
-    shapeSelector.pctx.fillStyle = "#556B2F";
-    shapeSelector.pctx.fillRect(0, 0, canvas.width, canvas.height);
-    shapeSelector.pctx.fillStyle = newTargetBuffer.shape_color || "#000000";
-    // circle, semicircle, quarter_ circle, triangle, square,
-    // rectangle, trapezoid, pentagon, hexagon, octagon, star, cross
+    var canvas = shapeSelector.canvas;
+    shapeSelector.ctx.save();
+    shapeSelector.ctx.clearRect(0, canvas.height/2, canvas.width, canvas.height/2);
+    shapeSelector.ctx.fillStyle = newTargetBuffer.shape_color || "#000000";
     switch (newTargetBuffer.shape) {
       case "circle":
         break;
@@ -76,30 +71,55 @@ var TargetsHandler  = function (id, targets, response) {
       case "quarter_circle":
         break;
       case "square":
-        shapeSelector.pctx.fillRect(80, 40, 150, 75);
+        shapeSelector.ctx.fillRect(50, 250, 100, 100);
         break;
       case "rectangle":
-        shapeSelector.pctx.fillRect(20, 20, 150, 100);
+        shapeSelector.ctx.fillRect(30, 260, 140, 80);
         break;
       case "trapezoid":
         break;
       case "pentagon":
+        shapeSelector.ctx.beginPath();
+        shapeSelector.ctx.moveTo(100, 230);
+        shapeSelector.ctx.lineTo( 30, 280);
+        shapeSelector.ctx.lineTo( 60, 350);
+        shapeSelector.ctx.lineTo(140, 350);
+        shapeSelector.ctx.lineTo(170, 280);
+        shapeSelector.ctx.fill();
         break;
       case "hexagon":
+        shapeSelector.ctx.beginPath();
+        shapeSelector.ctx.moveTo( 60, 230);
+        shapeSelector.ctx.lineTo(140, 230);
+        shapeSelector.ctx.lineTo(175, 300);
+        shapeSelector.ctx.lineTo(140, 370);
+        shapeSelector.ctx.lineTo( 60, 370);
+        shapeSelector.ctx.lineTo( 25, 300);
+        shapeSelector.ctx.fill();
         break;
       case "octagon":
+        shapeSelector.ctx.beginPath();
+        shapeSelector.ctx.moveTo( 70, 225);
+        shapeSelector.ctx.lineTo(130, 225);
+        shapeSelector.ctx.lineTo(175, 275);
+        shapeSelector.ctx.lineTo(175, 325);
+        shapeSelector.ctx.lineTo(125, 375);
+        shapeSelector.ctx.lineTo( 75, 375);
+        shapeSelector.ctx.lineTo( 25, 325);
+        shapeSelector.ctx.lineTo( 25, 275);
+        shapeSelector.ctx.fill();
         break;
       case "star":
         break;
       case "cross":
-        console.log();
-        shapeSelector.pctx.fillRect(110, 20, 80, 120);
-        shapeSelector.pctx.fillRect(40, 57, 220, 40);
+        shapeSelector.ctx.fillRect(80, 240, 40, 120);
+        shapeSelector.ctx.fillRect(40, 280, 120, 40);
         break;
     }
-    shapeSelector.pctx.fillStyle = newTargetBuffer.alphanumeric_color || "#000000";
-    shapeSelector.pctx.font="60px monospace";
-    shapeSelector.pctx.fillText(newTargetBuffer.alphanumeric, 130, 95);
+    shapeSelector.ctx.fillStyle = newTargetBuffer.alphanumeric_color || "#000000";
+    shapeSelector.ctx.font="60px monospace";
+    shapeSelector.ctx.fillText(newTargetBuffer.alphanumeric, 80, 320);
+    shapeSelector.ctx.restore();
   }
 
   this.finishTarget = function (event) {
