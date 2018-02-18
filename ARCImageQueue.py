@@ -29,7 +29,7 @@ class ARCImageQueue(ImageQueue):
             self.queue.append(img)
 
         try:
-            return self.queue.popleft().jpg()
+            return self.queue.popleft()
         except IndexError:
             return None
 

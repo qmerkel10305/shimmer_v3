@@ -1,4 +1,4 @@
-import json
+from ShimmerImage import ShimmerImage
 
 class ShimmerModel():
     """
@@ -10,7 +10,6 @@ class ShimmerModel():
 
     def __init__(self, queue):
         self.images = queue
-        self.next_id = 0
         self.replay_pos = 0
         self.targets = []
 
@@ -32,16 +31,8 @@ class ShimmerModel():
             # No more images in the queue.
             return self.get_replay_image()
 
-        # Each images gets a serial id that shimmer uses to track it within this session
-        tgt = {
-            "id": self.next_id,
-            "image": "image/" + str(self.next_id),
-            "targets": [],
-            "path": next_img,
-            "flight": self.images.get_flight_id()
-        }
+        tgt = ShimmerImage(next_img, self.images.flight)
         self.targets.append(tgt)
-        self.next_id += 1
         return tgt
 
     def get_replay_image(self):
@@ -64,4 +55,4 @@ class ShimmerModel():
 
         Returns: true if successful
         """
-        self.targets[id]["targets"] = targets
+        self.targets[id].update_targets(targets)

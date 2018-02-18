@@ -19,6 +19,7 @@ class DirectoryImageQueue(ImageQueue):
         super(DirectoryImageQueue, self).__init__()
         self.folder = folder
         self.queue = deque(os.listdir(folder))
+        self.flight = None
 
     def get_next_image(self):
         """

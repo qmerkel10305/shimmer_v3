@@ -9,6 +9,10 @@ from flask import Flask, request, send_file
 app = Flask(__name__)
 model = None # Model is initialized in __main__ block
 
+class SimpleJsonEncoder(json.JSONEncoder):
+    def default(self, o):
+        return dict(o)
+
 @app.route('/')
 def index():
     """
@@ -28,7 +32,7 @@ def getNext():
     """
     Returns json of target data for next image
     """
-    return json.dumps(model.get_next_image())
+    return json.dumps(model.get_next_image(), cls=SimpleJsonEncoder)
 
 @app.route("/image/<int:idx>", methods=['GET'])
 def getImage(idx):
@@ -38,7 +42,7 @@ def getImage(idx):
     Arguments:
         idx: The index of the image to read
     """
-    return send_file(open(model.img(idx)['path'], 'rb'), mimetype='image/jpg')
+    return send_file(open(model.img(idx).path, 'rb'), mimetype='image/jpg')
 
 @app.route("/target/<int:id>", methods=['POST'])
 def target(id):
