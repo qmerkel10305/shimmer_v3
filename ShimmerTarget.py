@@ -1,5 +1,3 @@
-import ARC
-
 class ShimmerTarget(object):
     def __init__(self, target_region):
         self.target_region = target_region

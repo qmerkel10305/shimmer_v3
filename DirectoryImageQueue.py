@@ -19,14 +19,14 @@ class DirectoryImageQueue(ImageQueue):
         super(DirectoryImageQueue, self).__init__()
         self.folder = folder
         self.queue = deque(os.listdir(folder))
-        self.flight = None
+        self.flight = DirectoryFlight()
 
     def get_next_image(self):
         """
         Retrieves the next image out of the queue
         """
         try:
-            return join(self.folder, self.queue.popleft())
+            return DirectoryImage(join(self.folder, self.queue.popleft()))
         except IndexError:
             return None
 
@@ -35,3 +35,23 @@ class DirectoryImageQueue(ImageQueue):
         Returns the flight id associated with the queue
         """
         return 0
+
+class DirectoryImage(object):
+    """
+    Image class for an image in a directory
+    """
+    def __init__(self, path):
+        self.path = path
+
+    def jpg(self):
+        return self.path
+
+    def get_target_regions(self, flight=None):
+        return []
+
+class DirectoryFlight(object):
+    """
+    Flight class for images in a directory
+    """
+    def __init__(self):
+        self.flight_id = 0
