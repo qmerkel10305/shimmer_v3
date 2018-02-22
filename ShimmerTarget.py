@@ -17,3 +17,7 @@ class ShimmerTarget(object):
         yield ('b', {'x':self.target_region.coord2[0], 'y':self.target_region.coord2[1]})
         yield ('width', self.target_region.coord2[0] - self.target_region.coord1[0])
         yield ('height', self.target_region.coord2[1] - self.target_region.coord1[1])
+
+    @property
+    def id(self):
+        return self.target_region.target_region_id

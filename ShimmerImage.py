@@ -37,10 +37,33 @@ class ShimmerImage(object):
             new_targets: Target data from the frontend. This may contain
                          targets already in the list of known targets
         """
+        # check the initial length of the targets array
+        # this is used to check if targets were deleted later
+        initial_length = len(self.targets)
+
+        # Sort both lists of targets so that the order of keys match
+        self.targets = sorted(self.targets, key=lambda x: x.id)
+        new_targets = sorted(new_targets, key=target_comparator)
+
+        # Insert new targets
+        i = 0
         for target in new_targets:
             if not 'target_id' in target:
                 _, target_region = self.add_target(**target)
                 self.targets.append(ShimmerTarget(target_region))
+                i += 1
+            else:
+                break
+
+        # Delete any targets that were deleted on the frontend
+        incoming_targets = new_targets[i:]
+        i = 0
+        for target in incoming_targets:
+            while self.targets[i].id != target['target_id']:
+                del self.targets[i]
+            i += 1
+        for _ in range(i, initial_length):
+            del self.targets[i]
 
     def add_target(self, target_type=None, alphanumeric=None,
                    alphanumeric_color=None, shape_color=None, shape=None,
@@ -55,3 +78,9 @@ class ShimmerImage(object):
             orientation=alphanumeric_orientation, letter_color=alphanumeric_color,
             background_color=shape_color, notes=notes
         )
+
+def target_comparator(target):
+    if not 'target_id' in target:
+        return 0
+    else:
+        return target['target_id']
