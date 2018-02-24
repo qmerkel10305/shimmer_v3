@@ -4,11 +4,13 @@
  * @param {Object} response the server response for getting an image
  */
 var TargetsHandler  = function (id, targets, response) {
+  var self = this;
 
   // no backend for this yet rofl
   var id = id;
   var img = response;
   var targets = targets;
+  var editTargetBuffer;
 
   this.getId = function () { return id; };
   this.getImage = function () { return img; };
@@ -36,35 +38,33 @@ var TargetsHandler  = function (id, targets, response) {
    * Functions for target creation / editing
    *
    */
-  var newTargetBuffer;
-  this.addTarget = function (target, graphics) {
+  this.editTarget = function (target, graphics) {
     shapeSelector.show();
     shapeSelector.ctx.drawImage(graphics.img,
       target.a.x, target.a.y, target.width, target.height,
       0, 0, shapeSelector.canvas.width, shapeSelector.canvas.height/2);
 
-    newTargetBuffer = target;
-    targets.push(newTargetBuffer);
+    editTargetBuffer = target;
+    // check if target is new
+    if (target.shape == null) {
+      targets.push(editTargetBuffer);
+    }
+    self.drawPreview()
   }
 
-  this.cancelTarget = function (event) {
-    shapeSelector.hide();
-    newTargetBuffer = undefined;
-  };
-
   this.drawPreview = function (event) {
-    newTargetBuffer.shape =              shapeSelector.form.children[1].value;
-    newTargetBuffer.orientation =        shapeSelector.form.children[3].value;
-    newTargetBuffer.shape_color =        shapeSelector.form.children[5].value;
-    newTargetBuffer.alphanumeric =       shapeSelector.form.children[7].value;
-    newTargetBuffer.alphanumeric_color = shapeSelector.form.children[9].value;
+    editTargetBuffer.shape =              shapeSelector.form.children[1].value;
+    editTargetBuffer.orientation =        shapeSelector.form.children[3].value;
+    editTargetBuffer.shape_color =        shapeSelector.form.children[5].value;
+    editTargetBuffer.alphanumeric =       shapeSelector.form.children[7].value;
+    editTargetBuffer.alphanumeric_color = shapeSelector.form.children[9].value;
 
     var canvas = shapeSelector.canvas;
     shapeSelector.ctx.save();
     shapeSelector.ctx.clearRect(0, canvas.height/2, canvas.width, canvas.height/2);
-    shapeSelector.ctx.fillStyle = newTargetBuffer.shape_color || "#000000";
+    shapeSelector.ctx.fillStyle = editTargetBuffer.shape_color || "#000000";
     var charOffset = { x: 0, y: 0 };
-    switch (newTargetBuffer.shape) {
+    switch (editTargetBuffer.shape) {
       case "circle":
         shapeSelector.ctx.beginPath();
         shapeSelector.ctx.arc(100, 300, 65, 0, 2 * Math.PI);
@@ -155,24 +155,35 @@ var TargetsHandler  = function (id, targets, response) {
         shapeSelector.ctx.fillRect(40, 280, 120, 40);
         break;
     }
-    shapeSelector.ctx.fillStyle = newTargetBuffer.alphanumeric_color || "#000000";
+    shapeSelector.ctx.fillStyle = editTargetBuffer.alphanumeric_color || "#000000";
     shapeSelector.ctx.font="60px monospace";
-    shapeSelector.ctx.fillText(newTargetBuffer.alphanumeric,
+    shapeSelector.ctx.fillText(editTargetBuffer.alphanumeric,
       80 + charOffset.x, 320 + charOffset.y);
     shapeSelector.ctx.restore();
   }
 
   this.finishTarget = function (event) {
-    newTargetBuffer.shape =              shapeSelector.form.children[1].value;
-    newTargetBuffer.shape_color =        shapeSelector.form.children[3].value;
-    newTargetBuffer.alphanumeric =       shapeSelector.form.children[5].value;
-    newTargetBuffer.alphanumeric_color = shapeSelector.form.children[7].value;
-    newTargetBuffer.orientation =        shapeSelector.form.children[9].value;
+    editTargetBuffer.shape =              shapeSelector.form.children[1].value;
+    editTargetBuffer.shape_color =        shapeSelector.form.children[3].value;
+    editTargetBuffer.alphanumeric =       shapeSelector.form.children[5].value;
+    editTargetBuffer.alphanumeric_color = shapeSelector.form.children[7].value;
+    editTargetBuffer.orientation =        shapeSelector.form.children[9].value;
     // TODO reset ^^^^
     shapeSelector.hide();
-    newTargetBuffer = undefined;
+    editTargetBuffer = undefined;
     current = undefined;
   }
+
+  this.closeEditor = function (event) {
+    shapeSelector.hide();
+    for (var i = 0; i < targets.length; i++) {
+      if (editTargetBuffer === targets[i]) {
+        targets.splice(i);
+        break;
+      }
+    }
+    editTargetBuffer = undefined;
+  };
 
   /**
    *
@@ -185,10 +196,11 @@ var TargetsHandler  = function (id, targets, response) {
   };
 
   this.isReady = function () {
-    return newTargetBuffer == undefined;
+    return editTargetBuffer == undefined;
   }
 
-  document.getElementById('cancel-target-button').onmouseup = this.cancelTarget;
+  document.getElementById('update-target-button').onmouseup = this.finishTarget;
+  document.getElementById('discard-target-button').onmouseup = this.finishTarget;
   var shapeButtons = document.getElementsByClassName('shape-button');
   for (var i = 0; i < shapeButtons.length; i++) {
       shapeButtons[i].onmouseup = this.finishTarget;

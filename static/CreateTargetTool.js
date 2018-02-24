@@ -6,6 +6,7 @@
 function CreateTargetTool() {
 
   var current = undefined;
+  var over = undefined;
 
   this.render = function (tar, graphics) {
     var canvas = graphics.canvas;
@@ -27,6 +28,10 @@ function CreateTargetTool() {
     var canvas = graphics.canvas;
     var img = graphics.img;
     if (Math.abs(current.width) < 10 && Math.abs(current.height) < 10) {
+      if (over != undefined) {
+          tar.editTarget(over, graphics);
+          current = over = undefined;
+      }
       return; // too small
     }
 
@@ -46,8 +51,8 @@ function CreateTargetTool() {
     current.width = Math.abs(current.b.x - current.a.x);
     current.height =  Math.abs(current.b.y - current.a.y);
 
-    tar.addTarget(current, graphics);
-    current = undefined;
+    tar.editTarget(current, graphics);
+    current = over = undefined;
   }
 
   this.onmousedown = function(event, tar, graphics) {
@@ -75,12 +80,26 @@ function CreateTargetTool() {
   this.onmousemove = function(event, tar, graphics) {
     var canvas = graphics.canvas;
     var img = graphics.img;
+
+    // scaled x and y
+    var s = { x: event.x * img.width  / canvas.width,
+              y: event.y * img.height / canvas.height };
+
+    // check if we over a target
+    var n = tar.getTargets();
+    for (var i = 0; i < n.length; i++) {
+      if (n[i].a.x <= s.x && n[i].a.y <= s.y &&
+          n[i].b.x >= s.x && n[i].b.x >= s.x) {
+            over = n[i];
+      }
+    }
+
     if (current == undefined || !tar.isReady()) {
       return;
     }
-    current.b.x = event.x * img.width / canvas.width;
-    current.b.y = event.y * img.height / canvas.height;
+    current.b = s;
     current.width = current.b.x - current.a.x;
     current.height = current.b.y - current.a.y;
+
   }
 }

@@ -230,7 +230,7 @@ a {
     background-color: grey;
 }
 
-#cancel-target-button {
+#update-target-button, #discard-target-button {
   background-color: #AA2222;
   margin-top: 10px;
   margin-left: 10%;
@@ -239,6 +239,6 @@ a {
   text-align: center;
 }
 
-#cancel-target-button:hover {
+#update-target-button:hover, #discard-target-button:hover {
   opacity: 0.3;
 }
