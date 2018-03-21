@@ -164,6 +164,10 @@ var TargetsHandler  = function (id, targets, response) {
       80 + charOffset.x, 320 + charOffset.y);
     shapeSelector.ctx.restore();
   }
+  var attrButtons = document.getElementsByClassName('attr-button');
+  for (var i = 0; i < attrButtons.length; i++) {
+    attrButtons[i].onchange = this.drawPreview;		
+  }
 
   /**
    * When the user "Update" button

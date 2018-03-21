@@ -190,9 +190,9 @@ a {
 #classify_target {
     display: none;
     left: 30%;
-    top: 30%;
+    top: 20%;
     width: 440px;
-    height: 480px;
+    height: 510px;
     color: black;
     font-size: 12pt;
     font-family: monospace;
