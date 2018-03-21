@@ -34,9 +34,7 @@ var TargetsHandler  = function (id, targets, response) {
   };
 
   /**
-   *
    * Functions for target creation / editing
-   *
    */
   this.editTarget = function (target, graphics) {
     shapeSelector.show();
@@ -49,6 +47,11 @@ var TargetsHandler  = function (id, targets, response) {
     if (target.shape == null) {
       targets.push(editTargetBuffer);
     }
+    shapeSelector.form.children[1].value = editTargetBuffer.shape || 'square';
+    shapeSelector.form.children[3].value = editTargetBuffer.orientation || 'N';
+    shapeSelector.form.children[5].value = editTargetBuffer.shape_color || 'black';
+    shapeSelector.form.children[7].value = editTargetBuffer.alphanumeric || 'A';
+    shapeSelector.form.children[9].value = editTargetBuffer.alphanumeric_color || 'white';
     self.drawPreview()
   }
 
@@ -162,53 +165,46 @@ var TargetsHandler  = function (id, targets, response) {
     shapeSelector.ctx.restore();
   }
 
-  this.finishTarget = function (event) {
+  /**
+   * When the user "Update" button
+   */
+  this.updateTarget = function (event) {
     editTargetBuffer.shape =              shapeSelector.form.children[1].value;
-    editTargetBuffer.shape_color =        shapeSelector.form.children[3].value;
-    editTargetBuffer.alphanumeric =       shapeSelector.form.children[5].value;
-    editTargetBuffer.alphanumeric_color = shapeSelector.form.children[7].value;
-    editTargetBuffer.orientation =        shapeSelector.form.children[9].value;
-    // TODO reset ^^^^
-    shapeSelector.hide();
-    editTargetBuffer = undefined;
-    current = undefined;
+    editTargetBuffer.orientation =        shapeSelector.form.children[3].value;
+    editTargetBuffer.shape_color =        shapeSelector.form.children[5].value;
+    editTargetBuffer.alphanumeric =       shapeSelector.form.children[7].value;
+    editTargetBuffer.alphanumeric_color = shapeSelector.form.children[9].value;
+    self.closeEditor();
   }
+  document.getElementById('update-target-button').onmouseup = this.updateTarget;
+
+  /**
+   * Removes the current target from the list
+   */
+  this.removeTarget = function (event) {
+    if (editTargetBuffer.target_id != undefined) {
+      console.log("This target has been submitted.");
+      // TODO do backend delete
+    }
+    targets.splice(targets.indexOf(editTargetBuffer), 1);
+    self.closeEditor();
+  }
+  document.getElementById('discard-target-button').onmouseup = this.removeTarget;
 
   this.closeEditor = function (event) {
     shapeSelector.hide();
-    for (var i = 0; i < targets.length; i++) {
-      if (editTargetBuffer === targets[i]) {
-        targets.splice(i);
-        break;
-      }
-    }
     editTargetBuffer = undefined;
   };
 
   /**
-   *
    *  Target util functions
-   *
    */
   this.clearAll = function () {
     targets = [];
-    current = undefined;
+    editTargetBuffer = undefined;
   };
 
   this.isReady = function () {
     return editTargetBuffer == undefined;
   }
-
-  document.getElementById('update-target-button').onmouseup = this.finishTarget;
-  document.getElementById('discard-target-button').onmouseup = this.finishTarget;
-  var shapeButtons = document.getElementsByClassName('shape-button');
-  for (var i = 0; i < shapeButtons.length; i++) {
-      shapeButtons[i].onmouseup = this.finishTarget;
-  }
-
-  var attrButtons = document.getElementsByClassName('attr-button');
-  for (var i = 0; i < attrButtons.length; i++) {
-      attrButtons[i].onchange = this.drawPreview;
-  }
-
 };

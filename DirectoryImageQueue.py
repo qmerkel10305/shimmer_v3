@@ -55,3 +55,12 @@ class DirectoryFlight(object):
     """
     def __init__(self):
         self.flight_id = 0
+        self.next_id = 0
+
+    def insert_target(self, coord1, coord2, image, manual, target_type, letter, shape,
+                      orientation, letter_color, background_color, notes):
+        print "x: " + str(coord1[0]) + " y: " + str(coord1[1]) + "orientation: " + orientation
+        print "letter: " + letter + " letter_color: " + letter_color
+        print "shape: " + shape + " background_color: " + background_color
+        self.next_id += 1
+        return (None, self.next_id)

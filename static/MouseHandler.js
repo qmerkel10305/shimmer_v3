@@ -3,11 +3,15 @@
  *
  * @param {Object} response the server response for getting an image
  */
-function CreateTargetTool() {
-
+function MouseHandler() {
+  /** box being drag selected by the mouse */
   var current = undefined;
+  /** target the mouse is over */
   var over = undefined;
 
+  /**
+   * Renders the green box to select
+   */
   this.render = function (tar, graphics) {
     var canvas = graphics.canvas;
     var ctx = graphics.ctx;
@@ -24,6 +28,9 @@ function CreateTargetTool() {
     return current;
   };
 
+  /**
+   * on Mouse up
+   */
   this.onmouseup = function(event, tar, graphics) {
     var canvas = graphics.canvas;
     var img = graphics.img;
@@ -55,6 +62,9 @@ function CreateTargetTool() {
     current = over = undefined;
   }
 
+  /**
+   * On mouse down on the canvas
+   */
   this.onmousedown = function(event, tar, graphics) {
     var canvas = graphics.canvas;
     var img = graphics.img;
@@ -70,13 +80,16 @@ function CreateTargetTool() {
       width: 0,
       height: 0,
       shape: null,
+      orientation: null,
       shape_color: null,
       alphanumeric: null,
-      alphanumeric_color: null,
-      alphanumeric_orientation: null
+      alphanumeric_color: null
     };
   }
 
+  /**
+   * Mouse move on campus
+   */
   this.onmousemove = function(event, tar, graphics) {
     var canvas = graphics.canvas;
     var img = graphics.img;

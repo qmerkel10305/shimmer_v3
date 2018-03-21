@@ -7,7 +7,8 @@ function Shimmer (canvasId) {
   var current = {};
   var targets = {};
 
-  var tool = new CreateTargetTool();
+  /** send captured mouse data to */
+  var tool = new MouseHandler();
 
   /** actual display canvas */
   var canvas = document.getElementById(canvasId);

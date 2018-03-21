@@ -69,15 +69,16 @@ class ShimmerImage(object):
 
     def add_target(self, target_type=None, alphanumeric=None,
                    alphanumeric_color=None, shape_color=None, shape=None,
-                   alphanumeric_orientation=None, notes=None,
+                   orientation=None, notes=None,
                    a=None, b=None,
                    width=None, height=None):
         coord1 = (a['x'], a['y'])
         coord2 = (b['x'], b['y'])
+        print self.image
         return self.flight.insert_target(
             coord1, coord2, image=self.image, manual=True,
             target_type=target_type, letter=alphanumeric, shape=shape,
-            orientation=alphanumeric_orientation, letter_color=alphanumeric_color,
+            orientation=orientation, letter_color=alphanumeric_color,
             background_color=shape_color, notes=notes
         )
 
