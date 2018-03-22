@@ -9,9 +9,10 @@ class ShimmerModel():
     """
 
     def __init__(self, queue):
-        self.images = queue
+        self.queue = queue
         self.replay_pos = 0
-        self.targets = []
+        self.images = []
+        self.targets = {}
 
     def img(self, idx):
         """
@@ -26,13 +27,13 @@ class ShimmerModel():
         """
         Retrieves the next image out of the queue
         """
-        next_img = self.images.get_next_image()
+        next_img = self.queue.get_next_image()
         if next_img is None:
             # No more images in the queue.
             return self.get_replay_image()
 
-        tgt = ShimmerImage(next_img, self.images.flight)
-        self.targets.append(tgt)
+        tgt = ShimmerImage(next_img, self.queue.flight)
+        self.images.append(tgt)
         return tgt
 
     def get_replay_image(self):
@@ -45,6 +46,9 @@ class ShimmerModel():
         self.replay_pos += 1
         return img
 
+    def delete_target(self, id):
+        self.targets[id].valid = False
+
     def update_targets(self, id, targets):
         """
         Updates the targets associated with an image
@@ -55,4 +59,10 @@ class ShimmerModel():
 
         Returns: true if successful
         """
-        self.targets[id].update_targets(targets)
+        new_targets, deleted_targets = self.images[id].update_targets(targets)
+        for tgt in new_targets:
+            self.targets[tgt.id] = tgt
+
+        for tgt in self.targets.values():
+            if tgt.id in deleted_targets:
+                tgt.valid = False

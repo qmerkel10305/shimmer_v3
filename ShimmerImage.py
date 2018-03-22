@@ -37,6 +37,8 @@ class ShimmerImage(object):
             new_targets: Target data from the frontend. This may contain
                          targets already in the list of known targets
         """
+        ret_new_targets = []
+        ret_deleted_targets = []
         # check the initial length of the targets array
         # this is used to check if targets were deleted later
         initial_length = len(self.targets)
@@ -50,7 +52,9 @@ class ShimmerImage(object):
         for target in new_targets:
             if not 'target_id' in target:
                 _, target_region = self.add_target(**target)
-                self.targets.append(ShimmerTarget(target_region))
+                t = ShimmerTarget(target_region)
+                self.targets.append(t)
+                ret_new_targets.append(t)
                 i += 1
             else:
                 break
@@ -60,10 +64,14 @@ class ShimmerImage(object):
         i = 0
         for target in incoming_targets:
             while self.targets[i].id != target['target_id']:
+                ret_deleted_targets.append(self.targets[i].id)
                 self.__delete_region(i)
             i += 1
         for _ in range(i, initial_length):
+            ret_deleted_targets.append(self.targets[i].id)
             self.__delete_region(i)
+
+        return (ret_new_targets, ret_deleted_targets)
 
     def __delete_region(self, i):
         self.targets[i].target_region.delete_region()

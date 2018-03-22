@@ -55,6 +55,12 @@ def target(id):
         return "{\"status\":\"error\"}"
     return "{\"status\":\"ok\"}"
 
+@app.route("/target/<int:id>", methods=['DELETE'])
+def deleteTarget(id):
+    """
+    Delete the target with the given id
+    """
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(epilog="You must specify either flight or directory.")
     parser.add_argument("-f", "--flight", type=int, help="Flight number")
