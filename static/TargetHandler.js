@@ -166,7 +166,7 @@ var TargetsHandler  = function (id, targets, response) {
   }
   var attrButtons = document.getElementsByClassName('attr-button');
   for (var i = 0; i < attrButtons.length; i++) {
-    attrButtons[i].onchange = this.drawPreview;		
+    attrButtons[i].onchange = this.drawPreview;
   }
 
   /**
@@ -187,8 +187,9 @@ var TargetsHandler  = function (id, targets, response) {
    */
   this.removeTarget = function (event) {
     if (editTargetBuffer.target_id != undefined) {
-      console.log("This target has been submitted.");
-      // TODO do backend delete
+      apiRequest("DELETE", "/target/" + targets.getId(), function(err, res) {
+        console.log("Database remove target... success");
+      });
     }
     targets.splice(targets.indexOf(editTargetBuffer), 1);
     self.closeEditor();

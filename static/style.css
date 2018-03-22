@@ -163,26 +163,26 @@ a {
 
 #help_dialog {
     left: 50px;
-    top: 79px; // 50 + 29(height of navbar)
+    top: 79px; /* 50 + 29(height of navbar) */
     height: 300px;
 }
 
 #control_palette {
     left: 350px;
-    top: 79px; // 50 + 29(height of navbar)
+    top: 79px; /* 50 + 29(height of navbar) */
     width: 250px;
 }
 
 #tool_palette {
     left: 650px;
-    top: 79px; // 50 + 29(height of navbar)
+    top: 79px; /* 50 + 29(height of navbar) */
     width: 100px;
 }
 
 #size_alert {
     display: none;
     left: 50px;
-    top: 429px; // 300 + 29(height of navbar)
+    top: 429px; /* 300 + 29(height of navbar) */
     width: 200px;
     height: 100px;
 }
