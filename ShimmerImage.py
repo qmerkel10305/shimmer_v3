@@ -60,12 +60,14 @@ class ShimmerImage(object):
         i = 0
         for target in incoming_targets:
             while self.targets[i].id != target['target_id']:
-                self.targets[i].delete_region()
-                del self.targets[i]
+                self.__delete_region(i)
             i += 1
         for _ in range(i, initial_length):
-            self.targets[i].delete_region()
-            del self.targets[i]
+            self.__delete_region(i)
+
+    def __delete_region(self, i):
+        self.targets[i].target_region.delete_region()
+        del self.targets[i]
 
     def add_target(self, target_type=None, alphanumeric=None,
                    alphanumeric_color=None, shape_color=None, shape=None,
