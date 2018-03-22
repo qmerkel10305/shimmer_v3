@@ -74,7 +74,6 @@ class ShimmerImage(object):
                    width=None, height=None):
         coord1 = (a['x'], a['y'])
         coord2 = (b['x'], b['y'])
-        print self.image
         return self.flight.insert_target(
             coord1, coord2, image=self.image, manual=True,
             target_type=target_type, letter=alphanumeric, shape=shape,
