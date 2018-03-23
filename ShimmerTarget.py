@@ -1,16 +1,16 @@
 class ShimmerTarget(object):
-    next_id = 0
-
     def __init__(self, target_region):
         self.target_region = target_region
         self.valid = True
-        self.id = ShimmerTarget.next_id
-        ShimmerTarget.next_id += 1
+
+    @property
+    def id(self):
+        return self.target_region.target_region_id
 
     def __iter__(self):
         if not self.valid:
             raise StopIteration()
-        yield ('target_id', self.id)
+        yield ('target_id', self.target_region.target_region_id)
         yield ('target_type', self.target_region.target.target_type)
         yield ('letter', self.target_region.target.letter)
         yield ('shape', self.target_region.target.shape)

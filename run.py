@@ -60,6 +60,8 @@ def deleteTarget(id):
     """
     Delete the target with the given id
     """
+    model.delete_target(id)
+    return "{\"status\":\"ok\"}"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(epilog="You must specify either flight or directory.")

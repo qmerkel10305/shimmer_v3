@@ -187,7 +187,7 @@ var TargetsHandler  = function (id, targets, response) {
    */
   this.removeTarget = function (event) {
     if (editTargetBuffer.target_id != undefined) {
-      apiRequest("DELETE", "/target/" + targets.getId(), function(err, res) {
+      apiRequest("DELETE", "/target/" + editTargetBuffer.target_id, function(err, res) {
         console.log("Database remove target... success");
       });
     }

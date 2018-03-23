@@ -37,7 +37,7 @@ function Shimmer (canvasId) {
     for (var i = 0; i < tar.length; i++) {
       var t = tar[i];
       if (t.a === undefined )
-        break; 
+        break;
       // draw target bounding box
       ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
       ctx.fillRect(t.a.x * (canvas.width / img.width), t.a.y * (canvas.height / img.height),
@@ -61,7 +61,6 @@ function Shimmer (canvasId) {
       };
       console.log(data);
       apiRequest("POST", "/target/" + targets.getId(), function(err, res) {
-        console.log("Database remove target... success");
       }, JSON.stringify(data));
     // request new image
     this.loadImage();

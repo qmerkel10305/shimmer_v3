@@ -51,7 +51,12 @@ class ShimmerImage(object):
         i = 0
         for target in new_targets:
             if not 'target_id' in target:
-                _, target_region = self.add_target(**target)
+                try:
+                    _, target_region = self.add_target(**target)
+                except ValueError as e:
+                    i += 1
+                    print(e)
+                    continue
                 t = ShimmerTarget(target_region)
                 self.targets.append(t)
                 ret_new_targets.append(t)

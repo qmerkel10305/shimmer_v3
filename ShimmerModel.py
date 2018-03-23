@@ -11,8 +11,18 @@ class ShimmerModel():
     def __init__(self, queue):
         self.queue = queue
         self.replay_pos = 0
-        self.images = []
+        self.image_ids = []
+        self.images = {}
         self.targets = {}
+
+        image = self.queue.get_next_image()
+        while image is not None:
+            img = ShimmerImage(image, self.queue.flight)
+            self.images[img.id] = img
+            self.image_ids.append(img.id)
+            for target in img.targets:
+                self.targets[target.id] = target
+            image = self.queue.get_next_image()
 
     def img(self, idx):
         """
@@ -21,7 +31,7 @@ class ShimmerModel():
         Arguments:
             idx: the index to get data at
         """
-        return self.targets[idx]
+        return self.images[idx]
 
     def get_next_image(self):
         """
@@ -32,17 +42,17 @@ class ShimmerModel():
             # No more images in the queue.
             return self.get_replay_image()
 
-        tgt = ShimmerImage(next_img, self.queue.flight)
-        self.images.append(tgt)
-        return tgt
+        img = ShimmerImage(next_img, self.queue.flight)
+        self.images[img.id] = img
+        return img
 
     def get_replay_image(self):
         """
         Replays images in a loop
         """
-        if self.replay_pos == len(self.targets):
+        if self.replay_pos >= len(self.image_ids):
             self.replay_pos = 0
-        img = self.targets[self.replay_pos]
+        img = self.images[self.image_ids[self.replay_pos]]
         self.replay_pos += 1
         return img
 
