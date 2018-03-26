@@ -47,20 +47,20 @@ var TargetsHandler  = function (id, targets, response) {
     if (target.shape == null) {
       targets.push(editTargetBuffer);
     }
-    shapeSelector.form.children[1].value = editTargetBuffer.shape || 'square';
-    shapeSelector.form.children[3].value = editTargetBuffer.orientation || 'N';
-    shapeSelector.form.children[5].value = editTargetBuffer.shape_color || 'black';
-    shapeSelector.form.children[7].value = editTargetBuffer.alphanumeric || 'A';
-    shapeSelector.form.children[9].value = editTargetBuffer.alphanumeric_color || 'white';
+    shapeSelector.form.children[ 5].value = editTargetBuffer.shape || 'square';
+    shapeSelector.form.children[ 7].value = editTargetBuffer.orientation || 'N';
+    shapeSelector.form.children[ 9].value = editTargetBuffer.shape_color || 'black';
+    shapeSelector.form.children[11].value = editTargetBuffer.alphanumeric || 'A';
+    shapeSelector.form.children[13].value = editTargetBuffer.alphanumeric_color || 'white';
     self.drawPreview()
   }
 
   this.drawPreview = function (event) {
-    editTargetBuffer.shape =              shapeSelector.form.children[1].value;
-    editTargetBuffer.orientation =        shapeSelector.form.children[3].value;
-    editTargetBuffer.shape_color =        shapeSelector.form.children[5].value;
-    editTargetBuffer.alphanumeric =       shapeSelector.form.children[7].value;
-    editTargetBuffer.alphanumeric_color = shapeSelector.form.children[9].value;
+    editTargetBuffer.shape =              shapeSelector.form.children[ 5].value;
+    editTargetBuffer.orientation =        shapeSelector.form.children[ 7].value;
+    editTargetBuffer.shape_color =        shapeSelector.form.children[ 9].value;
+    editTargetBuffer.alphanumeric =       shapeSelector.form.children[11].value;
+    editTargetBuffer.alphanumeric_color = shapeSelector.form.children[13].value;
 
     var canvas = shapeSelector.canvas;
     shapeSelector.ctx.save();
@@ -173,11 +173,11 @@ var TargetsHandler  = function (id, targets, response) {
    * When the user "Update" button
    */
   this.updateTarget = function (event) {
-    editTargetBuffer.shape =              shapeSelector.form.children[1].value;
-    editTargetBuffer.orientation =        shapeSelector.form.children[3].value;
-    editTargetBuffer.shape_color =        shapeSelector.form.children[5].value;
-    editTargetBuffer.alphanumeric =       shapeSelector.form.children[7].value;
-    editTargetBuffer.alphanumeric_color = shapeSelector.form.children[9].value;
+    editTargetBuffer.shape =              shapeSelector.form.children[ 5].value;
+    editTargetBuffer.orientation =        shapeSelector.form.children[ 7].value;
+    editTargetBuffer.shape_color =        shapeSelector.form.children[ 9].value;
+    editTargetBuffer.alphanumeric =       shapeSelector.form.children[11].value;
+    editTargetBuffer.alphanumeric_color = shapeSelector.form.children[13].value;
     self.closeEditor();
   }
   document.getElementById('update-target-button').onmouseup = this.updateTarget;
