@@ -15,6 +15,7 @@ class ShimmerModel():
         self.images = {}
         self.targets = {}
 
+        # Load all images already in the queue
         image = self.queue.get_next_image()
         while image is not None:
             img = ShimmerImage(image, self.queue.flight)
@@ -58,6 +59,12 @@ class ShimmerModel():
 
     def delete_target(self, id):
         self.targets[id].valid = False
+
+    def get_all_targets(self):
+        return list(self.targets.values())
+
+    def get_target(self, id):
+        return self.targets[id]
 
     def update_targets(self, id, targets):
         """

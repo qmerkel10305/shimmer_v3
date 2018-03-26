@@ -14,7 +14,7 @@ class ShimmerImage(object):
         self.flight = flight
 
         self.id = ShimmerImage.next_id
-        self.image_url = "image/" + str(ShimmerImage.next_id)
+        self.image_url = "/image/" + str(ShimmerImage.next_id)
         self.targets = [ ShimmerTarget(tgt) for tgt in image.get_target_regions(flight=flight) ]
 
         ShimmerImage.next_id += 1
@@ -52,6 +52,7 @@ class ShimmerImage(object):
         for target in new_targets:
             if not 'target_id' in target:
                 try:
+                    target['orientation'] = 0 #Temporary fix until frontend is fixed
                     _, target_region = self.add_target(**target)
                 except ValueError as e:
                     i += 1

@@ -16,7 +16,7 @@ class SimpleJsonEncoder(json.JSONEncoder):
 @app.route('/')
 def index():
     """
-    Serves index page.
+    Serves the index page
     """
     return app.send_static_file('index.html')
 
@@ -26,6 +26,20 @@ def root(path):
     Serves static files for the frontend.
     """
     return app.send_static_file(path)
+
+@app.route('/view/targets')
+def targets():
+    """
+    Serves the target view page.
+    """
+    return app.send_static_file('targets.html')
+
+@app.route('/view/images')
+def images():
+    """
+    Serves the image view page.
+    """
+    return app.send_static_file('images.html')
 
 @app.route("/next", methods=['GET'])
 def getNext():
@@ -43,6 +57,14 @@ def getImage(idx):
         idx: The index of the image to read
     """
     return send_file(open(model.img(idx).path, 'rb'), mimetype='image/jpg')
+
+@app.route("/target/all", methods=['GET'])
+def getAllTargets():
+    return json.dumps(model.get_all_targets(), cls=SimpleJsonEncoder)
+
+@app.route("/target/<int:id>", methods=['GET'])
+def getTarget():
+    return json.dumps(model.get_target(id), cls=SimpleJsonEncoder)
 
 @app.route("/target/<int:id>", methods=['POST'])
 def target(id):

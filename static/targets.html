@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <title>Shimmer</title>
+        <link rel="stylesheet" href="/style.css">
+        <style>
+            div#target-pane {
+                padding-top:29px;
+            }
+            table, th, td {
+                border: 1px solid #666;
+                border-collapse: collapse;
+            }
+            table {
+                width:100%;
+            }
+            table td, table th {
+                padding: 5px;
+                text-align: left;
+                background: white;
+            }
+            table tr:nth-child(even) td {
+                background: #ddd;
+            }
+            table th:last-child {
+                padding-right: 200px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="menu">
+            <div class="menu_logo">
+                <div class="menu_title">Sh<span style="color: red;">immer</span></div>
+            </div>
+        </div>
+        <div id="target-pane"></div>
+        <script type="text/javascript" >
+            document.addEventListener("DOMContentLoaded", function(){
+                var req = new XMLHttpRequest();
+                req.open("GET", "/target/all");
+                req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                req.onload = function (res) {
+                    var raw = JSON.parse(res.target.response);
+
+                    var targetPane = document.getElementById("target-pane");
+                    var table = document.createElement('table');
+                    var row = document.createElement('tr');
+                    var headers = ["Thumbnail", "Type", "Shape", "Character", "Shape Color", "Character Color", "Orientation", "Notes"]
+                    headers.forEach(function (name) {
+                        var cell = document.createElement('th');
+                        cell.appendChild(document.createTextNode(name));
+                        row.appendChild(cell);
+                    });
+                    table.appendChild(row);
+
+                    for(var i = 0; i < raw.length; i++) {
+                        row = document.createElement('tr');
+                        var tgt = raw[i];
+                        [
+                            "", tgt.target_type, tgt.shape, tgt.letter,
+                            tgt.shape_color, tgt.letter_color,
+                            tgt.orientation, tgt.notes
+                        ].forEach(function (name) {
+                            var cell = document.createElement('td');
+                            cell.appendChild(document.createTextNode(name));
+                            row.appendChild(cell);
+                        });
+                        table.appendChild(row);
+                    }
+
+                    targetPane.appendChild(table);
+                }
+                req.send();
+            });
+        </script>
+    </body>
+</html>
