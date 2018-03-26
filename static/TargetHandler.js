@@ -16,6 +16,9 @@ var TargetsHandler  = function (id, targets, response) {
   this.getImage = function () { return img; };
   this.getTargets = function () { return targets; };
   var shapeSelector = new Dialog('classify_target');
+  shapeSelector.onhide = function () {
+    editTargetBuffer = undefined;
+  };
   shapeSelector.hide();
   shapeSelector.canvas = document.getElementById('classify-canvas');
   shapeSelector.ctx = shapeSelector.canvas.getContext('2d');
@@ -210,6 +213,6 @@ var TargetsHandler  = function (id, targets, response) {
   };
 
   this.isReady = function () {
-    return editTargetBuffer == undefined;
+    return editTargetBuffer === undefined;
   }
 };

@@ -37,6 +37,7 @@ function Dialog (html_id) {
     this.setMouseEvents = function () {
 
         var de = this.dialogElement;
+        var self = this;
 
         this.dragbarElement.onmousedown = function (event) {
             de.shimmerDragClick.x = event.offsetX;
@@ -59,6 +60,7 @@ function Dialog (html_id) {
 
         this.closeButtonElement.onclick = function (event) {
             de.style.display = "none";
+            self.hide();
         };
 
     };
@@ -82,7 +84,11 @@ function Dialog (html_id) {
     this.hide = function () {
         this.dialogElement.style.display = "none";
         vis = false;
+        if (typeof this.onhide == "function") {
+          this.onhide();
+        }
     };
+    this.onhide = undefined;
 
     this.visible = function () {
         return vis;

@@ -42,12 +42,6 @@ function Shimmer (canvasId) {
       ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
       ctx.fillRect(t.a.x * (canvas.width / img.width), t.a.y * (canvas.height / img.height),
         t.width * (canvas.width / img.width), t.height * (canvas.height / img.height));
-
-      // draw delete bubble
-      ctx.fillStyle = 'rgba(255, 0, 0, 1.0)';
-      ctx.beginPath();
-      ctx.arc( t.a.x * (canvas.width / img.width), t.a.y * (canvas.height / img.height), 5, 0, 2 * Math.PI);
-      ctx.fill();
     }
 
     tool.render(targets, graphics);

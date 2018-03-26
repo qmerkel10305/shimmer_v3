@@ -39,6 +39,7 @@ function MouseHandler() {
           tar.editTarget(over, graphics);
           current = over = undefined;
       }
+      current = over = undefined;
       return; // too small
     }
 
@@ -99,10 +100,11 @@ function MouseHandler() {
               y: event.y * img.height / canvas.height };
 
     // check if we over a target
+    over = undefined;
     var n = tar.getTargets();
     for (var i = 0; i < n.length; i++) {
       if (n[i].a.x <= s.x && n[i].a.y <= s.y &&
-          n[i].b.x >= s.x && n[i].b.x >= s.x) {
+          n[i].b.x >= s.x && n[i].b.y >= s.y) {
             over = n[i];
       }
     }
