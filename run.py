@@ -77,6 +77,17 @@ def target(id):
         return "{\"status\":\"error\"}"
     return "{\"status\":\"ok\"}"
 
+@app.route("/target/merge", methods=['POST'])
+def mergeTargets():
+    """
+    Merge two or more target regions into one target
+    """
+    try:
+        model.merge_targets(json.loads(request.data.decode("utf-8")))
+    except IndexError:
+        return "{\"status\":\"error\"}"
+    return "{\"status\":\"ok\"}"
+
 @app.route("/target/<int:id>", methods=['DELETE'])
 def deleteTarget(id):
     """

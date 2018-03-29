@@ -14,7 +14,6 @@ class ShimmerModel():
         self.image_ids = []
         self.images = {}
         self.targets = {}
-
         # Load all images already in the queue
         image = self.queue.get_next_image()
         while image is not None:
@@ -61,10 +60,20 @@ class ShimmerModel():
         self.targets[id].valid = False
 
     def get_all_targets(self):
-        return list(self.targets.values())
+        arc_targets = {}
+        for target in self.targets.values():
+            arc_targets[target.target_region.target.target_id] = target
+        return list(arc_targets.values())
 
     def get_target(self, id):
         return self.targets[id]
+
+    def merge_targets(self, ids):
+        targets = [self.targets[int(id)] for id in ids]
+        arc_target = targets[0].target_region.target
+        for target in targets[1:]:
+            arc_target.absorb_target_region(target.target_region)
+            target.valid = False
 
     def update_targets(self, id, targets):
         """

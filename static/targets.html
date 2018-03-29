@@ -2,6 +2,7 @@
     <head>
         <title>Shimmer</title>
         <link rel="stylesheet" href="/style.css">
+        <script src="/apiRequest.js" type="application/javascript"></script>
         <style>
             div#target-pane {
                 padding-top:29px;
@@ -21,7 +22,7 @@
             table tr:nth-child(even) td {
                 background: #ddd;
             }
-            table th:last-child {
+            table th.notes {
                 padding-right: 200px;
             }
         </style>
@@ -31,30 +32,115 @@
             <div class="menu_logo">
                 <div class="menu_title">Sh<span style="color: red;">immer</span></div>
             </div>
+            <div class="menu_item">
+                <div class="menu_title">File</div>
+                <div class="menu_list">
+                    <div class="menu_list_spacer"></div>
+                    <div class="menu_list_item"><a href="/view/images">View Images</a></div>
+                    <div class="menu_list_spacer"></div>
+                </div>
+            </div>
+            <div class="menu_item">
+                <div class="menu_title">Edit</div>
+                <div class="menu_list">
+                    <div class="menu_list_spacer"></div>
+                    <div id="button_0" class="menu_list_item">Merge Targets</div>
+                    <div class="menu_list_spacer"></div>
+                </div>
+            </div>
         </div>
         <div id="target-pane"></div>
-        <script type="text/javascript" >
+        <div id="footer" class="hidden"></div>
+        <script type="application/javascript" >
+            /**
+             * Activate UI elements for merging targets
+             */
+            var activateTargetMerge = function () {
+                var footer = document.getElementById("footer");
+                footer.classList.remove("hidden");
+
+                var buttonWrapper = document.createElement("div");
+                buttonWrapper.classList.add("footer_item");
+                buttonWrapper.classList.add("footer_buttons");
+
+                // Create Cancel Button
+                var cancelButton = document.createElement("button");
+                cancelButton.appendChild(document.createTextNode("Cancel"));
+                buttonWrapper.appendChild(cancelButton);
+
+                // Create Submit Button
+                var submitButton = document.createElement("button");
+                submitButton.appendChild(document.createTextNode("Submit"));
+                buttonWrapper.appendChild(submitButton);
+
+                footer.appendChild(buttonWrapper);
+
+                // Add checkboxes for merging targets
+                var table = document.getElementById("target-table");
+
+                var cell = document.createElement('th');
+                cell.appendChild(document.createTextNode("Merge?"));
+                table.rows[0].appendChild(cell);
+
+                for (var i = 1, row; row = table.rows[i]; i++) {
+                    var cell = document.createElement('td');
+                    //<input type="checkbox" name="cb'+iter+'"/>
+                    var checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    cell.appendChild(checkbox);
+                    row.appendChild(cell);
+                }
+                // Set up button click functions
+                cancelButton.onclick = function () {
+                    footer.removeChild(buttonWrapper);
+                    footer.classList.add("hidden");
+                };
+
+                submitButton.onclick = function () {
+                    var mergeList = [];
+                    for (var i = 1, row; row = table.rows[i]; i++) {
+                        var lastIdx = row.cells.length - 1;
+                        var checkbox = row.cells[lastIdx].firstChild;
+                        if(checkbox.checked) {
+                            mergeList.push(row.getAttribute("targetid"));
+                        }
+                    }
+                    apiRequest("POST", "/target/merge", function () {}, JSON.stringify(mergeList));
+                };
+            };
+
             document.addEventListener("DOMContentLoaded", function(){
-                var req = new XMLHttpRequest();
-                req.open("GET", "/target/all");
-                req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                req.onload = function (res) {
+                var mergeTargetButton = document.getElementById("button_0");
+                mergeTargetButton.onclick = activateTargetMerge;
+
+                // Load targets
+                apiRequest("GET", "/target/all", function (res) {
                     var raw = JSON.parse(res.target.response);
 
                     var targetPane = document.getElementById("target-pane");
                     var table = document.createElement('table');
+                    table.id = "target-table";
                     var row = document.createElement('tr');
-                    var headers = ["Thumbnail", "Type", "Shape", "Character", "Shape Color", "Character Color", "Orientation", "Notes"]
+                    var headers = ["Thumbnail", "Type", "Shape", "Character", "Shape Color", "Character Color", "Orientation"]
                     headers.forEach(function (name) {
                         var cell = document.createElement('th');
                         cell.appendChild(document.createTextNode(name));
                         row.appendChild(cell);
                     });
+
+                    var cell = document.createElement('th');
+                    cell.appendChild(document.createTextNode("Notes"));
+                    cell.classList.add("notes");
+                    row.appendChild(cell);
+
                     table.appendChild(row);
 
                     for(var i = 0; i < raw.length; i++) {
                         row = document.createElement('tr');
                         var tgt = raw[i];
+                        if(!tgt.target_id) // Skip lazy deleted targets
+                            continue;
+                        row.setAttribute("targetid", tgt.target_id);
                         [
                             "", tgt.target_type, tgt.shape, tgt.letter,
                             tgt.shape_color, tgt.letter_color,
@@ -68,8 +154,7 @@
                     }
 
                     targetPane.appendChild(table);
-                }
-                req.send();
+                });
             });
         </script>
     </body>
