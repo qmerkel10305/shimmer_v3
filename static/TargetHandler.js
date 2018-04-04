@@ -23,6 +23,17 @@ var TargetsHandler  = function (id, targets, response) {
   shapeSelector.canvas = document.getElementById('classify-canvas');
   shapeSelector.ctx = shapeSelector.canvas.getContext('2d');
   shapeSelector.form = document.getElementById('class_form');
+  shapeSelector.canvas.onclick = function (e) {
+    if (editTargetBuffer == undefined) return;
+
+    var x = e.offsetX;
+    var y = e.offsetY - 200;
+    if (y < 0) return;
+
+    var angle = Math.floor(Math.atan2(y - 100, x - 100) / Math.PI * 180 + 90);
+    shapeSelector.form.children[ 7].value = angle < 0 ? angle + 360 : angle;
+    self.drawPreview();
+  };
 
   /**
    * State of the frontend. Just .
@@ -51,7 +62,7 @@ var TargetsHandler  = function (id, targets, response) {
       targets.push(editTargetBuffer);
     }
     shapeSelector.form.children[ 5].value = editTargetBuffer.shape || 'square';
-    shapeSelector.form.children[ 7].value = editTargetBuffer.orientation || 'N';
+    shapeSelector.form.children[ 7].value = editTargetBuffer.orientation || 0;
     shapeSelector.form.children[ 9].value = editTargetBuffer.shape_color || 'black';
     shapeSelector.form.children[11].value = editTargetBuffer.alphanumeric || 'A';
     shapeSelector.form.children[13].value = editTargetBuffer.alphanumeric_color || 'white';
@@ -59,15 +70,19 @@ var TargetsHandler  = function (id, targets, response) {
   }
 
   this.drawPreview = function (event) {
-    editTargetBuffer.shape =              shapeSelector.form.children[ 5].value;
-    editTargetBuffer.orientation =        shapeSelector.form.children[ 7].value;
-    editTargetBuffer.shape_color =        shapeSelector.form.children[ 9].value;
-    editTargetBuffer.alphanumeric =       shapeSelector.form.children[11].value;
-    editTargetBuffer.alphanumeric_color = shapeSelector.form.children[13].value;
+    editTargetBuffer.shape =                shapeSelector.form.children[ 5].value;
+    editTargetBuffer.orientation = parseInt(shapeSelector.form.children[ 7].value);
+    editTargetBuffer.shape_color =          shapeSelector.form.children[ 9].value;
+    editTargetBuffer.alphanumeric =         shapeSelector.form.children[11].value;
+    editTargetBuffer.alphanumeric_color =   shapeSelector.form.children[13].value;
 
     var canvas = shapeSelector.canvas;
     shapeSelector.ctx.save();
     shapeSelector.ctx.clearRect(0, canvas.height/2, canvas.width, canvas.height/2);
+
+    shapeSelector.ctx.translate(canvas.width/2, 3*canvas.height/4);
+    shapeSelector.ctx.rotate(editTargetBuffer.orientation * Math.PI/180);
+    shapeSelector.ctx.translate(-canvas.width/2, -3*canvas.height/4);
     shapeSelector.ctx.fillStyle = editTargetBuffer.shape_color || "#000000";
     var charOffset = { x: 0, y: 0 };
     switch (editTargetBuffer.shape) {
