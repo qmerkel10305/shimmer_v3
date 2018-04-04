@@ -23,7 +23,8 @@ var TargetsHandler  = function (id, targets, response) {
   shapeSelector.canvas = document.getElementById('classify-canvas');
   shapeSelector.ctx = shapeSelector.canvas.getContext('2d');
   shapeSelector.form = document.getElementById('class_form');
-  shapeSelector.canvas.onclick = function (e) {
+  shapeSelector.canvas.onmousemove = function (e) {
+    if(e.buttons == 0) return;
     if (editTargetBuffer == undefined) return;
 
     var x = e.offsetX;
