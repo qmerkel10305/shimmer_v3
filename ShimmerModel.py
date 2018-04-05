@@ -73,7 +73,6 @@ class ShimmerModel():
         arc_target = targets[0].target_region.target
         for target in targets[1:]:
             arc_target.absorb_target_region(target.target_region)
-            target.valid = False
 
     def update_targets(self, id, targets):
         """

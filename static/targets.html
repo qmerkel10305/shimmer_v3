@@ -105,7 +105,16 @@
                             mergeList.push(row.getAttribute("targetid"));
                         }
                     }
-                    apiRequest("POST", "/target/merge", function () {}, JSON.stringify(mergeList));
+                    apiRequest("POST", "/target/merge", function (res) {
+                        var response = JSON.parse(res.target.response);
+                        if(response.status === "error") {
+                            alert("Error while trying to merge targets");
+                        }
+                        else {
+                            // Reload to refresh the targets
+                            location.reload();
+                        }
+                    }, JSON.stringify(mergeList));
                 };
             };
 
