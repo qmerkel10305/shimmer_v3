@@ -67,6 +67,8 @@ var TargetsHandler  = function (id, targets, response) {
     shapeSelector.form.children[ 9].value = editTargetBuffer.shape_color || 'black';
     shapeSelector.form.children[11].value = editTargetBuffer.letter || 'A';
     shapeSelector.form.children[13].value = editTargetBuffer.letter_color || 'white';
+    shapeSelector.form.children[15].value = editTargetBuffer.target_type || 0;
+    shapeSelector.form.children[17].value = editTargetBuffer.notes || '';
     self.drawPreview()
   }
 
@@ -74,8 +76,10 @@ var TargetsHandler  = function (id, targets, response) {
     editTargetBuffer.shape =                shapeSelector.form.children[ 5].value;
     editTargetBuffer.orientation = parseInt(shapeSelector.form.children[ 7].value);
     editTargetBuffer.shape_color =          shapeSelector.form.children[ 9].value;
-    editTargetBuffer.letter =         shapeSelector.form.children[11].value;
-    editTargetBuffer.letter_color =   shapeSelector.form.children[13].value;
+    editTargetBuffer.letter =               shapeSelector.form.children[11].value;
+    editTargetBuffer.letter_color =         shapeSelector.form.children[13].value;
+    editTargetBuffer.target_type = parseInt(shapeSelector.form.children[15].value;
+    editTargetBuffer.notes =                shapeSelector.form.children[17].value;
 
     var canvas = shapeSelector.canvas;
     shapeSelector.ctx.save();
@@ -192,11 +196,13 @@ var TargetsHandler  = function (id, targets, response) {
    * When the user "Update" button
    */
   this.updateTarget = function (event) {
-    editTargetBuffer.shape =              shapeSelector.form.children[ 5].value;
-    editTargetBuffer.orientation =        shapeSelector.form.children[ 7].value;
-    editTargetBuffer.shape_color =        shapeSelector.form.children[ 9].value;
-    editTargetBuffer.letter =       shapeSelector.form.children[11].value;
-    editTargetBuffer.letter_color = shapeSelector.form.children[13].value;
+    editTargetBuffer.shape =                shapeSelector.form.children[ 5].value;
+    editTargetBuffer.orientation = parseInt(shapeSelector.form.children[ 7].value);
+    editTargetBuffer.shape_color =          shapeSelector.form.children[ 9].value;
+    editTargetBuffer.letter =               shapeSelector.form.children[11].value;
+    editTargetBuffer.letter_color =         shapeSelector.form.children[13].value;
+    editTargetBuffer.target_type = parseInt(shapeSelector.form.children[15].value;
+    editTargetBuffer.notes =                shapeSelector.form.children[17].value;
     self.closeEditor();
   }
   document.getElementById('update-target-button').onmouseup = this.updateTarget;
