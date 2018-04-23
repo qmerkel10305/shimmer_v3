@@ -48,16 +48,17 @@ function Shimmer (canvasId) {
   };
 
   this.submit = function () {
-      var data = {
-        id: targets.getId(),
-        targets: targets.getTargets(),
-        image: targets.getImage().src
-      };
-      console.log(data);
-      apiRequest("POST", "/target/" + targets.getId(), function(err, res) {
-      }, JSON.stringify(data));
-    // request new image
-    this.loadImage();
+    var data = {
+      id: targets.getId(),
+      targets: targets.getTargets(),
+      image: targets.getImage().src
+    };
+    console.log(data);
+    var self = this;
+    apiRequest("POST", "/target/" + targets.getId(), function(raw) {
+      // Only load the next image if the submission is successful
+      self.loadImage();
+    }, JSON.stringify(data));
   };
 
   /**
@@ -65,9 +66,7 @@ function Shimmer (canvasId) {
    */
   this.loadImage = function() {
     var self = this;
-    apiRequest("GET", "/next", function(res) {
-      var raw = JSON.parse(res.target.response);
-
+    apiRequest("GET", "/next", function(raw) {
       var img = new Image();
       img.src = raw.image;
 

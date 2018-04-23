@@ -1,17 +1,13 @@
 import argparse
 import json
-import atexit
-
-from ShimmerModel import ShimmerModel
 
 from flask import Flask, request, send_file
 
+from ShimmerModel import ShimmerModel
+from util.decorators import error, serialize
+
 app = Flask(__name__)
 model = None # Model is initialized in __main__ block
-
-class SimpleJsonEncoder(json.JSONEncoder):
-    def default(self, o):
-        return dict(o)
 
 @app.route('/')
 def index():
@@ -42,11 +38,13 @@ def images():
     return app.send_static_file('images.html')
 
 @app.route("/next", methods=['GET'])
+@serialize
+@error
 def getNext():
     """
     Returns json of target data for next image
     """
-    return json.dumps(model.get_next_image(), cls=SimpleJsonEncoder)
+    return model.get_next_image()
 
 @app.route("/image/<int:idx>", methods=['GET'])
 def getImage(idx):
@@ -59,42 +57,43 @@ def getImage(idx):
     return send_file(open(model.img(idx).path, 'rb'), mimetype='image/jpg')
 
 @app.route("/target/all", methods=['GET'])
+@serialize
+@error
 def getAllTargets():
-    return json.dumps(model.get_all_targets(), cls=SimpleJsonEncoder)
+    return model.get_all_targets()
 
 @app.route("/target/<int:id>", methods=['GET'])
+@serialize
+@error
 def getTarget():
-    return json.dumps(model.get_target(id), cls=SimpleJsonEncoder)
+    return model.get_target(id)
 
 @app.route("/target/<int:id>", methods=['POST'])
+@serialize
+@error
 def target(id):
     """
     Post new target data and update model with new targets
     """
-    try:
-        model.update_targets(id, json.loads(request.data.decode("utf-8"))["targets"])
-    except IndexError:
-        return "{\"status\":\"error\"}"
-    return "{\"status\":\"ok\"}"
+    model.update_targets(id, json.loads(request.data.decode("utf-8"))["targets"])
 
 @app.route("/target/merge", methods=['POST'])
+@serialize
+@error
 def mergeTargets():
     """
     Merge two or more target regions into one target
     """
-    try:
-        model.merge_targets(json.loads(request.data.decode("utf-8")))
-    except IndexError:
-        return "{\"status\":\"error\"}"
-    return "{\"status\":\"ok\"}"
+    model.merge_targets(json.loads(request.data.decode("utf-8")))
 
 @app.route("/target/<int:id>", methods=['DELETE'])
+@serialize
+@error
 def deleteTarget(id):
     """
     Delete the target with the given id
     """
     model.delete_target(id)
-    return "{\"status\":\"ok\"}"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(epilog="You must specify either flight or directory.")
@@ -113,10 +112,5 @@ if __name__ == "__main__":
         queue = DirectoryImageQueue(args.directory)
 
     model = ShimmerModel(queue)
-
-    def save_target_data():
-        with open('targets.json', 'w') as file:
-            json.dump(model.targets, file, indent=4)
-    atexit.register(save_target_data)
 
     app.run(host='0.0.0.0')
