@@ -83,8 +83,8 @@ function MouseHandler() {
       shape: null,
       orientation: null,
       shape_color: null,
-      alphanumeric: null,
-      alphanumeric_color: null
+      letter: null,
+      letter_color: null
     };
   }
 

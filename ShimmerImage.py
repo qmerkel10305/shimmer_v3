@@ -52,7 +52,6 @@ class ShimmerImage(object):
         for target in new_targets:
             if not 'target_id' in target:
                 try:
-                    target['orientation'] = 0 #Temporary fix until frontend is fixed
                     _, target_region = self.add_target(**target)
                 except ValueError as e:
                     i += 1
@@ -83,8 +82,8 @@ class ShimmerImage(object):
         self.targets[i].target_region.delete_region()
         del self.targets[i]
 
-    def add_target(self, target_type=None, alphanumeric=None,
-                   alphanumeric_color=None, shape_color=None, shape=None,
+    def add_target(self, target_type=None, letter=None,
+                   letter_color=None, shape_color=None, shape=None,
                    orientation=None, notes=None,
                    a=None, b=None,
                    width=None, height=None):
@@ -92,8 +91,8 @@ class ShimmerImage(object):
         coord2 = (b['x'], b['y'])
         return self.flight.insert_target(
             coord1, coord2, image=self.image, manual=True,
-            target_type=target_type, letter=alphanumeric, shape=shape,
-            orientation=orientation, letter_color=alphanumeric_color,
+            target_type=target_type, letter=letter, shape=shape,
+            orientation=orientation, letter_color=letter_color,
             background_color=shape_color, notes=notes
         )
 
