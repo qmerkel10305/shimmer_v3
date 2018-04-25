@@ -11,7 +11,7 @@ class ShimmerTarget(object):
         if not self.valid:
             raise StopIteration()
         yield ('target_id', self.target_region.target_region_id)
-        yield ('target_type', self.target_region.target.target_type)
+        yield ('target_type', self.target_region.target.target_type.value if self.target_region.target.target_type is not None else 0)
         yield ('letter', self.target_region.target.letter)
         yield ('shape', self.target_region.target.shape)
         yield ('letter_color', self.target_region.target.letter_color)

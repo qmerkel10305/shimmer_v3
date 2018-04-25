@@ -78,7 +78,7 @@ var TargetsHandler  = function (id, targets, response) {
     editTargetBuffer.shape_color =          shapeSelector.form.children[ 9].value;
     editTargetBuffer.letter =               shapeSelector.form.children[11].value;
     editTargetBuffer.letter_color =         shapeSelector.form.children[13].value;
-    editTargetBuffer.target_type = parseInt(shapeSelector.form.children[15].value;
+    editTargetBuffer.target_type = parseInt(shapeSelector.form.children[15].value);
     editTargetBuffer.notes =                shapeSelector.form.children[17].value;
 
     var canvas = shapeSelector.canvas;
@@ -201,7 +201,7 @@ var TargetsHandler  = function (id, targets, response) {
     editTargetBuffer.shape_color =          shapeSelector.form.children[ 9].value;
     editTargetBuffer.letter =               shapeSelector.form.children[11].value;
     editTargetBuffer.letter_color =         shapeSelector.form.children[13].value;
-    editTargetBuffer.target_type = parseInt(shapeSelector.form.children[15].value;
+    editTargetBuffer.target_type = parseInt(shapeSelector.form.children[15].value);
     editTargetBuffer.notes =                shapeSelector.form.children[17].value;
     self.closeEditor();
   }
