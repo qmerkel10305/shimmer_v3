@@ -1,5 +1,6 @@
 import json
 from functools import wraps
+from enum import Enum
 
 class JsonEncoder(json.JSONEncoder):
     """
@@ -8,6 +9,8 @@ class JsonEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, Exception):
             return o.__class__.__name__ + ": " + str(o)
+        if isinstance(o, Enum):
+            return o.value
         return dict(o)
 
 def serialize(f):

@@ -106,14 +106,7 @@
                         }
                     }
                     apiRequest("POST", "/target/merge", function (res) {
-                        var response = JSON.parse(res.target.response);
-                        if(response.status === "error") {
-                            alert("Error while trying to merge targets");
-                        }
-                        else {
-                            // Reload to refresh the targets
-                            location.reload();
-                        }
+                        location.reload();
                     }, JSON.stringify(mergeList));
                 };
             };
@@ -123,9 +116,7 @@
                 mergeTargetButton.onclick = activateTargetMerge;
 
                 // Load targets
-                apiRequest("GET", "/target/all", function (res) {
-                    var raw = JSON.parse(res.target.response);
-
+                apiRequest("GET", "/target/all", function (raw) {
                     var targetPane = document.getElementById("target-pane");
                     var table = document.createElement('table');
                     table.id = "target-table";

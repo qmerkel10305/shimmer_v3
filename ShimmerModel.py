@@ -72,7 +72,8 @@ class ShimmerModel():
         targets = [self.targets[int(id)] for id in ids]
         arc_target = targets[0].target_region.target
         for target in targets[1:]:
-            arc_target.absorb_target_region(target.target_region)
+            old_target = target.target_region.target
+            arc_target.absorb_target(old_target)
 
     def update_targets(self, id, targets):
         """
