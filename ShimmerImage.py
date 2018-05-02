@@ -51,13 +51,9 @@ class ShimmerImage(object):
         i = 0
         for target in new_targets:
             if not 'target_id' in target:
-                try:
-                    _, target_region = self.add_target(**target)
-                except ValueError as e:
-                    i += 1
-                    print(e)
-                    continue
+                _, target_region = self.add_target(**target)
                 t = ShimmerTarget(target_region)
+                t.create_thumbnail()
                 self.targets.append(t)
                 ret_new_targets.append(t)
                 i += 1
@@ -70,15 +66,15 @@ class ShimmerImage(object):
         for target in incoming_targets:
             while self.targets[i].id != target['target_id']:
                 ret_deleted_targets.append(self.targets[i].id)
-                self.__delete_region(i)
+                self.delete_region(i)
             i += 1
         for _ in range(i, initial_length):
             ret_deleted_targets.append(self.targets[i].id)
-            self.__delete_region(i)
+            self.delete_region(i)
 
         return (ret_new_targets, ret_deleted_targets)
 
-    def __delete_region(self, i):
+    def delete_region(self, i):
         self.targets[i].target_region.delete_region()
         del self.targets[i]
 

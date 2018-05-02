@@ -5,14 +5,6 @@ class ShimmerTarget(object):
     def __init__(self, target_region):
         self.target_region = target_region
         self.valid = True
-        tgtimage = self.target_region.image.jpg() 
-        tgtimage = cv2.imread(tgtimage)
-        crop_img = tgtimage[self.target_region.coord1[1]:self.target_region.coord2[1], self.target_region.coord1[0]:self.target_region.coord2[0]] #Set coordinates for cropped image
-        cv2.imwrite(self.target_region.flight.folder + "/targets/target_" + str(target_region.target_region_id) + ".jpg", crop_img)#Save the cropped image
-
-    @property
-    def id(self):
-        return self.target_region.target_region_id
 
     def __iter__(self):
         if not self.valid:
@@ -33,3 +25,13 @@ class ShimmerTarget(object):
     @property
     def id(self):
         return self.target_region.target_region_id
+
+    def create_thumbnail(self):
+        tgtimage = self.target_region.image.jpg()
+        tgtimage = cv2.imread(tgtimage)
+        # Set coordinates for cropped image
+        crop_img = tgtimage[self.target_region.coord1[1]:self.target_region.coord2[1], self.target_region.coord1[0]:self.target_region.coord2[0]]
+        # Save the cropped image
+        thumbnail_path = self.target_region.flight.folder + "/targets/target_" + str(self.target_region.target_region_id) + ".jpg"
+        cv2.imwrite(thumbnail_path, crop_img)
+        self.target_region.target.update_thumbnail(thumbnail_path)
