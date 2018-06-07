@@ -47,7 +47,19 @@ def getNext():
     return model.get_next_image()
 
 @app.route("/image/<int:idx>", methods=['GET'])
+@serialize
+@error
 def getImage(idx):
+    """
+    Send the data about an image at index idx
+
+    Arguments:
+        idx: The index of the image to read
+    """
+    return model.img(idx)
+
+@app.route("/image/<int:idx>/img.jpg", methods=['GET'])
+def getImageJpg(idx):
     """
     Sends the image file for the image at index idx
 
