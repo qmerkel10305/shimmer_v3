@@ -12,7 +12,7 @@ function ShimmerNav (canvasId) {
     /** Buttons that are a part of the navbar */
     var buttons = [
         function () { console.log("Not implemented"); },
-        function () { shimmer.submit(); },
+        function () { shimmer.submitAndLoad("/next"); },
         function () { console.log("Not implemented"); },
         function () { console.log("Not implemented"); },
         function () { shimmer.getTargets().clearAll(); shimmer.update(); },

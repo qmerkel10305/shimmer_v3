@@ -47,7 +47,7 @@ function Shimmer (canvasId) {
     tool.render(targets, graphics);
   };
 
-  this.submit = function () {
+  this.submitAndLoad = function (str) {
     var data = {
       id: targets.getId(),
       targets: targets.getTargets(),
@@ -57,16 +57,16 @@ function Shimmer (canvasId) {
     var self = this;
     apiRequest("POST", "/target/" + targets.getId(), function(raw) {
       // Only load the next image if the submission is successful
-      self.loadImage();
+      self.loadImage(str);
     }, JSON.stringify(data));
   };
 
   /**
    * Requests a image one with existing targets plotted
    */
-  this.loadImage = function() {
+  this.loadImage = function(str) {
     var self = this;
-    apiRequest("GET", "/next", function(raw) {
+    apiRequest("GET", str, function(raw) {
       var img = new Image();
       img.src = raw.image;
 
@@ -84,7 +84,7 @@ function Shimmer (canvasId) {
    * Loads a target and an image into Shimmer
    */
   this.init = function () {
-    this.loadImage();
+    this.loadImage("/next");
   }
 
   this.getTargets = function () {
@@ -98,7 +98,22 @@ function Shimmer (canvasId) {
   window.addEventListener("resize", this.update);
   window.addEventListener("keydown", function (e) {
     if (e.keyCode == 13) {
-      self.submit()
+      self.submitAndLoad("/next");
+    } else if (e.keyCode == 37) {
+      var x = targets.getId() - 1;
+      if(x < 0) {
+        return;
+      }
+      self.submitAndLoad("/image/" + x);
+    } else if (e.keyCode == 39) {
+      var x = targets.getId() + 1;
+      if(x < 0) {
+        return;
+      }
+      self.submitAndLoad("/image/" + x);
+    } else if (e.keyCode == 38) {
+      var img_id = parseInt(prompt("Image id number?", "0"));
+      self.submitAndLoad("/image/" + img_id);
     }
   });
 };
