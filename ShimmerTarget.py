@@ -30,7 +30,8 @@ class ShimmerTarget(object):
         tgtimage = self.target_region.image.jpg()
         tgtimage = cv2.imread(tgtimage)
         # Set coordinates for cropped image
-        crop_img = tgtimage[self.target_region.coord1[1]:self.target_region.coord2[1], self.target_region.coord1[0]:self.target_region.coord2[0]]
+        crop_img = tgtimage[int(self.target_region.coord1[1]):int(self.target_region.coord2[1]),
+                            int(self.target_region.coord1[0]):int(self.target_region.coord2[0])]
         # Save the cropped image
         thumbnail_path = self.target_region.flight.folder + "/targets/target_" + str(self.target_region.target_region_id) + ".jpg"
         cv2.imwrite(thumbnail_path, crop_img)

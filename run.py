@@ -80,6 +80,10 @@ def getAllTargets():
 def getTarget():
     return model.get_target(id)
 
+@app.route("/target/<int:id>/thumb.jpg", methods=['GET'])
+def getTargetThumbnail(id):
+    return send_file(open(model.get_target(id).target_region.target.thumbnail, 'rb'), mimetype='image/jpg')
+
 @app.route("/target/<int:id>", methods=['POST'])
 @serialize
 @error

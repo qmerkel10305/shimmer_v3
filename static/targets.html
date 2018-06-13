@@ -121,7 +121,7 @@
                     var table = document.createElement('table');
                     table.id = "target-table";
                     var row = document.createElement('tr');
-                    var headers = ["Thumbnail", "Type", "Shape", "Character", "Shape Color", "Character Color", "Orientation"]
+                    var headers = ["Thumbnail", "ID", "Type", "Shape", "Character", "Shape Color", "Character Color", "Orientation"]
                     headers.forEach(function (name) {
                         var cell = document.createElement('th');
                         cell.appendChild(document.createTextNode(name));
@@ -141,8 +141,17 @@
                         if(!tgt.target_id) // Skip lazy deleted targets
                             continue;
                         row.setAttribute("targetid", tgt.target_id);
+
+                        // Insert thumbnail
+                        var cell = document.createElement('td');
+                        var img = new Image();
+                        img.src = "/target/" + tgt.target_id + "/thumb.jpg";
+                        cell.appendChild(img);
+                        row.appendChild(cell);
+
+                        // Insert other fields
                         [
-                            "", tgt.target_type, tgt.shape, tgt.letter,
+                            tgt.target_id, tgt.target_type, tgt.shape, tgt.letter,
                             tgt.shape_color, tgt.letter_color,
                             tgt.orientation, tgt.notes
                         ].forEach(function (name) {
