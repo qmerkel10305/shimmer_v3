@@ -3,7 +3,7 @@ Loads images from an ARC.Flight
 """
 
 from collections import deque
-from ImageQueue import ImageQueue
+from server.ImageQueue import ImageQueue
 import ARC
 
 class ARCImageQueue(ImageQueue):

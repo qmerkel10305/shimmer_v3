@@ -6,7 +6,7 @@ from __future__ import print_function
 import os
 from os.path import join
 from collections import deque
-from ImageQueue import ImageQueue
+from server.ImageQueue import ImageQueue
 
 class DirectoryImageQueue(ImageQueue):
     """

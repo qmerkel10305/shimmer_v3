@@ -1,12 +1,12 @@
 import unittest
 
-from ShimmerImage import ShimmerImage
+from server.ShimmerImage import ShimmerImage
 from MockFlight import MockFlight
 from MockImage import MockImage
 from MockTarget import MockTarget
 
 def create_mock_target():
-    return MockTarget(1, None, 0, 'A', 'black', 'white', 'square', 0, '', {'x': 0, 'y': 0}, {'x': 1, 'y': 1})
+    return MockTarget(1, None, 0, 'A', 'black', 'white', 'square', 0, '', (0, 0), (1, 1))
 
 def create_mock_target_and_dict(target_type=0, alphanumeric='A', alphanumeric_color='black',
                                 shape_color='white', shape='square', alphanumeric_orientation=0,
@@ -14,11 +14,11 @@ def create_mock_target_and_dict(target_type=0, alphanumeric='A', alphanumeric_co
                                 width=1, height=1):
     dict_mock_target = {
         'target_type': target_type,
-        'alphanumeric': alphanumeric,
-        'alphanumeric_color': alphanumeric_color,
+        'letter': alphanumeric,
+        'letter_color': alphanumeric_color,
         'shape_color': shape_color,
         'shape': shape,
-        'alphanumeric_orientation': alphanumeric_orientation,
+        'orientation': alphanumeric_orientation,
         'notes': notes,
         'a': a,
         'b': b,
@@ -29,7 +29,7 @@ def create_mock_target_and_dict(target_type=0, alphanumeric='A', alphanumeric_co
                              letter_color=alphanumeric_color, background_color=shape_color,
                              shape=shape, orientation=alphanumeric_orientation,
                              notes=notes, width=width, height=height,
-                             coord=((a['x'] + b['x'])/2, (a['y'] + b['y'])/2))
+                             coord1=(a['x'], a['y']), coord2=(b['x'], b['y']))
     return dict_mock_target, mock_target
 
 class TestShimmerImage(unittest.TestCase):
@@ -39,7 +39,7 @@ class TestShimmerImage(unittest.TestCase):
 
     def testConstructor(self):
         self.assertEquals(0, self.image.id)
-        self.assertEquals('image/0', self.image.image_url)
+        self.assertEquals('/image/0/img.jpg', self.image.image_url)
         self.assertEquals(0, len(self.image.targets))
         self.assertEquals(1, ShimmerImage.next_id)
 

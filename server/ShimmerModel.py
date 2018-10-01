@@ -1,4 +1,4 @@
-from ShimmerImage import ShimmerImage
+from server.ShimmerImage import ShimmerImage
 
 class ShimmerModel():
     """

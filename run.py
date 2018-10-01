@@ -3,8 +3,8 @@ import json
 
 from flask import Flask, request, send_file
 
-from ShimmerModel import ShimmerModel
-from util.decorators import error, serialize
+from server.ShimmerModel import ShimmerModel
+from server.util.decorators import error, serialize
 
 app = Flask(__name__)
 model = None # Model is initialized in __main__ block
@@ -121,10 +121,10 @@ if __name__ == "__main__":
         raise ValueError("You must specify either flight or directory.")
 
     if args.flight:
-        from ARCImageQueue import ARCImageQueue
+        from server.ARCImageQueue import ARCImageQueue
         queue = ARCImageQueue(args.flight)
     elif args.directory:
-        from DirectoryImageQueue import DirectoryImageQueue
+        from server.DirectoryImageQueue import DirectoryImageQueue
         queue = DirectoryImageQueue(args.directory)
 
     model = ShimmerModel(queue)

@@ -1,4 +1,4 @@
-from ShimmerTarget import ShimmerTarget
+from server.ShimmerTarget import ShimmerTarget
 
 class ShimmerImage(object):
     next_id = 0
