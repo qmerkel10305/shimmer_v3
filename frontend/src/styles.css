@@ -131,7 +131,6 @@ a {
 /* Window style */
 
 .window {
-    display: none;
     z-index: 1;
     top: 0px;
     left: 0px;
@@ -211,7 +210,6 @@ a {
 }
 
 #classify_target {
-    display: none;
     left: 30%;
     top: 20%;
     width: 440px;

@@ -8,7 +8,7 @@
             You are using a window smaller than what Shimmer is optimized for (800x600)
         </div>
     </div>
-    <div id="classify_target" class="window">
+    <div id="classify_target" class="window" [hidden]="!targetSelected">
         <div class="window_menu">
             <div class="window_close">x</div>
             <div class="window_title">Classify the target</div>
@@ -82,7 +82,7 @@
             <div id="discard-target-button" class="button">discard</div>
     </div>
 </div>
-<canvas #shimmerCanvas></canvas>
+<canvas #shimmerCanvas (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)" ></canvas>
 <script src="/apiRequest.js" type="application/javascript"></script>
 <script src="/Dialog.js" type="application/javascript"></script>
 <script src="/TargetHandler.js" type="application/javascript"></script>
