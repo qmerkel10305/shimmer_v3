@@ -7,13 +7,15 @@ import { AppComponent } from './app.component';
 import { TargetsComponent } from './targets/targets.component';
 import { ImagesComponent } from './images/images.component';
 import { HomeComponent } from './home/home.component';
+import { TargetClassifierComponent } from './images/target-classifier/target-classifier.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ImagesComponent,
     TargetsComponent,
-    HomeComponent
+    HomeComponent,
+    TargetClassifierComponent
   ],
   imports: [
     BrowserModule,

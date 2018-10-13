@@ -1,6 +1,12 @@
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { ImagesService } from './images.service';
 
+import { Point } from 'types/point';
+import { Image } from 'types/image';
+import { TargetRegion } from 'types/targetRegion';
+
+import { TargetClassifierComponent } from './target-classifier/target-classifier.component';
+
 @Component({
   selector: 'app-images',
   templateUrl: './images.component.html',
@@ -9,16 +15,15 @@ import { ImagesService } from './images.service';
 export class ImagesComponent implements AfterViewInit {
   private image: HTMLImageElement;
   private context: CanvasRenderingContext2D;
-  private targetSelected: boolean;
 
+  private locked: boolean;
   private selecting: boolean;
   private selection: any;
 
   @ViewChild("shimmerCanvas") private canvas: ElementRef;
-
+  @ViewChild(TargetClassifierComponent) private classifierWindow: TargetClassifierComponent;
   constructor(private service: ImagesService) {
-    this.targetSelected = false;
-
+    this.locked = false;
     this.selecting = false;
     this.selection = null;
   }
@@ -30,9 +35,9 @@ export class ImagesComponent implements AfterViewInit {
 
   update() {
     this.service.getNext().subscribe(
-        (data: any) => {
+        (image: Image) => {
             this.image = new (window as any).Image();
-            this.image.src = this.service.getImageURL(data["data"]);
+            this.image.src = this.service.getImageURL(image);
             this.image.onload = () => {
                 this.render();
             }
@@ -55,46 +60,62 @@ export class ImagesComponent implements AfterViewInit {
     this.context.drawImage(this.image, 0, 0, width, height);
     if(this.selection != null && this.selection.b != null) {
         this.context.fillStyle = 'rgba(127, 255, 127, 0.3)';
-        this.context.fillRect(
-            this.selection.a.x,
-            this.selection.a.y,
-            this.selection.b.x - this.selection.a.x,
-            this.selection.b.y - this.selection.a.y
-        );
+        var x1 = this.selection.a.x * (this.canvas.nativeElement.width/this.image.width);
+        var y1 = this.selection.a.y * (this.canvas.nativeElement.height/this.image.height);
+        var x2 = this.selection.b.x * (this.canvas.nativeElement.width/this.image.width);
+        var y2 = this.selection.b.y * (this.canvas.nativeElement.height/this.image.height);
+        this.context.fillRect(x1, y1, x2-x1, y2-y1);
     }
+  }
+
+  lock() {
+    this.locked = true;
+  }
+
+  unlock() {
+    this.locked = false;
   }
 
   /*********** Mouse Event Handlers ***********/
 
   private mouseDown(event) {
+    if(this.locked) {
+        // Exit if the target classifier window is showing
+        return;
+    }
     this.selecting = true;
     this.selection = {
-        a: {
-            x: event.x,
-            y: event.y
-        },
+        a: new Point(
+            Math.round(event.x * (this.image.width/this.canvas.nativeElement.width)),
+            Math.round(event.y * (this.image.height/this.canvas.nativeElement.height))
+        ),
         b: null
     }
   }
 
   private mouseMove(event) {
     if (!this.selecting) {
+        // Exit if an area is not currently being selected
         return;
     }
-    this.selection.b = {
-        x: event.x,
-        y: event.y
-    }
+    this.selection.b = new Point(
+        Math.round(event.x * (this.image.width/this.canvas.nativeElement.width)),
+        Math.round(event.y * (this.image.height/this.canvas.nativeElement.height))
+    );
 
     this.render();
   }
 
   private mouseUp(event) {
-    this.selecting = false;
-    this.selection.b = {
-        x: event.x,
-        y: event.y
+    if(this.locked) {
+        // Exit if the target classifier window is showing
+        return;
     }
+    this.selecting = false;
+    this.selection.b = new Point(
+        Math.round(event.x * (this.image.width/this.canvas.nativeElement.width)),
+        Math.round(event.y * (this.image.height/this.canvas.nativeElement.height))
+    );
 
     if (this.selection.a.x > this.selection.b.x) {
         // This ensures a is smaller than b
@@ -103,7 +124,8 @@ export class ImagesComponent implements AfterViewInit {
         this.selection.b = temp;
     }
 
+    this.lock();
+    this.classifierWindow.show(this.image, new TargetRegion(this.selection.a, this.selection.b, null));
     this.render();
-    this.targetSelected = true;
   }
 }
