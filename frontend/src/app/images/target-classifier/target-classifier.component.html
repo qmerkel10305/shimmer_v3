@@ -2,18 +2,19 @@
     <div class="window_menu">
         <div class="window_close" (click)="close()">x</div>
         <div class="window_title">Classify the target</div>
+        {{target}}
     </div>
     <div class="window_content">
         <div class="left_content">
         <canvas #classifyCanvas id="classify-canvas" width="200" height="400"></canvas>
         </div>
         <div id="class_form" class="right_content">
-        <div class="attr">Flight Id: -</div>
-        <div class="attr">Image Id: -</div>
-        <div class="attr">Target Id: -</div>
+        <div class="attr">Flight Id: <span></span></div>
+        <div class="attr">Image Id: <span></span></div>
+        <div class="attr">Target Id: <span></span></div>
         <div class="attr"></div>
         <div class="attr">Shape</div>
-        <select class="attr-button">
+        <select class="attr-button" [(ngModel)]="target.shape">
             <option value="">-</option>
             <option value="circle">circle</option>
             <option value="semicircle">semicircle</option>
@@ -29,9 +30,9 @@
             <option value="cross">cross</option>
         </select>
         <div class="attr">Orientation</div>
-        <input name="color" type="text" class="attr-button">
+        <input name="color" type="text" class="attr-button" [(ngModel)]="target.orientation">
         <div class="attr">Shape color</div>
-        <select class="attr-button">
+        <select class="attr-button" [(ngModel)]="target.shape_color">
             <option value="black">black</option>
             <option value="blue">blue</option>
             <option value="brown">brown</option>
@@ -44,9 +45,9 @@
             <option value="yellow">yellow</option>
         </select>
         <div class="attr">Character</div>
-        <input name="color" type="text" class="attr-button">
+        <input name="color" type="text" class="attr-button" [(ngModel)]="target.letter">
         <div class="attr">Character color</div>
-        <select class="attr-button">
+        <select class="attr-button" [(ngModel)]="target.letter_color">
             <option value="black">black</option>
             <option value="blue">blue</option>
             <option value="brown">brown</option>
@@ -59,15 +60,15 @@
             <option value="yellow">yellow</option>
         </select>
         <div class="attr">Target Type</div>
-        <select class="attr-button">
+        <select class="attr-button" [(ngModel)]="target.target_type">
             <option value="0">Standard</option>
             <option value="2">Off-axis</option>
             <option value="3">Emergent</option>
         </select>
         <div class="attr">Notes</div>
-        <input type="textarea" class="attr-button">
+        <input type="textarea" class="attr-button" [(ngModel)]="target.notes">
         </div>
     </div>
-    <div id="update-target-button" class="button">update</div>
-    <div id="discard-target-button" class="button">discard</div>
+    <div id="update-target-button" class="button" (click)="submit()">Update</div>
+    <div id="discard-target-button" class="button" (click)="close()">Discard</div>
 </div>

@@ -13,12 +13,13 @@ import { TargetClassifierComponent } from './target-classifier/target-classifier
   styleUrls: ['./images.component.css']
 })
 export class ImagesComponent implements AfterViewInit {
-  private image: HTMLImageElement;
+  private imageElement: HTMLImageElement;
   private context: CanvasRenderingContext2D;
 
   private locked: boolean;
   private selecting: boolean;
   private selection: any;
+  private image: Image;
 
   @ViewChild("shimmerCanvas") private canvas: ElementRef;
   @ViewChild(TargetClassifierComponent) private classifierWindow: TargetClassifierComponent;
@@ -36,9 +37,10 @@ export class ImagesComponent implements AfterViewInit {
   update() {
     this.service.getNext().subscribe(
         (image: Image) => {
-            this.image = new (window as any).Image();
-            this.image.src = this.service.getImageURL(image);
-            this.image.onload = () => {
+            this.image = image;
+            this.imageElement = new (window as any).Image();
+            this.imageElement.src = this.service.getImageURL(image);
+            this.imageElement.onload = () => {
                 this.render();
             }
         },
@@ -57,13 +59,13 @@ export class ImagesComponent implements AfterViewInit {
     let width = this.canvas.nativeElement.width = window.innerWidth;
     this.context.clearRect(0, 0, width, height);
 
-    this.context.drawImage(this.image, 0, 0, width, height);
+    this.context.drawImage(this.imageElement, 0, 0, width, height);
     if(this.selection != null && this.selection.b != null) {
         this.context.fillStyle = 'rgba(127, 255, 127, 0.3)';
-        var x1 = this.selection.a.x * (this.canvas.nativeElement.width/this.image.width);
-        var y1 = this.selection.a.y * (this.canvas.nativeElement.height/this.image.height);
-        var x2 = this.selection.b.x * (this.canvas.nativeElement.width/this.image.width);
-        var y2 = this.selection.b.y * (this.canvas.nativeElement.height/this.image.height);
+        var x1 = this.selection.a.x * (this.canvas.nativeElement.width/this.imageElement.width);
+        var y1 = this.selection.a.y * (this.canvas.nativeElement.height/this.imageElement.height);
+        var x2 = this.selection.b.x * (this.canvas.nativeElement.width/this.imageElement.width);
+        var y2 = this.selection.b.y * (this.canvas.nativeElement.height/this.imageElement.height);
         this.context.fillRect(x1, y1, x2-x1, y2-y1);
     }
   }
@@ -86,8 +88,8 @@ export class ImagesComponent implements AfterViewInit {
     this.selecting = true;
     this.selection = {
         a: new Point(
-            Math.round(event.x * (this.image.width/this.canvas.nativeElement.width)),
-            Math.round(event.y * (this.image.height/this.canvas.nativeElement.height))
+            Math.round(event.x * (this.imageElement.width/this.canvas.nativeElement.width)),
+            Math.round(event.y * (this.imageElement.height/this.canvas.nativeElement.height))
         ),
         b: null
     }
@@ -99,8 +101,8 @@ export class ImagesComponent implements AfterViewInit {
         return;
     }
     this.selection.b = new Point(
-        Math.round(event.x * (this.image.width/this.canvas.nativeElement.width)),
-        Math.round(event.y * (this.image.height/this.canvas.nativeElement.height))
+        Math.round(event.x * (this.imageElement.width/this.canvas.nativeElement.width)),
+        Math.round(event.y * (this.imageElement.height/this.canvas.nativeElement.height))
     );
 
     this.render();
@@ -113,8 +115,8 @@ export class ImagesComponent implements AfterViewInit {
     }
     this.selecting = false;
     this.selection.b = new Point(
-        Math.round(event.x * (this.image.width/this.canvas.nativeElement.width)),
-        Math.round(event.y * (this.image.height/this.canvas.nativeElement.height))
+        Math.round(event.x * (this.imageElement.width/this.canvas.nativeElement.width)),
+        Math.round(event.y * (this.imageElement.height/this.canvas.nativeElement.height))
     );
 
     if (this.selection.a.x > this.selection.b.x) {
@@ -125,7 +127,7 @@ export class ImagesComponent implements AfterViewInit {
     }
 
     this.lock();
-    this.classifierWindow.show(this.image, new TargetRegion(this.selection.a, this.selection.b, null));
+    this.classifierWindow.show(this.imageElement, new TargetRegion(this.selection.a, this.selection.b, null, this.image.id));
     this.render();
   }
 }

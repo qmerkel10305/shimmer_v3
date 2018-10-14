@@ -10,7 +10,11 @@
     </div>
 </div>
 <canvas #shimmerCanvas (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)" ></canvas>
-<app-target-classifier (windowClosed)="unlock()"></app-target-classifier>
+<app-target-classifier  (windowClosed)="unlock()"
+                        (targetSubmitted)="service.postTarget($event)"
+                        (targetSubmitted)="service.postTargetRegion($event)">
+</app-target-classifier>
+
 <script src="/apiRequest.js" type="application/javascript"></script>
 <script src="/Dialog.js" type="application/javascript"></script>
 <script src="/TargetHandler.js" type="application/javascript"></script>

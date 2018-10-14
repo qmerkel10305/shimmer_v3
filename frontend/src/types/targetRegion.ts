@@ -1,7 +1,7 @@
 import { Point } from './point';
 
 export class TargetRegion {
-    constructor(public a: Point, public b: Point, public target_id: number) {}
+    constructor(public a: Point, public b: Point, public target_id: number, public image_id: number) {}
 
     width() {
         return this.b.x - this.a.x;
