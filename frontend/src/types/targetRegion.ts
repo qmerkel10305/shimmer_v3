@@ -10,4 +10,8 @@ export class TargetRegion {
     height() {
         return this.b.y - this.a.y;
     }
+
+    contains(p: Point) {
+        return ((this.a.x < p.x && p.x < this.b.x) && (this.a.y < p.y && p.y < this.b.y))
+    }
 }

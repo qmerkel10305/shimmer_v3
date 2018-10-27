@@ -6,6 +6,7 @@ import { Image } from 'types/image';
 import { TargetRegion } from 'types/targetRegion';
 
 import { TargetClassifierComponent } from './target-classifier/target-classifier.component';
+import { Target } from 'types/target';
 
 @Component({
   selector: 'app-images',
@@ -13,12 +14,14 @@ import { TargetClassifierComponent } from './target-classifier/target-classifier
   styleUrls: ['./images.component.css']
 })
 export class ImagesComponent implements AfterViewInit {
+  static readonly MIN_SELECTION_SIZE = 0.1;
+
   private imageElement: HTMLImageElement;
   private context: CanvasRenderingContext2D;
 
   private locked: boolean;
   private selecting: boolean;
-  private selection: any;
+  private selection: TargetRegion;
   private image: Image;
 
   @ViewChild("shimmerCanvas") private canvas: ElementRef;
@@ -60,14 +63,21 @@ export class ImagesComponent implements AfterViewInit {
     this.context.clearRect(0, 0, width, height);
 
     this.context.drawImage(this.imageElement, 0, 0, width, height);
+    this.image.targets.forEach((targetRegion: TargetRegion) => {
+        this.renderTargetRegion(targetRegion);
+    });
     if(this.selection != null && this.selection.b != null) {
-        this.context.fillStyle = 'rgba(127, 255, 127, 0.3)';
-        var x1 = this.selection.a.x * (this.canvas.nativeElement.width/this.imageElement.width);
-        var y1 = this.selection.a.y * (this.canvas.nativeElement.height/this.imageElement.height);
-        var x2 = this.selection.b.x * (this.canvas.nativeElement.width/this.imageElement.width);
-        var y2 = this.selection.b.y * (this.canvas.nativeElement.height/this.imageElement.height);
-        this.context.fillRect(x1, y1, x2-x1, y2-y1);
+        this.renderTargetRegion(this.selection);
     }
+  }
+
+  private renderTargetRegion(targetRegion: TargetRegion) {
+    this.context.fillStyle = 'rgba(127, 255, 127, 0.3)';
+    var x1 = targetRegion.a.x * (this.canvas.nativeElement.width/this.imageElement.width);
+    var y1 = targetRegion.a.y * (this.canvas.nativeElement.height/this.imageElement.height);
+    var x2 = targetRegion.b.x * (this.canvas.nativeElement.width/this.imageElement.width);
+    var y2 = targetRegion.b.y * (this.canvas.nativeElement.height/this.imageElement.height);
+    this.context.fillRect(x1, y1, x2-x1, y2-y1);
   }
 
   lock() {
@@ -78,21 +88,60 @@ export class ImagesComponent implements AfterViewInit {
     this.locked = false;
   }
 
-  /*********** Mouse Event Handlers ***********/
+  /****************************** Target Classifier Handlers ******************************/
+
+  targetSubmitted(target: Target) {
+    this.service.postTarget(target).subscribe((_: Target) => {},
+        (error) => {
+            console.error(error);
+        });
+  }
+
+  targetRegionSubmitted(targetRegion: TargetRegion) {
+    this.service.postTargetRegion(targetRegion).subscribe((_) => {
+        // Ensure this image is up to date
+        this.service.getImage(this.image.id).subscribe((image: Image) => {
+            this.image = image;
+            this.render();
+        }, (error) => {
+            console.error(error);
+        });
+    }, (error) => {
+        console.error(error);
+    });
+  }
+
+  /********************************* Mouse Event Handlers *********************************/
 
   private mouseDown(event) {
     if(this.locked) {
         // Exit if the target classifier window is showing
         return;
     }
+    let point = new Point(event.x * (this.imageElement.width/this.canvas.nativeElement.width),
+                          event.y * (this.imageElement.height/this.canvas.nativeElement.height));
+    this.image.targets.forEach((targetRegion: TargetRegion) => {
+        if(targetRegion.contains(point)) {
+            this.lock();
+            this.service.getTarget(targetRegion.target_id).subscribe((target: Target) => {
+                this.classifierWindow.show(this.imageElement, targetRegion, target);
+            },
+            (error) => {
+                console.error(error);
+                this.unlock();
+            });
+            return;
+        }
+    });
+    if(this.locked) {
+        // Exit if the target classifier window is showing
+        return;
+    }
     this.selecting = true;
-    this.selection = {
-        a: new Point(
+    this.selection = new TargetRegion(new Point(
             Math.round(event.x * (this.imageElement.width/this.canvas.nativeElement.width)),
             Math.round(event.y * (this.imageElement.height/this.canvas.nativeElement.height))
-        ),
-        b: null
-    }
+        ), null, null, this.image.id);
   }
 
   private mouseMove(event) {
@@ -118,7 +167,10 @@ export class ImagesComponent implements AfterViewInit {
         Math.round(event.x * (this.imageElement.width/this.canvas.nativeElement.width)),
         Math.round(event.y * (this.imageElement.height/this.canvas.nativeElement.height))
     );
-
+    if (this.selection.a.delta(this.selection.b) < ImagesComponent.MIN_SELECTION_SIZE) {
+        this.selection = null;
+        return;
+    }
     if (this.selection.a.x > this.selection.b.x) {
         // This ensures a is smaller than b
         let temp = this.selection.a;
@@ -127,7 +179,9 @@ export class ImagesComponent implements AfterViewInit {
     }
 
     this.lock();
-    this.classifierWindow.show(this.imageElement, new TargetRegion(this.selection.a, this.selection.b, null, this.image.id));
+    this.classifierWindow.show(this.imageElement, this.selection);
     this.render();
+    // Clear the selection
+    this.selection = null;
   }
 }

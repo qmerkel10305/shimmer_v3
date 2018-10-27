@@ -9,6 +9,18 @@ const middlewares = jsonServer.defaults()
 
 server.use(rewriter)
 server.use(middlewares)
+server.use(jsonServer.bodyParser)
+server.use((req, res, next) => {
+    if (req.method === "POST" && req.path === '/image/1/targets') {
+        router.db.write().then((db) => {
+            db.image[0].targets.push(req.body);
+            res.status(201).jsonp(req.body);
+        });
+    }
+    else {
+        next();
+    }
+})
 server.use(router)
 server.listen(5000, () => {
     console.log('Server is running on port 5000')

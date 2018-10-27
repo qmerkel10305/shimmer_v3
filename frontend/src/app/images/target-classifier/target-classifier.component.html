@@ -2,16 +2,14 @@
     <div class="window_menu">
         <div class="window_close" (click)="close()">x</div>
         <div class="window_title">Classify the target</div>
-        {{target}}
     </div>
     <div class="window_content">
         <div class="left_content">
         <canvas #classifyCanvas id="classify-canvas" width="200" height="400"></canvas>
         </div>
         <div id="class_form" class="right_content">
-        <div class="attr">Flight Id: <span></span></div>
-        <div class="attr">Image Id: <span></span></div>
-        <div class="attr">Target Id: <span></span></div>
+        <div class="attr">Image Id: {{ targetRegion.image_id }}</div>
+        <div class="attr">Target Id: {{ targetRegion.target_id }}</div>
         <div class="attr"></div>
         <div class="attr">Shape</div>
         <select class="attr-button" [(ngModel)]="target.shape">
@@ -69,6 +67,6 @@
         <input type="textarea" class="attr-button" [(ngModel)]="target.notes">
         </div>
     </div>
-    <div id="update-target-button" class="button" (click)="submit()">Update</div>
-    <div id="discard-target-button" class="button" (click)="close()">Discard</div>
+    <div id="update-target-button" class="button" (click)="submit()">{{ this.submitText }}</div>
+    <div id="discard-target-button" class="button" (click)="discard($event)">Discard</div>
 </div>
