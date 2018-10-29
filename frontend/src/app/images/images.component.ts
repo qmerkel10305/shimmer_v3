@@ -113,7 +113,7 @@ export class ImagesComponent implements AfterViewInit {
 
   /********************************* Mouse Event Handlers *********************************/
 
-  private mouseDown(event) {
+  mouseDown(event) {
     if(this.locked) {
         // Exit if the target classifier window is showing
         return;
@@ -144,7 +144,7 @@ export class ImagesComponent implements AfterViewInit {
         ), null, null, this.image.id);
   }
 
-  private mouseMove(event) {
+  mouseMove(event) {
     if (!this.selecting) {
         // Exit if an area is not currently being selected
         return;
@@ -157,7 +157,7 @@ export class ImagesComponent implements AfterViewInit {
     this.render();
   }
 
-  private mouseUp(event) {
+  mouseUp(event) {
     if(this.locked) {
         // Exit if the target classifier window is showing
         return;

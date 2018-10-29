@@ -16,26 +16,28 @@ def index():
     """
     return app.send_static_file('index.html')
 
+@app.route('/targets')
+def targets():
+    """
+    Serves the target view page.
+    This actually serves the index page, but Angular renders the page this way.
+    """
+    return app.send_static_file('index.html')
+
+@app.route('/images')
+def images():
+    """
+    Serves the image view page.
+    This actually serves the index page, but Angular renders the page this way.
+    """
+    return app.send_static_file('index.html')
+
 @app.route('/<path:path>')
 def root(path):
     """
     Serves static files for the frontend.
     """
     return app.send_static_file(path)
-
-@app.route('/view/targets')
-def targets():
-    """
-    Serves the target view page.
-    """
-    return app.send_static_file('targets.html')
-
-@app.route('/view/images')
-def images():
-    """
-    Serves the image view page.
-    """
-    return app.send_static_file('images.html')
 
 @app.route("/next", methods=['GET'])
 @serialize

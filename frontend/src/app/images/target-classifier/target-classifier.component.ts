@@ -24,7 +24,7 @@ export class TargetClassifierComponent implements AfterViewInit {
     targetRegion: TargetRegion;
 
     /** Text that shows on the submit button */
-    private submitText: string;
+    submitText: string;
     /** Index of the current target region (used to delete it) */
     private targetRegionIndex: number;
 
