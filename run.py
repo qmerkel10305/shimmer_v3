@@ -4,7 +4,7 @@ import json
 from flask import Flask, request, send_file
 
 from server.ShimmerModel import ShimmerModel
-from server.util.decorators import error, serialize
+from server.util.decorators import serialize
 
 app = Flask(__name__)
 model = None # Model is initialized in __main__ block
@@ -41,7 +41,6 @@ def root(path):
 
 @app.route("/next", methods=['GET'])
 @serialize
-@error
 def getNext():
     """
     Returns json of target data for next image
@@ -50,7 +49,6 @@ def getNext():
 
 @app.route("/image/<int:idx>", methods=['GET'])
 @serialize
-@error
 def getImage(idx):
     """
     Send the data about an image at index idx
@@ -72,13 +70,11 @@ def getImageJpg(idx):
 
 @app.route("/target/all", methods=['GET'])
 @serialize
-@error
 def getAllTargets():
     return model.get_all_targets()
 
 @app.route("/target/<int:id>", methods=['GET'])
 @serialize
-@error
 def getTarget():
     return model.get_target(id)
 
@@ -88,7 +84,6 @@ def getTargetThumbnail(id):
 
 @app.route("/target/<int:id>", methods=['POST'])
 @serialize
-@error
 def target(id):
     """
     Post new target data and update model with new targets
@@ -97,7 +92,6 @@ def target(id):
 
 @app.route("/target/merge", methods=['POST'])
 @serialize
-@error
 def mergeTargets():
     """
     Merge two or more target regions into one target
@@ -106,7 +100,6 @@ def mergeTargets():
 
 @app.route("/target/<int:id>", methods=['DELETE'])
 @serialize
-@error
 def deleteTarget(id):
     """
     Delete the target with the given id
