@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { TargetRegion } from 'types/targetRegion';
 import { Target } from 'types/target';
+import { ImagesService } from '../images.service';
 
 @Component({
     selector: 'app-target-classifier',
@@ -28,7 +29,7 @@ export class TargetClassifierComponent implements AfterViewInit {
     /** Index of the current target region (used to delete it) */
     private targetRegionIndex: number;
 
-    constructor() {
+    constructor(private service: ImagesService) {
         this.content = null;
         this.submitText = TargetClassifierComponent.SUBMIT_TEXT;
         this.resetFields();
@@ -94,11 +95,20 @@ export class TargetClassifierComponent implements AfterViewInit {
     }
 
     submit() {
-        this.targetSubmitted.emit(this.target);
-        if(this.targetRegionIndex == -1) {
-            this.targetRegionSubmitted.emit(this.targetRegion);
-        }
-        this.close();
+        this.service.postTarget(this.target).subscribe((target: Target) => {
+                this.targetSubmitted.emit(target);
+                this.targetRegion.target_id = target.id;
+                if(this.targetRegionIndex == -1) {
+                    this.service.postTargetRegion(this.targetRegion).subscribe((targetRegion: TargetRegion) => {
+                        this.targetRegionSubmitted.emit(targetRegion);
+                        this.close();
+                    }, (error) => {
+                        console.error(error);
+                    });
+                }
+            }, (error) => {
+                console.error(error);
+            });
     }
 
     discard() {

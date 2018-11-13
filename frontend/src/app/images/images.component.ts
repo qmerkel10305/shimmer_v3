@@ -49,7 +49,7 @@ export class ImagesComponent implements AfterViewInit {
         },
         (error: any) => {
             alert("Failed to load next image: " + error.message);
-            console.log(error);
+            console.error(error);
         }
     );
   }
@@ -90,22 +90,13 @@ export class ImagesComponent implements AfterViewInit {
 
   /****************************** Target Classifier Handlers ******************************/
 
-  targetSubmitted(target: Target) {
-    this.service.postTarget(target).subscribe((_: Target) => {},
-        (error) => {
-            console.error(error);
-        });
-  }
+  targetSubmitted(_: Target) {}
 
-  targetRegionSubmitted(targetRegion: TargetRegion) {
-    this.service.postTargetRegion(targetRegion).subscribe((_) => {
-        // Ensure this image is up to date
-        this.service.getImage(this.image.id).subscribe((image: Image) => {
-            this.image = image;
-            this.render();
-        }, (error) => {
-            console.error(error);
-        });
+  targetRegionSubmitted(_: TargetRegion) {
+    // Ensure this image is up to date
+    this.service.getImage(this.image.id).subscribe((image: Image) => {
+        this.image = image;
+        this.render();
     }, (error) => {
         console.error(error);
     });
