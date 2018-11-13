@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
-import {map} from 'rxjs/operators'
+import {map} from 'rxjs/operators';
 
-import { environment } from 'environments/environment'
+import { environment } from 'environments/environment';
 
 import { Image } from 'types/image';
 import { Target } from 'types/target';
@@ -18,11 +18,11 @@ export class ImagesService {
   constructor(private http: HttpClient) { }
 
   getNext(): Observable<Image> {
-    return this.http.get(`${environment.api_url}/next`).pipe(map(this._deserializeImage))
+    return this.http.get(`${environment.api_url}/next`).pipe(map(this._deserializeImage));
   }
 
   getImage(id: number): Observable<Image> {
-    return this.http.get(`${environment.api_url}/image/${id}`).pipe(map(this._deserializeImage))
+    return this.http.get(`${environment.api_url}/image/${id}`).pipe(map(this._deserializeImage));
   }
 
   getImageURL(image: Image): string {
@@ -42,14 +42,14 @@ export class ImagesService {
   }
 
   _deserializeImage(raw_image: Image): Image {
-    for(var i = 0; i < raw_image.targets.length; i++) {
+    for (let i = 0; i < raw_image.targets.length; i++) {
       raw_image.targets[i] = new TargetRegion(
         new Point(raw_image.targets[i].a.x, raw_image.targets[i].a.y),
         new Point(raw_image.targets[i].b.x, raw_image.targets[i].b.y),
         raw_image.targets[i].target_id,
         raw_image.targets[i].image_id
-      )
+      );
     }
-    return raw_image
+    return raw_image;
   }
 }
