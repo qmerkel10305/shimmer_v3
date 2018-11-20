@@ -13,9 +13,17 @@ table td, table th {
     text-align: left;
     background: white;
 }
+.targetThumb {
+    width: 200px;
+    height: 200px;
+}
 table tr:nth-child(even) td {
     background: #ddd;
 }
 table th.notes {
     padding-right: 200px;
+}
+
+table th.target_picture {
+    width: 200px
 }

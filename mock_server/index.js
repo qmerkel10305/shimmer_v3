@@ -3,7 +3,8 @@ const server = jsonServer.create()
 const router = jsonServer.router('db.json')
 const rewriter = jsonServer.rewriter({
     "/image/1/img.jpg": "/img0.jpg",
-    "/next": "/image/1"
+    "/next": "/image/1",
+    "/target/1/thumb.jpg": "/target01.jpg"
 });
 const middlewares = jsonServer.defaults()
 
