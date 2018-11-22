@@ -9,20 +9,48 @@ import { ImagesService } from '../images.service';
     styleUrls: ['./target-classifier.component.css']
 })
 export class TargetClassifierComponent implements AfterViewInit {
-    static readonly SUBMIT_TEXT = "Submit";
-    static readonly UPDATE_TEXT = "Update";
+    static readonly SUBMIT_TEXT = 'Submit';
+    static readonly UPDATE_TEXT = 'Update';
+    ALL_COLORS = [
+        'black',
+        'blue',
+        'brown',
+        'gray',
+        'green',
+        'orange',
+        'purple',
+        'red',
+        'white',
+        'yellow',
+    ];
+    ALL_SHAPES = [
+        'circle',
+        'semicircle',
+        'quarter_circle',
+        'square',
+        'rectangle',
+        'trapezoid',
+        'triangle',
+        'pentagon',
+        'hexagon',
+        'octagon',
+        'star',
+        'cross',
+    ];
 
     @Output() windowClosed = new EventEmitter<boolean>();
     @Output() targetSubmitted = new EventEmitter<Target>();
     @Output() targetRegionSubmitted = new EventEmitter<TargetRegion>();
     @Output() targetRegionDeleted = new EventEmitter<number>();
 
-    @ViewChild("classifyTarget") private content: ElementRef;
-    @ViewChild("classifyCanvas") private canvas: ElementRef;
+    @ViewChild('classifyTarget') private content: ElementRef;
+    @ViewChild('classifyCanvas') private canvas: ElementRef;
 
     private context: CanvasRenderingContext2D;
     target: Target;
     targetRegion: TargetRegion;
+
+
 
     /** Text that shows on the submit button */
     submitText: string;
@@ -41,19 +69,19 @@ export class TargetClassifierComponent implements AfterViewInit {
     }
 
     resetFields() {
-        this.target = new Target(null, 0, "A", "blue", "square", "blue", 0, "");
+        this.target = new Target(null, 0, 'A', 'blue', 'square', 'blue', 0, '');
         this.targetRegion = new TargetRegion(null, null, -1, -1);
         this.targetRegionIndex = -1;
     }
 
     resetDisplay() {
-        let height = this.canvas.nativeElement.height;
-        let width = this.canvas.nativeElement.width;
+        const height = this.canvas.nativeElement.height;
+        const width = this.canvas.nativeElement.width;
         this.context.clearRect(0, 0, width, height);
     }
 
     hide() {
-        this.content.nativeElement.style = "display: none";
+        this.content.nativeElement.style = 'display: none';
     }
 
     /**
@@ -69,25 +97,24 @@ export class TargetClassifierComponent implements AfterViewInit {
         this.resetFields();
         this.resetDisplay();
         // Show the window
-        this.content.nativeElement.style = "display: absolute";
+        this.content.nativeElement.style = 'display: absolute';
         // This draws the cropped image region on the top half of the canvas
         this.context.drawImage(image, targetRegion.a.x, targetRegion.a.y,
                                 targetRegion.width(), targetRegion.height(),
                                 0, 0,
                                 this.canvas.nativeElement.width,
-                                this.canvas.nativeElement.height/2);
+                                this.canvas.nativeElement.height / 2);
         this.targetRegion = targetRegion;
 
-        if(target) {
+        if (target) {
             this.target = target;
             this.targetRegionIndex = targetRegionIndex;
             this.submitText = TargetClassifierComponent.UPDATE_TEXT;
-        }
-        else {
+        } else {
             this.submitText = TargetClassifierComponent.SUBMIT_TEXT;
         }
     }
-  
+
     close() {
         this.windowClosed.emit(true);
         this.hide();
@@ -98,7 +125,7 @@ export class TargetClassifierComponent implements AfterViewInit {
         this.service.postTarget(this.target).subscribe((target: Target) => {
                 this.targetSubmitted.emit(target);
                 this.targetRegion.target_id = target.id;
-                if(this.targetRegionIndex == -1) {
+                if (this.targetRegionIndex === -1) {
                     this.service.postTargetRegion(this.targetRegion).subscribe((targetRegion: TargetRegion) => {
                         this.targetRegionSubmitted.emit(targetRegion);
                         this.close();

@@ -13,49 +13,19 @@
         <div class="attr"></div>
         <div class="attr">Shape</div>
         <select class="attr-button" [(ngModel)]="target.shape">
-            <option value="">-</option>
-            <option value="circle">circle</option>
-            <option value="semicircle">semicircle</option>
-            <option value="quarter_circle">quarter_circle</option>
-            <option value="square">square</option>
-            <option value="rectangle">rectangle</option>
-            <option value="trapezoid">trapezoid</option>
-            <option value="triangle">triangle</option>
-            <option value="pentagon">pentagon</option>
-            <option value="hexagon">hexagon</option>
-            <option value="octagon">octagon</option>
-            <option value="star">star</option>
-            <option value="cross">cross</option>
+            <option *ngFor="let x of ALL_SHAPES" [ngValue]="x">{{x}}</option>
         </select>
         <div class="attr">Orientation</div>
         <input name="color" type="text" class="attr-button" [(ngModel)]="target.orientation">
         <div class="attr">Shape color</div>
         <select class="attr-button" [(ngModel)]="target.shape_color">
-            <option value="black">black</option>
-            <option value="blue">blue</option>
-            <option value="brown">brown</option>
-            <option value="gray">gray</option>
-            <option value="green">green</option>
-            <option value="orange">orange</option>
-            <option value="purple">purple</option>
-            <option value="red">red</option>
-            <option value="white">white</option>
-            <option value="yellow">yellow</option>
+            <option *ngFor="let x of ALL_COLORS" [ngValue]="x">{{x}}</option>
         </select>
         <div class="attr">Character</div>
         <input name="color" type="text" class="attr-button" [(ngModel)]="target.letter">
         <div class="attr">Character color</div>
         <select class="attr-button" [(ngModel)]="target.letter_color">
-            <option value="black">black</option>
-            <option value="blue">blue</option>
-            <option value="brown">brown</option>
-            <option value="gray">gray</option>
-            <option value="green">green</option>
-            <option value="orange">orange</option>
-            <option value="purple">purple</option>
-            <option value="red">red</option>
-            <option value="white">white</option>
-            <option value="yellow">yellow</option>
+            <option *ngFor="let x of ALL_COLORS" [ngValue]="x">{{x}}</option>
         </select>
         <div class="attr">Target Type</div>
         <select class="attr-button" [(ngModel)]="target.target_type">
