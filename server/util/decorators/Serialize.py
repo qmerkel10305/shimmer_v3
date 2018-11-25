@@ -2,6 +2,8 @@ import json
 from functools import wraps
 from enum import Enum
 
+from server.util.JSONObject import JSONObject
+
 class JsonEncoder(json.JSONEncoder):
     """
     JSON Encoder class for encoding data into JSON strings
@@ -11,7 +13,9 @@ class JsonEncoder(json.JSONEncoder):
             return o.__class__.__name__ + ": " + str(o)
         if isinstance(o, Enum):
             return o.value
-        return dict(o)
+        if isinstance(o, JSONObject):
+            return o.serialize()
+        return super().default(o)
 
 def serialize(f):
     @wraps(f)

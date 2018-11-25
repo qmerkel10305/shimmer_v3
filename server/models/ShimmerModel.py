@@ -1,4 +1,5 @@
-from server.ShimmerImage import ShimmerImage
+from server.models.ShimmerImage import ShimmerImage
+from server.models.ShimmerTarget import ShimmerTarget
 
 class ShimmerModel():
     """
@@ -13,15 +14,12 @@ class ShimmerModel():
         self.replay_pos = 0
         self.image_ids = []
         self.images = {}
-        self.targets = {}
         # Load all images already in the queue
         image = self.queue.get_next_image()
         while image is not None:
             img = ShimmerImage(image, self.queue.flight)
             self.images[img.id] = img
             self.image_ids.append(img.id)
-            for target in img.targets:
-                self.targets[target.id] = target
             image = self.queue.get_next_image()
 
     def img(self, idx):
@@ -32,6 +30,21 @@ class ShimmerModel():
             idx: the index to get data at
         """
         return self.images[idx]
+
+    def get_image(self, id):
+        return self.img(id)
+
+    def tgt(self, id):
+        """
+        Get the target with id
+
+        Arguments:
+            id: the target id to get
+        """
+        return self.queue.flight.target(id)
+
+    def get_target(self, id):
+        return self.tgt(id)
 
     def get_next_image(self):
         """
@@ -56,39 +69,8 @@ class ShimmerModel():
         self.replay_pos += 1
         return img
 
-    def delete_target(self, id):
-        self.targets[id].valid = False
-
     def get_all_targets(self):
-        arc_targets = {}
-        for target in self.targets.values():
-            arc_targets[target.target_region.target.target_id] = target
-        return list(arc_targets.values())
-
-    def get_target(self, id):
-        return self.targets[id]
-
-    def merge_targets(self, ids):
-        targets = [self.targets[int(id)] for id in ids]
-        arc_target = targets[0].target_region.target
-        for target in targets[1:]:
-            old_target = target.target_region.target
-            arc_target.absorb_target(old_target)
-
-    def update_targets(self, id, targets):
         """
-        Updates the targets associated with an image
-
-        Arguments:
-            id: the id of the image to update
-            targets: the updated target data to add
-
-        Returns: true if successful
+        Get all targets from a flight
         """
-        new_targets, deleted_targets = self.images[id].update_targets(targets)
-        for tgt in new_targets:
-            self.targets[tgt.id] = tgt
-
-        for tgt in self.targets.values():
-            if tgt.id in deleted_targets:
-                tgt.valid = False
+        return [ ShimmerTarget(target) for target in self.queue.flight.all_targets() ]
