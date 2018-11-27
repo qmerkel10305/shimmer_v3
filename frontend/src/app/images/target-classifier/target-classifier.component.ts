@@ -122,7 +122,8 @@ export class TargetClassifierComponent implements AfterViewInit {
     }
 
     submit() {
-        this.service.postTarget(this.target).subscribe((target: Target) => {
+        if (this.target.id === null) {
+            this.service.postTarget(this.target).subscribe((target: Target) => {
                 this.targetSubmitted.emit(target);
                 this.targetRegion.target_id = target.id;
                 if (this.targetRegionIndex === -1) {
@@ -136,6 +137,14 @@ export class TargetClassifierComponent implements AfterViewInit {
             }, (error) => {
                 console.error(error);
             });
+        } else {
+             this.service.putTarget(this.target).subscribe((target: Target) => {
+                this.targetSubmitted.emit(target);
+                this.close();
+            }, (error) => {
+                console.error(error);
+             });
+        }
     }
 
     discard() {

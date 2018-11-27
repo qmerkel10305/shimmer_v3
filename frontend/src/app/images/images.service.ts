@@ -37,6 +37,10 @@ export class ImagesService {
     return this.http.post<Target>(`${environment.api_url}/target`, target);
   }
 
+  putTarget(target: Target): Observable<Target> {
+    return this.http.put<Target>(`${environment.api_url}/target/${target.id}`, target);
+  }
+
   postTargetRegion(targetRegion: TargetRegion): Observable<TargetRegion> {
     return this.http.post<TargetRegion>(`${environment.api_url}/image/${targetRegion.image_id}/targets`, targetRegion);
   }

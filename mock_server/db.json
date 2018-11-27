@@ -18,9 +18,9 @@
             "id": 1,
             "target_type": 0,
             "letter": "E",
-            "shape": "Cross",
-            "letter_color": "Red",
-            "shape_color": "Yellow",
+            "shape": "cross",
+            "letter_color": "red",
+            "shape_color": "yellow",
             "orientation": 170,
             "notes": ""
         }
