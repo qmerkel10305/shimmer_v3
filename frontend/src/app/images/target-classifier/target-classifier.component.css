@@ -49,6 +49,9 @@
     border: solid 1px black;
 }
 
+th, td{
+    text-align: left;
+}
 
 #classify_target {
     left: 30%;
@@ -92,6 +95,10 @@
     background-color: grey;
 }
 
+#notes-input {
+    width: 95%;
+    height: 67.44%;
+}
 
 #update-target-button, #discard-target-button {
     background-color: #AA2222;

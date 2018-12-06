@@ -38,6 +38,8 @@ export class TargetClassifierComponent implements AfterViewInit {
         'cross',
     ];
 
+    showTargetFields = true;
+
     @Output() windowClosed = new EventEmitter<boolean>();
     @Output() targetSubmitted = new EventEmitter<Target>();
     @Output() targetRegionSubmitted = new EventEmitter<TargetRegion>();
@@ -82,6 +84,14 @@ export class TargetClassifierComponent implements AfterViewInit {
 
     hide() {
         this.content.nativeElement.style = 'display: none';
+    }
+
+    onChange() {
+        if (Number(this.target.target_type) === 3) {
+            this.showTargetFields = false;
+        } else {
+            this.showTargetFields = true;
+        }
     }
 
     /**
