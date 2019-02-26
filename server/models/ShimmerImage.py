@@ -33,6 +33,19 @@ class ShimmerImage(JSONObject):
         self. image = self.flight.image(self.image.image_id)
         self.targets = [ ShimmerTargetRegion(tgt) for tgt in self.image.get_target_regions(flight=self.flight) ]
 
+    def add_target(self, image_id=None, target_id=None, target_type=None,
+                   letter=None, letter_color=None, shape_color=None, shape=None,
+                   orientation=None, notes=None, coord=None):
+        return self.flight.insert_target(
+            coord, image=self.image, manual=True,
+            target_type=target_type, letter=letter, shape=shape,
+            orientation=orientation, letter_color=letter_color,
+            background_color=shape_color, notes=notes
+        )
+
+    def get_target_regions(self):
+        return self.targets
+
     ############################################################################
     ############################ JSONObject Methods ############################
     ############################################################################

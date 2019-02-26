@@ -102,6 +102,15 @@ export class ImagesComponent implements AfterViewInit {
     });
   }
 
+  targetRegionDeleted(_: TargetRegion) {
+    this.service.getImage(this.image.id).subscribe((image: Image) => {
+      this.image = image;
+      this.render();
+  }, (error) => {
+      console.error(error);
+  });
+  }
+
   /********************************* Mouse Event Handlers *********************************/
 
   mouseDown(event) {

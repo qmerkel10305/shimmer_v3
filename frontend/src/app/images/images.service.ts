@@ -49,6 +49,10 @@ export class ImagesService {
     return this.http.post<TargetRegion>(`${environment.api_url}/image/${targetRegion.image_id}/targets`, targetRegion);
   }
 
+  deleteTargetRegion(targetRegion: TargetRegion): Observable<TargetRegion> {
+    return this.http.delete<TargetRegion>(`${environment.api_url}/image/${targetRegion.image_id}/targets/${targetRegion.target_id}`);
+  }
+
   _deserializeImage(raw_image: Image): Image {
     for (let i = 0; i < raw_image.targets.length; i++) {
       raw_image.targets[i] = new TargetRegion(

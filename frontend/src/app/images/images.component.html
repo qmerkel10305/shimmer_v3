@@ -12,7 +12,8 @@
 <canvas #shimmerCanvas (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)" ></canvas>
 <app-target-classifier  (windowClosed)="unlock()"
                         (targetSubmitted)="targetSubmitted($event)"
-                        (targetRegionSubmitted)="targetRegionSubmitted($event)">
+                        (targetRegionSubmitted)="targetRegionSubmitted($event)"
+                        (targetRegionDeleted) ="targetRegionDeleted($event)">
 </app-target-classifier>
 
 <script src="/apiRequest.js" type="application/javascript"></script>

@@ -4,6 +4,7 @@ from flask import Blueprint, request, abort, send_file
 from jinja2 import TemplateNotFound
 
 from server.models.GlobalModel import get_model
+from server.models.ShimmerTargetRegion import ShimmerTargetRegion
 from server.util.decorators import serialize
 
 image_api = Blueprint('image_api', __name__)
@@ -51,3 +52,26 @@ def postImageTarget(idx):
     target_region = response['target_region']
 
     return get_model().insert_target(idx, target, target_region)
+
+@image_api.route("/<int:idx>/region/<int:tr_id>", methods=['GET'])
+@serialize
+def getTargetRegion(idx, tr_id):
+
+    try:
+        for target_region in get_model().img(idx).get_target_regions():
+            if target_region.id == tr_id:
+                return target_region
+        abort(404)
+    except KeyError:
+        abort(404)
+
+@image_api.route("/<int:idx>/region/<int:tr_id>", methods=['DELETE'])
+def deleteTargetRegion(idx, tr_id):
+    try:
+        for target_region in get_model().img(idx).get_target_regions():
+            if target_region.id == tr_id:
+                target_region.target_region.delete_region()
+                return '', 200
+        abort(404)
+    except KeyError:
+        abort(404)

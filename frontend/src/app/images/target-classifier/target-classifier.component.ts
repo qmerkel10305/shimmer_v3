@@ -156,7 +156,11 @@ export class TargetClassifierComponent implements AfterViewInit {
     }
 
     discard() {
-        this.targetRegionDeleted.emit(this.targetRegionIndex);
-        this.close();
+        this.service.deleteTargetRegion(this.targetRegion).subscribe((targetRegion: TargetRegion) => {
+            this.targetRegionDeleted.emit(this.targetRegionIndex);
+            this.close();
+        },  (error) => {
+            console.error(error);
+        });
     }
 }

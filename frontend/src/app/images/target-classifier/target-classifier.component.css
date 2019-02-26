@@ -112,3 +112,7 @@ th, td{
 #update-target-button:hover, #discard-target-button:hover {
     opacity: 0.3;
 }
+
+#target_buttons{
+    width: 100%;
+}
