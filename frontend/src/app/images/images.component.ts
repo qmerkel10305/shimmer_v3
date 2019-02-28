@@ -115,7 +115,7 @@ export class ImagesComponent implements AfterViewInit {
         if ( targetRegion.contains(point)) {
             this.lock();
             this.service.getTarget(targetRegion.target_id).subscribe((target: Target) => {
-                this.classifierWindow.show(this.imageElement, targetRegion, target);
+                this.classifierWindow.show(this.imageElement, targetRegion, this.image, target);
             },
             (error) => {
                 console.error(error);
@@ -170,7 +170,7 @@ export class ImagesComponent implements AfterViewInit {
     }
 
     this.lock();
-    this.classifierWindow.show(this.imageElement, this.selection);
+    this.classifierWindow.show(this.imageElement, this.selection, this.image);
     this.render();
     // Clear the selection
     this.selection = null;

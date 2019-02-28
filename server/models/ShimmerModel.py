@@ -1,5 +1,6 @@
 from server.models.ShimmerImage import ShimmerImage
 from server.models.ShimmerTarget import ShimmerTarget
+from server.models.ShimmerTargetRegion import ShimmerTargetRegion
 
 class ShimmerModel():
     """
@@ -29,7 +30,10 @@ class ShimmerModel():
         Arguments:
             idx: the index to get data at
         """
-        return self.images[idx]
+        # Update the image
+        image = self.images[idx]
+        image.update()
+        return image
 
     def get_image(self, id):
         return self.img(id)
@@ -74,3 +78,32 @@ class ShimmerModel():
         Get all targets from a flight
         """
         return [ ShimmerTarget(target) for target in self.queue.flight.all_targets() ]
+
+    def insert_target(self, idx, target, target_region):
+        """
+        Creates a new target
+
+        Arguments:
+            idx: Shimmer flight image index
+            target: Dictionary containing parameters for a new target
+            target_region: Dictionary containing parameters for a new target_region
+        """
+        image = self.img(idx)
+        coord = (target_region['a']['x'], target_region['a']['y'])
+        coord2 = (target_region['b']['x'], target_region['b']['y'])
+
+        result = self.queue.flight.insert_target(coord, coord2=coord2,
+                    image=image.image, target_type=target['target_type'],
+                    letter=target['letter'], shape=target['shape'],
+                    background_color=target['shape_color'],
+                    letter_color=target['letter_color'],
+                    orientation=target['orientation'],
+                    notes=target['notes'], thumb=None, manual=True)
+
+        new_region = ShimmerTargetRegion(result[1])
+        new_region.create_thumbnail()
+
+        return {
+            "target" : ShimmerTarget(result[0]),
+            "target_region": new_region
+        }

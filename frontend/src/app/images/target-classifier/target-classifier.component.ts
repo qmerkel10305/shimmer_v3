@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { TargetRegion } from 'types/targetRegion';
 import { Target } from 'types/target';
+import { Image } from 'types/image';
 import { ImagesService } from '../images.service';
 
 @Component({
@@ -51,7 +52,7 @@ export class TargetClassifierComponent implements AfterViewInit {
     private context: CanvasRenderingContext2D;
     target: Target;
     targetRegion: TargetRegion;
-
+    image: Image;
 
 
     /** Text that shows on the submit button */
@@ -103,7 +104,7 @@ export class TargetClassifierComponent implements AfterViewInit {
      * @param target (Optional) The target to display
      * @param targetRegionIndex (Optional) The index of the target region being viewed
      */
-    show(image: HTMLImageElement, targetRegion: TargetRegion, target?: Target, targetRegionIndex?: number) {
+    show(image: HTMLImageElement, targetRegion: TargetRegion, imageObject: Image, target?: Target, targetRegionIndex?: number) {
         this.resetFields();
         this.resetDisplay();
         // Show the window
@@ -115,6 +116,7 @@ export class TargetClassifierComponent implements AfterViewInit {
                                 this.canvas.nativeElement.width,
                                 this.canvas.nativeElement.height / 2);
         this.targetRegion = targetRegion;
+        this.image = imageObject;
 
         if (target) {
             this.target = target;
@@ -133,17 +135,13 @@ export class TargetClassifierComponent implements AfterViewInit {
 
     submit() {
         if (this.target.id === null) {
-            this.service.postTarget(this.target).subscribe((target: Target) => {
+            // Create a new target and target region
+            this.service.createTarget(this.image, this.target, this.targetRegion).subscribe((response: any) => {
+                let target: Target = response.target;
+                let targetRegion: TargetRegion = response.target_region;
                 this.targetSubmitted.emit(target);
-                this.targetRegion.target_id = target.id;
-                if (this.targetRegionIndex === -1) {
-                    this.service.postTargetRegion(this.targetRegion).subscribe((targetRegion: TargetRegion) => {
-                        this.targetRegionSubmitted.emit(targetRegion);
-                        this.close();
-                    }, (error) => {
-                        console.error(error);
-                    });
-                }
+                this.targetRegionSubmitted.emit(targetRegion);
+                this.close();
             }, (error) => {
                 console.error(error);
             });
@@ -153,7 +151,7 @@ export class TargetClassifierComponent implements AfterViewInit {
                 this.close();
             }, (error) => {
                 console.error(error);
-             });
+            });
         }
     }
 

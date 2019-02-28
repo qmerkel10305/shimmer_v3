@@ -4,6 +4,7 @@ from flask import Blueprint, request, abort, send_file
 from jinja2 import TemplateNotFound
 
 from server.models.GlobalModel import get_model
+from server.models.ShimmerTarget import ShimmerTarget
 from server.util.decorators import serialize
 
 target_api = Blueprint('target_api', __name__)
@@ -16,7 +17,10 @@ def getAllTargets():
 @target_api.route("/<int:id>", methods=['GET'])
 @serialize
 def getTarget(id):
-    return get_model().get_target(id)
+    for target in get_model().get_all_targets():
+        if target.id == id:
+            return target
+    abort(404)
 
 @target_api.route("/<int:id>/thumb.jpg", methods=['GET'])
 def getTargetThumbnail(id):

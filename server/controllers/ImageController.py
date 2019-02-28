@@ -1,6 +1,6 @@
 import json
 
-from flask import Blueprint, abort, send_file
+from flask import Blueprint, request, abort, send_file
 from jinja2 import TemplateNotFound
 
 from server.models.GlobalModel import get_model
@@ -42,3 +42,12 @@ def getImageJpg(idx):
         return send_file(open(get_model().img(idx).path, 'rb'), mimetype='image/jpg')
     except KeyError:
         abort(404)
+
+@image_api.route("/<int:idx>/target", methods=['POST'])
+@serialize
+def postImageTarget(idx):
+    response = json.loads(request.data.decode("utf-8"))
+    target = response['target']
+    target_region = response['target_region']
+
+    return get_model().insert_target(idx, target, target_region)

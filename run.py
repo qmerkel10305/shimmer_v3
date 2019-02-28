@@ -2,6 +2,7 @@ import argparse
 import json
 
 from flask import Flask, request, send_file, redirect, url_for
+from flask_cors import CORS
 
 from server.models.GlobalModel import init_model
 from server.controllers.ImageController import image_api
@@ -9,6 +10,8 @@ from server.controllers.TargetController import target_api
 
 # Initialize Flask App
 app = Flask(__name__)
+CORS(app)
+
 # Add api controllers
 app.register_blueprint(image_api, url_prefix='/image')
 app.register_blueprint(target_api, url_prefix='/target')

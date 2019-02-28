@@ -19,7 +19,7 @@ class ShimmerTarget(JSONObject):
             "letter": self.target.letter,
             "shape": self.target.shape,
             "letter_color": self.target.letter_color,
-            "shape_color": self.target.shape_color,
+            "shape_color": self.target.background_color,
             "orientation": self.target.orientation,
             "notes": self.target.notes
         }
