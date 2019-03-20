@@ -8,6 +8,8 @@ import { TargetRegion } from 'types/targetRegion';
 import { TargetClassifierComponent } from './target-classifier/target-classifier.component';
 import { Target } from 'types/target';
 
+import { HostListener } from "@angular/core";
+
 @Component({
   selector: 'app-images',
   templateUrl: './images.component.html',
@@ -183,5 +185,62 @@ export class ImagesComponent implements AfterViewInit {
     this.render();
     // Clear the selection
     this.selection = null;
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  keyDown(event: KeyboardEvent){
+    switch(event.keyCode){
+        case 13: //Enter Key
+            this.update();
+            break;
+        case 37: //Left Arrow Key
+            this.service.getImage(this.image.id - 1).subscribe(
+                (image: Image) => {
+                    this.image = image;
+                    this.imageElement = new (window as any).Image();
+                    this.imageElement.src = this.service.getImageURL(image);
+                    this.imageElement.onload = () => {
+                    this.render();
+                };
+            },
+            (error: any) => {
+                alert('Failed to load next image: ' + error.message);
+                console.error(error);
+            }
+        );
+        break;
+        case 38: //Up Arrow Key
+            this.service.getImage(parseInt(prompt("Image id number?", "0"))).subscribe(
+                (image: Image) => {
+                    this.image = image;
+                    this.imageElement = new (window as any).Image();
+                    this.imageElement.src = this.service.getImageURL(image);
+                    this.imageElement.onload = () => {
+                        this.render();
+                    };
+                },
+                (error: any) => {
+                    alert('Failed to load next image: ' + error.message);
+                    console.error(error);
+                }
+            );
+            break;
+        case 39: //Right Arrow Key
+            this.service.getImage(this.image.id + 1).subscribe(
+                (image: Image) => {
+                    this.image = image;
+                    this.imageElement = new (window as any).Image();
+                    this.imageElement.src = this.service.getImageURL(image);
+                    this.imageElement.onload = () => {
+                        this.render();
+                    };
+                },
+                (error: any) => {
+                    alert('Failed to load next image: ' + error.message);
+                    console.error(error);
+                }
+            );
+            break;
+    }
   }
 }

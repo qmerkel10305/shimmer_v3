@@ -9,22 +9,9 @@
         </div>
     </div>
 </div>
-<canvas #shimmerCanvas (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)" ></canvas>
+<canvas #shimmerCanvas (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)"></canvas>
 <app-target-classifier  (windowClosed)="unlock()"
                         (targetSubmitted)="targetSubmitted($event)"
                         (targetRegionSubmitted)="targetRegionSubmitted($event)"
                         (targetRegionDeleted) ="targetRegionDeleted($event)">
 </app-target-classifier>
-
-<script src="/apiRequest.js" type="application/javascript"></script>
-<script src="/Dialog.js" type="application/javascript"></script>
-<script src="/TargetHandler.js" type="application/javascript"></script>
-<script src="/MouseHandler.js" type="application/javascript"></script>
-<script src="/Shimmer.js" type="application/javascript"></script>
-<script src="/ShimmerNav.js" type="application/javascript"></script>
-<script type="text/javascript" >
-  document.addEventListener("DOMContentLoaded", function(){
-    var app = new ShimmerNav('shimmer-canvas');
-    app.init();
-  });
-</script>
