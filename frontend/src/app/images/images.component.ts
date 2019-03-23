@@ -25,6 +25,7 @@ export class ImagesComponent implements AfterViewInit {
   private selecting: boolean;
   private selection: TargetRegion;
   private image: Image;
+  private id: string;
 
   @ViewChild('shimmerCanvas') private canvas: ElementRef;
   @ViewChild(TargetClassifierComponent) private classifierWindow: TargetClassifierComponent;
@@ -210,20 +211,23 @@ export class ImagesComponent implements AfterViewInit {
         );
         break;
         case 38: //Up Arrow Key
-            this.service.getImage(parseInt(prompt("Image id number?", "0"))).subscribe(
-                (image: Image) => {
-                    this.image = image;
-                    this.imageElement = new (window as any).Image();
-                    this.imageElement.src = this.service.getImageURL(image);
-                    this.imageElement.onload = () => {
+            this.id = prompt("Image id number?", "0");
+            if(this.id !== null){
+                this.service.getImage(parseInt(this.id)).subscribe(
+                    (image: Image) => {
+                        this.image = image;
+                        this.imageElement = new (window as any).Image();
+                        this.imageElement.src = this.service.getImageURL(image);
+                        this.imageElement.onload = () => {
                         this.render();
                     };
                 },
                 (error: any) => {
                     alert('Failed to load next image: ' + error.message);
-                    console.error(error);
-                }
-            );
+                        console.error(error);
+                    }
+                );
+            }
             break;
         case 39: //Right Arrow Key
             this.service.getImage(this.image.id + 1).subscribe(
