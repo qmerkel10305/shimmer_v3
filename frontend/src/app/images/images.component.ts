@@ -57,7 +57,12 @@ export class ImagesComponent implements AfterViewInit {
     );
   }
 
+  /**
+   * Uses the service getImage to subscribe to the selected image
+   * @param id the id of the image to get
+   */
   getImage(id){
+      id = Math.round(id);
     if(!isNaN(id) && id >= 0){
     this.service.getImage(id).subscribe(
         (image: Image) => {
