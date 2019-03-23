@@ -8,7 +8,7 @@ import { Target } from 'types/target';
   styleUrls: ["./targets.component.css"]
 })
 export class TargetsComponent implements OnInit {
-  private targets: Target[];
+  public targets: Target[];
 
   showTargetFields = true;
 
