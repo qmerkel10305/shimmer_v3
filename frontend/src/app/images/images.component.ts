@@ -9,6 +9,7 @@ import { TargetClassifierComponent } from './target-classifier/target-classifier
 import { Target } from 'types/target';
 
 import { HostListener } from "@angular/core";
+import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-images',
@@ -25,7 +26,6 @@ export class ImagesComponent implements AfterViewInit {
   private selecting: boolean;
   private selection: TargetRegion;
   private image: Image;
-  private id: string;
 
   @ViewChild('shimmerCanvas') private canvas: ElementRef;
   @ViewChild(TargetClassifierComponent) private classifierWindow: TargetClassifierComponent;
@@ -55,6 +55,25 @@ export class ImagesComponent implements AfterViewInit {
             console.error(error);
         }
     );
+  }
+
+  getImage(id){
+    if(!isNaN(id) && id >= 0){
+    this.service.getImage(id).subscribe(
+        (image: Image) => {
+            this.image = image;
+            this.imageElement = new (window as any).Image();
+            this.imageElement.src = this.service.getImageURL(image);
+            this.imageElement.onload = () => {
+            this.render();
+        };
+    },
+    (error: any) => {
+        alert('Failed to load next image: ' + error.message);
+            console.error(error);
+        }
+        );
+    }
   }
 
   /**
@@ -195,55 +214,14 @@ export class ImagesComponent implements AfterViewInit {
             this.update();
             break;
         case 37: //Left Arrow Key
-            this.service.getImage(this.image.id - 1).subscribe(
-                (image: Image) => {
-                    this.image = image;
-                    this.imageElement = new (window as any).Image();
-                    this.imageElement.src = this.service.getImageURL(image);
-                    this.imageElement.onload = () => {
-                    this.render();
-                };
-            },
-            (error: any) => {
-                alert('Failed to load next image: ' + error.message);
-                console.error(error);
-            }
-        );
-        break;
+            this.getImage(this.image.id - 1);
+            break;
         case 38: //Up Arrow Key
-            this.id = prompt("Image id number?", "0");
-            if(!isNaN(parseInt(this.id))){
-                this.service.getImage(parseInt(this.id)).subscribe(
-                    (image: Image) => {
-                        this.image = image;
-                        this.imageElement = new (window as any).Image();
-                        this.imageElement.src = this.service.getImageURL(image);
-                        this.imageElement.onload = () => {
-                        this.render();
-                    };
-                },
-                (error: any) => {
-                    alert('Failed to load next image: ' + error.message);
-                        console.error(error);
-                    }
-                );
-            }
+            var id = parseInt(prompt("Image id number?", "0"));
+            this.getImage(id);
             break;
         case 39: //Right Arrow Key
-            this.service.getImage(this.image.id + 1).subscribe(
-                (image: Image) => {
-                    this.image = image;
-                    this.imageElement = new (window as any).Image();
-                    this.imageElement.src = this.service.getImageURL(image);
-                    this.imageElement.onload = () => {
-                        this.render();
-                    };
-                },
-                (error: any) => {
-                    alert('Failed to load next image: ' + error.message);
-                    console.error(error);
-                }
-            );
+            this.getImage(this.image.id + 1);
             break;
     }
   }

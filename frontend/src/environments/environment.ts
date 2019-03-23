@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  //api_url: "http://localhost:5000" //this is for mock_server
-  api_url: "http://10.10.10.10:5000" //this is for ground_pc server
+  api_url: "http://localhost:5000" //this is for mock_server
+  //api_url: "http://10.10.10.10:5000" //this is for ground_pc server
 };
 
 /*
