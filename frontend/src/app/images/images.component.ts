@@ -212,7 +212,7 @@ export class ImagesComponent implements AfterViewInit {
         break;
         case 38: //Up Arrow Key
             this.id = prompt("Image id number?", "0");
-            if(this.id !== null){
+            if(!isNaN(parseInt(this.id))){
                 this.service.getImage(parseInt(this.id)).subscribe(
                     (image: Image) => {
                         this.image = image;
