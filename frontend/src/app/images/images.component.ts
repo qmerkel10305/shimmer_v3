@@ -8,6 +8,9 @@ import { TargetRegion } from 'types/targetRegion';
 import { TargetClassifierComponent } from './target-classifier/target-classifier.component';
 import { Target } from 'types/target';
 
+import { HostListener } from "@angular/core";
+import { stringify } from '@angular/compiler/src/util';
+
 @Component({
   selector: 'app-images',
   templateUrl: './images.component.html',
@@ -52,6 +55,30 @@ export class ImagesComponent implements AfterViewInit {
             console.error(error);
         }
     );
+  }
+
+  /**
+   * Uses the service getImage to subscribe to the selected image
+   * @param id the id of the image to get
+   */
+  getImage(id){
+    id = Math.round(id);
+    if(!isNaN(id) && id >= 0) {
+      this.service.getImage(id).subscribe(
+        (image: Image) => {
+          this.image = image;
+          this.imageElement = new (window as any).Image();
+          this.imageElement.src = this.service.getImageURL(image);
+          this.imageElement.onload = () => {
+            this.render();
+          };
+        },
+        (error: any) => {
+          alert('Failed to load next image: ' + error.message);
+            console.error(error);
+        }
+      );
+    }
   }
 
   /**
@@ -183,5 +210,24 @@ export class ImagesComponent implements AfterViewInit {
     this.render();
     // Clear the selection
     this.selection = null;
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  keyDown(event: KeyboardEvent){
+    switch(event.keyCode){
+        case 13: //Enter Key
+            this.update();
+            break;
+        case 37: //Left Arrow Key
+            this.getImage(this.image.id - 1);
+            break;
+        case 38: //Up Arrow Key
+            var id = parseInt(prompt("Image id number?", "0"));
+            this.getImage(id);
+            break;
+        case 39: //Right Arrow Key
+            this.getImage(this.image.id + 1);
+            break;
+    }
   }
 }
