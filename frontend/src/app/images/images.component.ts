@@ -62,22 +62,22 @@ export class ImagesComponent implements AfterViewInit {
    * @param id the id of the image to get
    */
   getImage(id){
-      id = Math.round(id);
-    if(!isNaN(id) && id >= 0){
-    this.service.getImage(id).subscribe(
+    id = Math.round(id);
+    if(!isNaN(id) && id >= 0) {
+      this.service.getImage(id).subscribe(
         (image: Image) => {
-            this.image = image;
-            this.imageElement = new (window as any).Image();
-            this.imageElement.src = this.service.getImageURL(image);
-            this.imageElement.onload = () => {
+          this.image = image;
+          this.imageElement = new (window as any).Image();
+          this.imageElement.src = this.service.getImageURL(image);
+          this.imageElement.onload = () => {
             this.render();
-        };
-    },
-    (error: any) => {
-        alert('Failed to load next image: ' + error.message);
+          };
+        },
+        (error: any) => {
+          alert('Failed to load next image: ' + error.message);
             console.error(error);
         }
-        );
+      );
     }
   }
 
