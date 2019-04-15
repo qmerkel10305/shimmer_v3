@@ -9,7 +9,6 @@ import { TargetClassifierComponent } from './target-classifier/target-classifier
 import { Target } from 'types/target';
 
 import { HostListener } from "@angular/core";
-import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-images',
@@ -26,6 +25,7 @@ export class ImagesComponent implements AfterViewInit {
   private selecting: boolean;
   private selection: TargetRegion;
   private image: Image;
+  public imageString: String;
 
   @ViewChild('shimmerCanvas') private canvas: ElementRef;
   @ViewChild(TargetClassifierComponent) private classifierWindow: TargetClassifierComponent;
@@ -44,6 +44,7 @@ export class ImagesComponent implements AfterViewInit {
     this.service.getNext().subscribe(
         (image: Image) => {
             this.image = image;
+            this.imageString = 'Image Id: ' + image.id.toString();
             this.imageElement = new (window as any).Image();
             this.imageElement.src = this.service.getImageURL(image);
             this.imageElement.onload = () => {
