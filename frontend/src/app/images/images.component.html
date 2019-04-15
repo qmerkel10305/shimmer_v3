@@ -9,9 +9,38 @@
         </div>
     </div>
 </div>
-<canvas #shimmerCanvas (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)"></canvas>
+<div id="menu">
+        <div class="menu_logo">
+            <div class="menu_title">Sh<span style="color: red;">immer</span></div>
+            <div class="menu_list">
+                <a>File</a>
+                <div class="sub_menu">
+                    <button class="drop_button">View</button>
+                    <div class="sub_menu_item">
+                        <a href="/targets">Targets</a>
+                    </div>
+                </div>
+            </div>
+            </div>
+        <div class="menu_info">
+            <div class="menu_title" id="img_info">flight | id</div>
+        </div>
+    </div>
+<canvas #shimmerCanvas (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)" ></canvas>
 <app-target-classifier  (windowClosed)="unlock()"
                         (targetSubmitted)="targetSubmitted($event)"
-                        (targetRegionSubmitted)="targetRegionSubmitted($event)"
-                        (targetRegionDeleted) ="targetRegionDeleted($event)">
+                        (targetRegionSubmitted)="targetRegionSubmitted($event)">
 </app-target-classifier>
+
+<script src="/apiRequest.js" type="application/javascript"></script>
+<script src="/Dialog.js" type="application/javascript"></script>
+<script src="/TargetHandler.js" type="application/javascript"></script>
+<script src="/MouseHandler.js" type="application/javascript"></script>
+<script src="/Shimmer.js" type="application/javascript"></script>
+<script src="/ShimmerNav.js" type="application/javascript"></script>
+<script type="text/javascript" >
+  document.addEventListener("DOMContentLoaded", function(){
+    var app = new ShimmerNav('shimmer-canvas');
+    app.init();
+  });
+</script>
