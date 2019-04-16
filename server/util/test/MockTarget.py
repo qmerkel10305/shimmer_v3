@@ -8,7 +8,7 @@ class MockTarget(object):
         self.target_type = target_type
         self.letter = letter
         self.letter_color = letter_color
-        self.shape_color = shape_color
+        self.background_color = shape_color
         self.shape = shape
         self.orientation = orientation
         self.notes = notes

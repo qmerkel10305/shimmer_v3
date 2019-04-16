@@ -28,7 +28,7 @@ def getImage(idx):
     """
     try:
         return get_model().img(idx)
-    except KeyError:
+    except IndexError:
         abort(404)
 
 @image_api.route("/<int:idx>/img.jpg", methods=['GET'])
@@ -41,7 +41,7 @@ def getImageJpg(idx):
     """
     try:
         return send_file(open(get_model().img(idx).path, 'rb'), mimetype='image/jpg')
-    except KeyError:
+    except IndexError:
         abort(404)
 
 @image_api.route("/<int:idx>/target", methods=['POST'])

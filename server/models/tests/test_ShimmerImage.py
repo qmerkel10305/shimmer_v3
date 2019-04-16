@@ -10,13 +10,11 @@ from generate import create_mock_target, create_mock_target_and_dict, create_moc
 
 class TestShimmerImage(unittest.TestCase):
     def setUp(self):
-        ShimmerImage.next_id = 0
-        self.image = ShimmerImage(MockImage([]), MockFlight())
+        self.image = ShimmerImage(0, MockImage([]), MockFlight())
 
     def testConstructor(self):
         self.assertEquals(0, self.image.id)
         self.assertEquals(0, len(self.image.targets))
-        self.assertEquals(1, ShimmerImage.next_id)
 
     def testSerialize(self):
         image = self.image.serialize()
@@ -26,7 +24,7 @@ class TestShimmerImage(unittest.TestCase):
 
     def testLoadTargets(self):
         _, mock_target = create_mock_target_region_and_dict()
-        self.image = ShimmerImage(MockImage([
+        self.image = ShimmerImage(0, MockImage([
                 mock_target
         ]), MockFlight())
 

@@ -17,10 +17,7 @@ def getAllTargets():
 @target_api.route("/<int:id>", methods=['GET'])
 @serialize
 def getTarget(id):
-    for target in get_model().get_all_targets():
-        if target.id == id:
-            return target
-    abort(404)
+    return get_model().tgt(id)
 
 @target_api.route("/<int:id>/thumb.jpg", methods=['GET'])
 def getTargetThumbnail(id):
