@@ -9,6 +9,14 @@ from server.util.decorators import serialize
 
 target_api = Blueprint('target_api', __name__)
 
+@target_api.errorhandler(ValueError)
+def handle_value_error(error):
+    return str(error), 400
+
+@target_api.errorhandler(KeyError)
+def handle_key_error(error):
+    return str(error), 404
+
 @target_api.route("/", methods=['GET'])
 @serialize
 def getAllTargets():
@@ -21,28 +29,33 @@ def getTarget(id):
 
 @target_api.route("/<int:id>/thumb.jpg", methods=['GET'])
 def getTargetThumbnail(id):
-    return send_file(open(get_model().get_target(id).target_region.target.thumbnail, 'rb'), mimetype='image/jpg')
+    return send_file(open(get_model().get_target(id).target.thumbnail, 'rb'), mimetype='image/jpg')
 
-@target_api.route("/<int:id>", methods=['POST'])
+@target_api.route("/<int:target_id>", methods=['POST'])
 @serialize
-def target(id):
+def postTarget(target_id):
     """
-    Post new target data and update get_model() with new targets
-    """
-    get_model().update_targets(id, json.loads(request.data.decode("utf-8"))["targets"])
+    Post new target data and update the model with new targets
 
-@target_api.route("/merge", methods=['POST'])
-@serialize
-def mergeTargets():
+    Currently unimplemented endpoint
     """
-    Merge two or more target regions into one target
-    """
-    get_model().merge_targets(json.loads(request.data.decode("utf-8")))
+    return get_model().update_target(target_id, json.loads(request.data.decode("utf-8")))
 
-@target_api.route("/<int:id>", methods=['DELETE'])
+@target_api.route("/merge/<int:target_id>", methods=['POST'])
 @serialize
-def deleteTarget(id):
+def mergeTargets(target_id):
+    """
+    Merge one or more targets into a target
+
+    The merged targets will be deleted and their target regions will be
+    attached to the base target region.
+    """
+    get_model().merge_targets(target_id, json.loads(request.data.decode("utf-8")))
+
+@target_api.route("/<int:target_id>", methods=['DELETE'])
+@serialize
+def deleteTarget(target_id):
     """
     Delete the target with the given id
     """
-    get_model().delete_target(id)
+    get_model().delete_target(target_id)

@@ -23,7 +23,6 @@ class MockFlight(FlightCore):
 
     def image(self, image_id):
         for img in self._images:
-            print(img.image_id, image_id)
             if img.image_id == image_id:
                 return img
         raise ValueError("Not Found")
@@ -32,7 +31,7 @@ class MockFlight(FlightCore):
         return self._targets[id]
 
     def all_targets(self):
-        return self._targets
+        return [target for target in self._targets if not target._deleted]
 
     def tempfile_cleanup(self):
         self.mock_dir.cleanup()

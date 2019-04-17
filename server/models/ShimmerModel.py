@@ -47,6 +47,7 @@ class ShimmerModel():
         for target in self.get_all_targets():
             if target.id == target_id:
                 return target
+        raise KeyError("Target not found")
 
     def get_target(self, target_id):
         return self.tgt(target_id)
@@ -112,3 +113,36 @@ class ShimmerModel():
             "target" : ShimmerTarget(result[0]),
             "target_region": new_region
         }
+
+    def update_target(self, target_id, new_target):
+        """
+        Updates an existing target
+
+        Arguments:
+            target_id: ID of the Target
+            new_target: Dictionary containing new target data
+        """
+        target = self.tgt(target_id)
+        target.deserialize(new_target)
+        return target
+
+    def delete_target(self, target_id):
+        """
+        Deletes a target and associated target regions
+        """
+        target = self.tgt(target_id)
+        target.delete()
+
+    def merge_targets(self, target_id, target_ids):
+        """
+        Updates an existing target
+
+        Arguments:
+            target_id: ID of the Target
+            target_ids: List of target ids
+        """
+        arc_target = self.tgt(target_id).target
+
+        for old_id in target_ids:
+            old_target = self.tgt(old_id)
+            arc_target.absorb_target(old_target.target)

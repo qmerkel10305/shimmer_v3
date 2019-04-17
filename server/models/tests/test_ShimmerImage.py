@@ -25,7 +25,7 @@ class TestShimmerImage(unittest.TestCase):
     def testLoadTargets(self):
         _, mock_target = create_mock_target_region_and_dict()
         self.image = ShimmerImage(0, MockImage([
-                mock_target
+            mock_target
         ]), MockFlight())
 
         self.assertEquals(1, len(self.image.targets))
