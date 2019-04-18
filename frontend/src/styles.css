@@ -13,10 +13,6 @@ body {
     height: 100%;
 }
 
-a {
-    text-decoration: none;
-}
-
 #shimmer-canvas {
     display: block;
     z-index: 0;
@@ -27,26 +23,22 @@ a {
 /* Menu style */
 
 #menu {
-    z-index: 2;
-    display: block;
+    z-index: 2;    
     position: absolute;
     left: 0px;
     top: 0px;
     width: 100%;
     height: 29px;
     background-color: rgba(0, 0, 0, 0.8);
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-touch-callout: none;
 }
 
 .menu_logo {
-    display: inline-block;
+    display: inline-flex;
 }
 
-.menu_item, .menu_info {
-    display: inline-block;
+.menu_title {
+    color: white;
+    padding: 7px;
 }
 
 .menu_info {
@@ -55,43 +47,77 @@ a {
     font-weight: bold;
 }
 
-.menu_title {
-    color: white;
-    padding: 7px;
-    vertical-align: middle;
-}
-
-.menu_item:hover .menu_title {
-    background-color: rgba(255, 255, 255, 0.8);
-    color: black;
-    cursor: pointer;
-}
-
 .menu_list {
-    position: absolute;
-    display: none;
-    top: 29px;
+    overflow: hidden;
 }
 
-.menu_item:hover .menu_list{
+.menu_list a {
+    float: left;
+    color: white;
+    text-align: center;
+    padding: 7px;
+    text-decoration: none;
+}
+
+.sub_menu {
+    float: left;
+    overflow: hidden;
+}
+
+.sub_menu .drop_button {
+    color: white;
+    border: none;
+    outline: none;
+    text-align: center;
+    padding: 7px;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+}
+
+.menu_item a:hover, .sub_menu:hover .sub_button{
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.sub_menu_item {
+    display: none;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: black;
+    text-decoration: none;
+    text-align: left; 
+    z-index: 1;   
+}
+
+.sub_menu_item a {
+    float: none;
     display: block;
 }
 
-.menu_list_spacer {
-    background-color: rgba(255, 255, 255, 0.8);
-    height: 3px;
-}
-
-.menu_list_item {
-    background-color: rgba(255, 255, 255, 0.8);
-    color: black;
-    padding: 7px;
-}
-
-.menu_list_item:hover {
-    background-color: rgba(0, 0, 0, 0.8);
+.sub_menu_item button {
     color: white;
-    cursor: pointer;
+    border: none;
+    outline: none;
+    text-align: center;
+    padding: 7px;
+    background-color: rgba(0, 0, 0, 0);
+    font-family: inherit;
+    margin: 0;
+    float: none;
+    display: block;
+}
+
+.sub_menu_item a:hover {
+    background-color: black;
+}
+
+.sub_menu_item button:hover {
+    background-color: black;
+}
+
+
+.sub_menu:hover .sub_menu_item {
+    display: block;
 }
 
 .menu_not {
