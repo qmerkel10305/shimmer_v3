@@ -6,7 +6,9 @@
             <div class="sub_menu">
                 <button class="drop_button">Edit</button>
                 <div class="sub_menu_item">
-                    <button>Merge</button>
+                    <button (click)="edit()">Edit</button>
+                    <button (click)="merge()">Merge</button>
+                    <button (click)="delete()">Delete</button>
                 </div>
             </div>
             <div class="sub_menu">
@@ -25,6 +27,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Checkbox</th>
             <th>Target Picture</th>
             <th>Target ID</th>
             <th>Target Type</th>
@@ -36,15 +39,18 @@
             <th>Notes</th>
         </tr>
     </thead>
-    <tr *ngFor="let target of targets">
-        <td class="targetThumb"><img src={{service.getThumbnailURL(target.id)}}></td>
-        <td>{{target.id}}</td>
-        <td>{{target.target_type}}</td>
-        <td>{{target.shape}}</td>
-        <td>{{target.shape_color}}</td>
-        <td>{{target.letter}}</td>
-        <td>{{target.letter_color}}</td>
-        <td>{{target.orientation}}</td>
-        <td>{{target.notes}}</td>
+    <tr *ngFor="let row of rows">
+        <td><input type="checkbox" [(ngModel)]="row.isChecked"></td>
+        <td class="targetThumb"><img src={{service.getThumbnailURL(row.target.id)}}></td>
+        <td>{{row.target.id}}</td>
+        <td>{{row.target.target_type}}</td>
+        <td *ngIf="row.showCharacteristics">{{row.target.shape}}</td>
+        <td *ngIf="row.showCharacteristics">{{row.target.shape_color}}</td>
+        <td *ngIf="row.showCharacteristics">{{row.target.letter}}</td>
+        <td *ngIf="row.showCharacteristics">{{row.target.letter_color}}</td>
+        <td *ngIf="row.showCharacteristics" colspan="2">{{row.target.orientation}}</td>
+        <td *ngIf="!row.showCharacteristics" colspan="7">{{row.target.notes}}</td>
     </tr>
 </table>
+<app-target-editor  (windowClosed)="refresh()">
+</app-target-editor>

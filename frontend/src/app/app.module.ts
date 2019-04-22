@@ -9,6 +9,7 @@ import { TargetsComponent } from './targets/targets.component';
 import { ImagesComponent } from './images/images.component';
 import { HomeComponent } from './home/home.component';
 import { TargetClassifierComponent } from './images/target-classifier/target-classifier.component';
+import { TargetEditorComponent } from './target-editor/target-editor.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { TargetClassifierComponent } from './images/target-classifier/target-cla
     ImagesComponent,
     TargetsComponent,
     HomeComponent,
-    TargetClassifierComponent
+    TargetClassifierComponent,
+    TargetEditorComponent
   ],
   imports: [
     BrowserModule,
