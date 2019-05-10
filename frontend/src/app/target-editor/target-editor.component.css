@@ -1,7 +1,7 @@
 .window {
     z-index: 1;
-    width: 350px;
-    height: 360px;
+    width: 25%;
+    height: 40%;
     position: absolute;
     background-color: rgba(255, 255, 255, 0.8);
     left: 35%;
@@ -32,9 +32,8 @@
 
 .window_content {
     display: block;
-    height: 260px;
+    height: 78%;
     width: 100%;
-    
 }
 
 .column {
@@ -71,7 +70,7 @@
 }
 
 .attr-button {
-    width: 100%;
+    width: 95%;
     height: 20px;
 }
 
@@ -90,7 +89,6 @@ table {
 
 .submit-buttons {
     display: block;
-    height: 60px;
 }
 
 .button {

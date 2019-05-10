@@ -54,7 +54,7 @@ export class TargetEditorComponent implements AfterViewInit {
         this.content.nativeElement.style = 'display: none';
     }
 
-    constructor (private tService: TargetsService, private iService: ImagesService) {
+    constructor (public tService: TargetsService, private iService: ImagesService) {
         this.content = null;
         this.submitText = TargetEditorComponent.SUBMIT_TEXT;
         this.resetFields();
