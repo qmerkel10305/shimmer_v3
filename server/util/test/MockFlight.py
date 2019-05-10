@@ -21,14 +21,17 @@ class MockFlight(FlightCore):
             os.mkdir(os.path.join(self.folder, "targets"))
             atexit.register(self.tempfile_cleanup)
 
-    def image(self, id):
-        return self._images[id]
+    def image(self, image_id):
+        for img in self._images:
+            if img.image_id == image_id:
+                return img
+        raise ValueError("Not Found")
 
     def target(self, id):
         return self._targets[id]
 
     def all_targets(self):
-        return self._targets
+        return [target for target in self._targets if not target._deleted]
 
     def tempfile_cleanup(self):
         self.mock_dir.cleanup()
