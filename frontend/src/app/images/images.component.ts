@@ -68,6 +68,7 @@ export class ImagesComponent implements AfterViewInit {
       this.service.getImage(id).subscribe(
         (image: Image) => {
           this.image = image;
+          this.imageString = 'Image Id: ' + image.id.toString();
           this.imageElement = new (window as any).Image();
           this.imageElement.src = this.service.getImageURL(image);
           this.imageElement.onload = () => {
