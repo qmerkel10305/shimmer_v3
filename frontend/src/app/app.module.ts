@@ -19,7 +19,8 @@ import { TargetMergerComponent } from './targets/target-modifers/target-merger/t
     TargetsComponent,
     HomeComponent,
     TargetClassifierComponent,
-    TargetEditorComponent
+    TargetEditorComponent,
+    TargetMergerComponent
   ],
   imports: [
     BrowserModule,

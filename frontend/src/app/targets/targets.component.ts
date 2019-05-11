@@ -4,6 +4,7 @@ import { Target } from 'types/target';
 import { TargetEditorComponent } from "app/targets/target-modifers/target-editor/target-editor.component";
 import { TargetRow } from "types/targetRow";
 import { filter } from "rxjs/operators";
+import { TargetMergerComponent } from "./target-modifers/target-merger/target-merger.compnent";
 
 @Component({
   selector: "app-targets",
@@ -15,7 +16,8 @@ export class TargetsComponent implements OnInit {
 
   showTargetFields = true;
 
-  @ViewChild(TargetEditorComponent) private classifierWindow: TargetEditorComponent;
+  @ViewChild(TargetEditorComponent) private editWindow: TargetEditorComponent;
+  @ViewChild(TargetMergerComponent) private mergeWindow: TargetMergerComponent;
   constructor(private service: TargetsService) {
     service.getAllTargets().subscribe((targets: Target[]) => {
       for(let target of targets){
@@ -43,7 +45,12 @@ export class TargetsComponent implements OnInit {
 
   merge(){
     var filtered = this.rows.filter((row: TargetRow) => row.isChecked === true);
-    if(filtered.length > 2){
+    if(filtered.length >= 2){
+      var targets = [];
+      for(let row of filtered) {
+        targets.push(row.target);
+      }
+      this.mergeWindow.merge(targets);
     }
     else {
       alert("Please select atleast 2 targets");
@@ -53,7 +60,7 @@ export class TargetsComponent implements OnInit {
   edit(){
     var filtered = this.rows.filter((row: TargetRow) => row.isChecked === true);
     if(filtered.length === 1){
-      this.classifierWindow.edit(filtered[0].target);
+      this.editWindow.edit(filtered[0].target);
     }
     else{
       alert("Please select only 1 target");
@@ -67,6 +74,10 @@ export class TargetsComponent implements OnInit {
     else{
       alert("Please select atleast 1 target");
     }
+    for(let target of filtered){
+      this.service.deleteTarget(target.target);
+    }
+    this.refresh();
   }
 
   refresh(){

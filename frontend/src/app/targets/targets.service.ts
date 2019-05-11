@@ -24,4 +24,12 @@ export class TargetsService {
   getThumbnailURL(id: number){
     return `${environment.api_url}/target/${id}/thumb.jpg`;
   }
+
+  mergeTargets(id: number, targets: number[]) {
+    return this.http.post<Target>(`${environment.api_url}/target/merge/${id}`, targets)
+  }
+
+  deleteTarget(target: Target) {
+    return this.http.delete<Target>(`${environment.api_url}/target/${target.id}`);
+  }
 }

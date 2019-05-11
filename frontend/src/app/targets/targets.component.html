@@ -52,5 +52,5 @@
         <td *ngIf="!row.showCharacteristics" colspan="7">{{row.target.notes}}</td>
     </tr>
 </table>
-<app-target-editor  (windowClosed)="refresh()">
-</app-target-editor>
+<app-target-editor  (windowClosed)="refresh()"></app-target-editor>
+<app-target-merger (windowClosed)="refresh()"></app-target-merger>
