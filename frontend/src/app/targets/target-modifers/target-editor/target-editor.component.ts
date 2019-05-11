@@ -9,10 +9,6 @@ import { Target } from 'types/target';
     styleUrls: ['./target-editor.component.css']
 })
 export class TargetEditorComponent implements AfterViewInit {
-    static readonly SUBMIT_TEXT = 'Submit';
-    static readonly UPDATE_TEXT = 'Update';
-    static readonly DISCARD_TEXT = 'Discard';
-    static readonly DELETE_TEXT = 'Delete';
 
     ALL_COLORS = [
         'black',
@@ -43,7 +39,6 @@ export class TargetEditorComponent implements AfterViewInit {
 
     target: Target;
     showTargetFields = true;
-    submitText: string;
     showProtractor = false;
 
     @ViewChild('editTarget') private content: ElementRef;
@@ -56,7 +51,6 @@ export class TargetEditorComponent implements AfterViewInit {
 
     constructor (public tService: TargetsService, private iService: ImagesService) {
         this.content = null;
-        this.submitText = TargetEditorComponent.SUBMIT_TEXT;
         this.resetFields();
     }
 

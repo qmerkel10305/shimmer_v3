@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { TargetsService } from "./targets.service";
 import { Target } from 'types/target';
-import { TargetEditorComponent } from "app/target-editor/target-editor.component";
+import { TargetEditorComponent } from "app/targets/target-modifers/target-editor/target-editor.component";
 import { TargetRow } from "types/targetRow";
 import { filter } from "rxjs/operators";
 
