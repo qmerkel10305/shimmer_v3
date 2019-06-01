@@ -14,13 +14,10 @@ class ShimmerModel():
         self.queue = queue
         self.replay_pos = 0
         self.image_ids = []
-        self.images = {}
         # Load all images already in the queue
         image = self.queue.get_next_image()
         while image is not None:
-            img = ShimmerImage(image, self.queue.flight)
-            self.images[img.id] = img
-            self.image_ids.append(img.id)
+            self.image_ids.append(image.image_id)
             image = self.queue.get_next_image()
 
     def img(self, idx):
@@ -30,25 +27,30 @@ class ShimmerModel():
         Arguments:
             idx: the index to get data at
         """
-        # Update the image
-        image = self.images[idx]
-        image.update()
+        arc_image = self.queue.flight.image(self.image_ids[idx])
+        image = ShimmerImage(idx, arc_image, self.queue.flight)
         return image
 
-    def get_image(self, id):
-        return self.img(id)
+    def get_image(self, image_id):
+        return self.img(image_id)
 
-    def tgt(self, id):
+    def tgt(self, target_id):
         """
         Get the target with id
 
         Arguments:
-            id: the target id to get
+            target_id: the target id to get
         """
-        return self.queue.flight.target(id)
+        # Pending target(id) method in ARC.Flight
+        # return self.queue.flight.target(id)
+        # XXX Hack: Iterate over all targets
+        for target in self.get_all_targets():
+            if target.id == target_id:
+                return target
+        raise KeyError("Target not found")
 
-    def get_target(self, id):
-        return self.tgt(id)
+    def get_target(self, target_id):
+        return self.tgt(target_id)
 
     def get_next_image(self):
         """
@@ -59,8 +61,8 @@ class ShimmerModel():
             # No more images in the queue.
             return self.get_replay_image()
 
-        img = ShimmerImage(next_img, self.queue.flight)
-        self.images[img.id] = img
+        self.image_ids.append(next_img.image_id)
+        img = ShimmerImage(len(self.image_ids) - 1, next_img, self.queue.flight)
         return img
 
     def get_replay_image(self):
@@ -69,7 +71,11 @@ class ShimmerModel():
         """
         if self.replay_pos >= len(self.image_ids):
             self.replay_pos = 0
-        img = self.images[self.image_ids[self.replay_pos]]
+        img = ShimmerImage(
+            self.replay_pos,
+            self.queue.flight.image(self.image_ids[self.replay_pos]),
+            self.queue.flight
+        )
         self.replay_pos += 1
         return img
 
@@ -107,3 +113,36 @@ class ShimmerModel():
             "target" : ShimmerTarget(result[0]),
             "target_region": new_region
         }
+
+    def update_target(self, target_id, new_target):
+        """
+        Updates an existing target
+
+        Arguments:
+            target_id: ID of the Target
+            new_target: Dictionary containing new target data
+        """
+        target = self.tgt(target_id)
+        target.deserialize(new_target)
+        return target
+
+    def delete_target(self, target_id):
+        """
+        Deletes a target and associated target regions
+        """
+        target = self.tgt(target_id)
+        target.delete()
+
+    def merge_targets(self, target_id, target_ids):
+        """
+        Updates an existing target
+
+        Arguments:
+            target_id: ID of the Target
+            target_ids: List of target ids
+        """
+        arc_target = self.tgt(target_id).target
+
+        for old_id in target_ids:
+            old_target = self.tgt(old_id)
+            arc_target.absorb_target(old_target.target)

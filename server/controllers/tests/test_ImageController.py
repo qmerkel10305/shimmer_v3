@@ -18,7 +18,7 @@ class TestImageController(unittest.TestCase):
         self.app = app.test_client()
 
     def tearDown(self):
-        ShimmerImage.next_id = 0
+        pass
 
     @with_mock_model(images=[MockImage([])])
     def testGetNext(self):

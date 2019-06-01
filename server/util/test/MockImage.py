@@ -1,8 +1,8 @@
 import os
 
 class MockImage(object):
-    def __init__(self, mock_targets, id=1):
-        self.image_id = 1
+    def __init__(self, mock_targets, image_id=1):
+        self.image_id = image_id
         self.mock_targets = mock_targets
 
     def get_target_regions(self, flight=None):

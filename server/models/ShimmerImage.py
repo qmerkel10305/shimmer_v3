@@ -4,22 +4,20 @@ from server.models.ShimmerTargetRegion import ShimmerTargetRegion
 from server.util.JSONObject import JSONObject
 
 class ShimmerImage(JSONObject):
-    next_id = 0
     """
     ShimmerImage wraps data for an image.
 
     Arguments:
+        id: the local Shimmer ID of the image
         image: the ARC.Image this ShimmerImage wraps
         flight: the ARC.Flight this image belongs to
     """
-    def __init__(self, image, flight):
+    def __init__(self, id, image, flight):
+        self.id = id
         self.image = image
         self.flight = flight
 
-        self.id = ShimmerImage.next_id
         self.targets = [ ShimmerTargetRegion(tgt) for tgt in image.get_target_regions(flight=flight) ]
-
-        ShimmerImage.next_id += 1
 
     @property
     def path(self):
@@ -28,10 +26,6 @@ class ShimmerImage(JSONObject):
     def delete_region(self, i):
         self.targets[i].target_region.delete_region()
         del self.targets[i]
-
-    def update(self):
-        self. image = self.flight.image(self.image.image_id)
-        self.targets = [ ShimmerTargetRegion(tgt) for tgt in self.image.get_target_regions(flight=self.flight) ]
 
     def add_target(self, image_id=None, target_id=None, target_type=None,
                    letter=None, letter_color=None, shape_color=None, shape=None,
