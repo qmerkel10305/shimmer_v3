@@ -216,6 +216,9 @@ export class ImagesComponent implements AfterViewInit {
 
   @HostListener('document:keydown', ['$event'])
   keyDown(event: KeyboardEvent){
+    if(this.locked) {
+      return;
+    }
     switch(event.keyCode){
         case 13: //Enter Key
             this.update();
