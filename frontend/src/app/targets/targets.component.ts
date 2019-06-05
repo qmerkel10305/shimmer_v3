@@ -10,7 +10,7 @@ import { TargetClassifierComponent } from 'app/images/target-classifier/target-c
   styleUrls: ["./targets.component.css"]
 })
 export class TargetsComponent implements OnInit {
-  private rows: TargetRow[] = [];
+  rows: TargetRow[] = [];
 
   showTargetFields = true;
 

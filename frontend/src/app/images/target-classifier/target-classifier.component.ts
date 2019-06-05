@@ -146,17 +146,17 @@ export class TargetClassifierComponent implements AfterViewInit {
                 console.error(error);
             });
         } else {
-             this.service.putTarget(this.target).subscribe((target: Target) => {
-                this.targetSubmitted.emit(target);
-                this.close();
-            }, (error) => {
-                console.error(error);
-            });
+            //this.service.putTarget(this.target).subscribe((target: Target) => {
+            //    this.targetSubmitted.emit(target);
+            //    this.close();
+            //}, (error) => {
+            //    console.error(error);
+            //});
         }
     }
 
     discard() {
-        this.service.deleteTargetRegion(this.targetRegion).subscribe((targetRegion: TargetRegion) => {
+        this.service.deleteTargetRegion(this.image, this.targetRegion).subscribe((targetRegion: TargetRegion) => {
             this.targetRegionDeleted.emit(this.targetRegionIndex);
             this.close();
         },  (error) => {

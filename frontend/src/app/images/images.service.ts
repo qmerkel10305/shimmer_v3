@@ -41,16 +41,8 @@ export class ImagesService {
     return this.http.post<any>(`${environment.api_url}/image/${image.id}/target`, submit_object);
   }
 
-  putTarget(target: Target): Observable<Target> {
-    return this.http.put<Target>(`${environment.api_url}/target/${target.id}`, target);
-  }
-
-  postTargetRegion(targetRegion: TargetRegion): Observable<TargetRegion> {
-    return this.http.post<TargetRegion>(`${environment.api_url}/image/${targetRegion.image_id}/targets`, targetRegion);
-  }
-
-  deleteTargetRegion(targetRegion: TargetRegion): Observable<TargetRegion> {
-    return this.http.delete<TargetRegion>(`${environment.api_url}/image/${targetRegion.image_id}/targets/${targetRegion.target_id}`);
+  deleteTargetRegion(image: Image, targetRegion: TargetRegion): Observable<TargetRegion> {
+    return this.http.delete<TargetRegion>(`${environment.api_url}/image/${image.id}/region/${targetRegion.id}`);
   }
 
   _deserializeImage(raw_image: Image): Image {
@@ -59,7 +51,8 @@ export class ImagesService {
         new Point(raw_image.targets[i].a.x, raw_image.targets[i].a.y),
         new Point(raw_image.targets[i].b.x, raw_image.targets[i].b.y),
         raw_image.targets[i].target_id,
-        raw_image.targets[i].image_id
+        raw_image.targets[i].image_id,
+        raw_image.targets[i].id
       );
     }
     return raw_image;
