@@ -14,7 +14,8 @@ class ShimmerTargetRegion(JSONObject):
     def create_thumbnail(self):
         tgtimage = self.target_region.image.jpg()
 
-        tgtimage = cv2.imread(tgtimage, cv2.IMREAD_IGNORE_ORIENTATION)
+        tgtimage = cv2.imread(tgtimage, cv2.IMREAD_COLOR |
+                              cv2.IMREAD_IGNORE_ORIENTATION)
         # Set coordinates for cropped image
         crop_img = tgtimage[int(self.target_region.coord1[1]):int(self.target_region.coord2[1]),
                             int(self.target_region.coord1[0]):int(self.target_region.coord2[0])]
