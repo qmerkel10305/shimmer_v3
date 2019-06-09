@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { TargetsService } from "./targets.service";
 import { Target } from 'types/target';
+import { TargetEditorComponent } from "app/targets/target-modifers/target-editor/target-editor.component";
 import { TargetRow } from "types/targetRow";
-import { TargetClassifierComponent } from 'app/images/target-classifier/target-classifier.component';
+import { filter } from "rxjs/operators";
+import { TargetMergerComponent } from "./target-modifers/target-merger/target-merger.compnent";
 
 @Component({
   selector: "app-targets",
@@ -10,19 +12,16 @@ import { TargetClassifierComponent } from 'app/images/target-classifier/target-c
   styleUrls: ["./targets.component.css"]
 })
 export class TargetsComponent implements OnInit {
-  rows: TargetRow[] = [];
+  public rows: TargetRow[] = [];
 
   showTargetFields = true;
 
-  @ViewChild(TargetClassifierComponent) private classifierWindow: TargetClassifierComponent;
+  @ViewChild(TargetEditorComponent) private editWindow: TargetEditorComponent;
+  @ViewChild(TargetMergerComponent) private mergeWindow: TargetMergerComponent;
   constructor(private service: TargetsService) {
     service.getAllTargets().subscribe((targets: Target[]) => {
-      for(let target of targets) {
-        this.rows.push({
-          "target": target,
-          "checked": false,
-          "showCharacteristics": false
-        });
+      for(let target of targets){
+        this.rows.push(new TargetRow(target, false, false));
       }
       this.showIf();
     }, (error) => {
@@ -45,42 +44,43 @@ export class TargetsComponent implements OnInit {
   }
 
   merge(){
-    var filteredRow:TargetRow[] = this.rows.filter(row => row.checked);
-    if(filteredRow.length < 1){
-      alert("Please select atleast one target.");
+    var filtered = this.rows.filter((row: TargetRow) => row.checked === true);
+    if(filtered.length >= 2){
+      var targets = [];
+      for(let row of filtered) {
+        targets.push(row.target);
+      }
+      this.mergeWindow.merge(targets);
+    }
+    else {
+      alert("Please select atleast 2 targets");
+    }
+  }
+
+  edit(){
+    var filtered = this.rows.filter((row: TargetRow) => row.checked === true);
+    if(filtered.length === 1){
+      this.editWindow.edit(filtered[0].target);
     }
     else{
-      var id:number = parseInt(prompt("Please enter the id of the target with the best thumbnail"));
-      console.log(this.rows.filter(row => row.checked));
+      alert("Please select only 1 target");
     }
   }
 
   delete(){
-    var filteredRow:TargetRow[] = this.rows.filter(row => row.checked);
-    if(filteredRow.length > 1){
-      if(confirm("Are you sure you want to delete this target? THIS CANNOT BE UNDONE!")){
-
-      }
-    }
-    else if(filteredRow.length === 1) {
-      if(confirm("Are you sure you want to delete these targets? THIS CANNOT BE UNDONE!")){
-
-      }
+    var filtered = this.rows.filter((row: TargetRow) => row.checked === true);
+    if(filter.length > 0 && confirm("Do you want to delete " + filtered.length + " targets?")) {
     }
     else{
-      alert("Please select atleast one target.");
+      alert("Please select atleast 1 target");
     }
+    for(let target of filtered){
+      this.service.deleteTarget(target.target);
+    }
+    this.refresh();
   }
 
-  edit() {
-    var filteredRow:TargetRow[] = this.rows.filter(row => row.checked);
-    if(filteredRow.length !== 1){
-      alert("Please select one target.");
-    }
-    else {
-
-    }
-
+  refresh(){
+    window.location.reload();
   }
-
 }
