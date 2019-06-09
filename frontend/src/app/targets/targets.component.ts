@@ -4,7 +4,7 @@ import { Target } from 'types/target';
 import { TargetEditorComponent } from "app/targets/target-modifers/target-editor/target-editor.component";
 import { TargetRow } from "types/targetRow";
 import { filter } from "rxjs/operators";
-import { TargetMergerComponent } from "./target-modifers/target-merger/target-merger.compnent";
+import { TargetMergerComponent } from "./target-modifers/target-merger/target-merger.component";
 
 @Component({
   selector: "app-targets",
@@ -19,28 +19,10 @@ export class TargetsComponent implements OnInit {
   @ViewChild(TargetEditorComponent) private editWindow: TargetEditorComponent;
   @ViewChild(TargetMergerComponent) private mergeWindow: TargetMergerComponent;
   constructor(private service: TargetsService) {
-    service.getAllTargets().subscribe((targets: Target[]) => {
-      for(let target of targets){
-        this.rows.push(new TargetRow(target, false, false));
-      }
-      this.showIf();
-    }, (error) => {
-      console.error(error);
-    });
-  }
-// Pull all targets in constructor
-// NgFor to iterate the file
-  ngOnInit() {
   }
 
-  showIf(){
-    for(let row of this.rows) {
-      if(Number(row.target.target_type) === 3){
-        row.showCharacteristics = false;
-      } else{
-        row.showCharacteristics = true;
-      }
-    }
+  ngOnInit() {
+    this.refresh();
   }
 
   merge(){
@@ -53,7 +35,7 @@ export class TargetsComponent implements OnInit {
       this.mergeWindow.merge(targets);
     }
     else {
-      alert("Please select atleast 2 targets");
+      alert("Please select at least 2 targets");
     }
   }
 
@@ -67,20 +49,27 @@ export class TargetsComponent implements OnInit {
     }
   }
 
-  delete(){
+  async delete(){
     var filtered = this.rows.filter((row: TargetRow) => row.checked === true);
     if(filter.length > 0 && confirm("Do you want to delete " + filtered.length + " targets?")) {
     }
     else{
-      alert("Please select atleast 1 target");
+      alert("Please select at least 1 target");
     }
     for(let target of filtered){
-      this.service.deleteTarget(target.target);
+      await this.service.deleteTarget(target.target).toPromise();
     }
     this.refresh();
   }
 
   refresh(){
-    window.location.reload();
+    this.rows = [];
+    this.service.getAllTargets().subscribe((targets: Target[]) => {
+      for(let target of targets){
+        this.rows.push(new TargetRow(target, false));
+      }
+    }, (error) => {
+      console.error(error);
+    });
   }
 }

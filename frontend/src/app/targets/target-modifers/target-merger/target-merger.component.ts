@@ -41,7 +41,9 @@ export class TargetMergerComponent implements AfterViewInit {
                 temp.push(target.id);
             }
         }
-        this.tService.mergeTargets(id, temp);
-        close();
+        this.tService.mergeTargets(id, temp).subscribe((target: Target) => {
+            console.log(target);
+            this.close();
+        });
     }
 }

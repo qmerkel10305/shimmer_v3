@@ -80,7 +80,7 @@ export class TargetEditorComponent implements AfterViewInit {
     }
 
     update(){
-        this.iService.putTarget(this.target).subscribe((target: Target) => {
+        this.tService.postTarget(this.target).subscribe((target: Target) => {
             this.close();
         }, (error) => {
             console.error(error);

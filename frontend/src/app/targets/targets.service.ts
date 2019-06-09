@@ -25,11 +25,15 @@ export class TargetsService {
     return `${environment.api_url}/target/${id}/thumb.jpg`;
   }
 
-  mergeTargets(id: number, targets: number[]) {
-    return this.http.post<Target>(`${environment.api_url}/target/merge/${id}`, targets)
+  mergeTargets(id: number, targets: number[]): Observable<Target> {
+    return this.http.post<Target>(`${environment.api_url}/target/merge/${id}`, targets);
   }
 
-  deleteTarget(target: Target) {
-    return this.http.delete<Target>(`${environment.api_url}/target/${target.id}`);
+  postTarget(target: Target) {
+    return this.http.post<Target>(`${environment.api_url}/target/${target.id}`, target);
+  }
+
+  deleteTarget(target: Target): Observable<any> {
+    return this.http.delete(`${environment.api_url}/target/${target.id}`);
   }
 }
