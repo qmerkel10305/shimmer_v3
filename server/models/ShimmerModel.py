@@ -99,7 +99,7 @@ class ShimmerModel():
         coord2 = (target_region['b']['x'], target_region['b']['y'])
 
         result = self.queue.flight.insert_target(coord, coord2=coord2,
-                    image=image.image, target_type=target['target_type'],
+                    image=image.image, target_type=int(target['target_type']),
                     letter=target['letter'], shape=target['shape'],
                     background_color=target['shape_color'],
                     letter_color=target['letter_color'],

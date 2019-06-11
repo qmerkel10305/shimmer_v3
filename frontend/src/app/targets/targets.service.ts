@@ -24,4 +24,16 @@ export class TargetsService {
   getThumbnailURL(id: number){
     return `${environment.api_url}/target/${id}/thumb.jpg`;
   }
+
+  mergeTargets(id: number, targets: number[]): Observable<Target> {
+    return this.http.post<Target>(`${environment.api_url}/target/merge/${id}`, targets);
+  }
+
+  postTarget(target: Target) {
+    return this.http.post<Target>(`${environment.api_url}/target/${target.id}`, target);
+  }
+
+  deleteTarget(target: Target): Observable<any> {
+    return this.http.delete(`${environment.api_url}/target/${target.id}`);
+  }
 }

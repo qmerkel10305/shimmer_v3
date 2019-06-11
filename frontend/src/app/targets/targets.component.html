@@ -21,33 +21,35 @@
         </div>
 </div>
 <div style="height: 29px"></div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Merge</th>
-            <th>Target Picture</th>
-            <th>Target ID</th>
-            <th>Target Type</th>
-            <th>Target Shape</th>
-            <th>Shape Color</th>
-            <th>Shape Letter</th>
-            <th>Letter Color</th>
-            <th>Target Orientation</th>
-            <th>Notes</th>
+<div class="table-wrapper">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Checkbox</th>
+                <th>Target Picture</th>
+                <th>Target ID</th>
+                <th>Target Type</th>
+                <th>Target Shape</th>
+                <th>Shape Color</th>
+                <th>Shape Letter</th>
+                <th>Letter Color</th>
+                <th>Target Orientation</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tr *ngFor="let row of rows">
+            <td><input type="checkbox" [(ngModel)]="row.checked"></td>
+            <td class="targetThumb"><img src={{service.getThumbnailURL(row.target.id)}}></td>
+            <td>{{row.target.id}}</td>
+            <td>{{row.target.target_type}}</td>
+            <td *ngIf="row.showCharacteristics">{{row.target.shape}}</td>
+            <td *ngIf="row.showCharacteristics">{{row.target.shape_color}}</td>
+            <td *ngIf="row.showCharacteristics">{{row.target.letter}}</td>
+            <td *ngIf="row.showCharacteristics">{{row.target.letter_color}}</td>
+            <td *ngIf="row.showCharacteristics" colspan="2">{{row.target.orientation}}</td>
+            <td *ngIf="!row.showCharacteristics" colspan="7">{{row.target.notes}}</td>
         </tr>
-    </thead>
-    <tr *ngFor="let row of rows">
-       <td>
-            <input type="checkbox" [(ngModel)]="row.checked"/>
-        </td> 
-        <td class="targetThumb"><img src={{service.getThumbnailURL(row.target.id)}}></td>
-        <td>{{row.target.id}}</td>
-        <td>{{row.target.target_type}}</td>
-        <td *ngIf="!row.showCharactistics">{{row.target.shape}}</td>
-        <td *ngIf="!row.showCharactistics">{{row.target.shape_color}}</td>
-        <td *ngIf="!row.showCharactistics">{{row.target.letter}}</td>
-        <td *ngIf="!row.showCharactistics">{{row.target.letter_color}}</td>
-        <td *ngIf="!row.showCharactistics" colspan="2">{{row.target.orientation}}</td>
-        <td *ngIf="row.showCharactistics" colspan="6">{{row.target.notes}}</td>
-    </tr>
-</table>
+    </table>
+</div>
+<app-target-editor (windowClosed)="refresh()"></app-target-editor>
+<app-target-merger (windowClosed)="refresh()"></app-target-merger>

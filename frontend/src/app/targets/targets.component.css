@@ -5,8 +5,11 @@ table, th, td {
     border: 1px solid #666;
     border-collapse: collapse;
 }
+.table-wrapper {
+    overflow: auto;
+    height:100%;
+}
 table {
-    overflow: scroll;
     width:100%;
 }
 table td, table th {
