@@ -1,46 +1,5 @@
-<div id="draggable_windows">
-    <div id="size_alert" class="window">
-        <div class="window_menu">
-            <div class="window_close">x</div>
-            <div class="window_title">Warning</div>
-        </div>
-        <div class="window_content">
-            You are using a window smaller than what Shimmer is optimized for (800x600)
-        </div>
-    </div>
-</div>
-<div id="menu">
-        <div class="menu_logo">
-            <div class="menu_title">Sh<span style="color: red;">immer</span></div>
-            <div class="menu_list">
-                <a>File</a>
-                <div class="sub_menu">
-                    <button class="drop_button">View</button>
-                    <div class="sub_menu_item">
-                        <a href="/targets">Targets</a>
-                    </div>
-                </div>
-            </div>
-            </div>
-        <div class="menu_info">
-            <div class="menu_title" id="img_info">{{imageString}}</div>
-        </div>
-    </div>
 <canvas #shimmerCanvas (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" (mousemove)="mouseMove($event)" ></canvas>
 <app-target-classifier  (windowClosed)="unlock()"
                         (targetSubmitted)="targetSubmitted($event)"
                         (targetRegionSubmitted)="targetRegionSubmitted($event)">
 </app-target-classifier>
-
-<script src="/apiRequest.js" type="application/javascript"></script>
-<script src="/Dialog.js" type="application/javascript"></script>
-<script src="/TargetHandler.js" type="application/javascript"></script>
-<script src="/MouseHandler.js" type="application/javascript"></script>
-<script src="/Shimmer.js" type="application/javascript"></script>
-<script src="/ShimmerNav.js" type="application/javascript"></script>
-<script type="text/javascript" >
-  document.addEventListener("DOMContentLoaded", function(){
-    var app = new ShimmerNav('shimmer-canvas');
-    app.init();
-  });
-</script>

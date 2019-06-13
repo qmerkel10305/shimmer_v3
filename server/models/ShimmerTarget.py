@@ -37,7 +37,7 @@ class ShimmerTarget(JSONObject):
         if new_target["manual"] != True:
             raise ValueError("Only manual targets may be updated")
 
-        self.target.update_target_type(new_target["target_type"])
+        self.target.update_target_type(int(new_target["target_type"]))
         self.target.update_letter(new_target["letter"])
         self.target.update_letter_color(new_target["letter_color"])
         self.target.update_shape(new_target["shape"])
