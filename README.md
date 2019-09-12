@@ -1,33 +1,15 @@
-Shimmer
--------
+# Shimmer Target Viewer
+The shimmer target viewer is a node based web-app using Angular2 and flask.
+Software requirements:
+* Node.js
+* Provisioned vms
+* Angularjs (installable running `npm install -g @angular/cli`)
 
-TODO
-====
-- [ ] target creation / editing
-  - [x] add a target
-  - [ ] assign a shape and color to a target
-  - [ ] be able to erase targets
-  - [ ] be able to move targets
-- [ ] backend image / target serving
-  - [ ] be able to move through the images without reloading the page
-
-Online image viewer for ARC
-
-Static Web application -- RESTAPI --> backend
-                                Postgres triggers--^
-Python Flash socket serves image and data  
-
-Backend
-- python-flash app subscribes to postgres trigger for IMAGES table set up
-Frontend
-- GETs /image from  python-flask
-- when postgres gets a new image it calls python flash trigger
-  - [server sent event](https://www.w3schools.com/html/html5_serversentevents.asp) ?
-- user does **things** to image
-- user target data is given back to python-flask to store in a separate Postgres table
-
-Pros
-- via postgres trigger and server push events --> almost instant frontend updates
-- images served from existing volume --> no duplicate images
-- user data is saved in postgres table --> compelete selected targets history
-- multiple users can be connected and recieve live updates
+## Building the Frontend
+To build the frontend, navigate to `./frontend` and run `ng build`
+## Running the Frontend
+To run the frontend, navigate to `./frontend` and run `ng serve`
+Once this is complete, shimmer can accessed by going `localhost:4200`. This can be done on either the groundpc vm or your own machine.
+## Running the Backend
+To start up the backend run `python ./run.py` on the groundpc vm. 
+NOTE: This will not work on your local machine since it utilizes the ARC module.
