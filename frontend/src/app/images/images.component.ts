@@ -87,9 +87,21 @@ export class ImagesComponent implements AfterViewInit {
    * Render the image and all target regions
    */
   private render() {
-    const height = this.canvas.nativeElement.height = window.innerHeight;
-    const width = this.canvas.nativeElement.width = window.innerWidth;
+    let height = this.canvas.nativeElement.height = window.innerHeight;
+    let width = this.canvas.nativeElement.width = window.innerWidth;
     this.context.clearRect(0, 0, width, height);
+    console.log(this.imageElement.width + " " + this.imageElement.height);
+    const imageRatio = this.imageElement.width / this.imageElement.height;
+    console.log(imageRatio);
+    const windowRatio = width / height;
+
+    if (imageRatio < windowRatio) {
+      height = window.innerHeight;
+      width = window.innerHeight * imageRatio;
+    } else {
+      height = window.innerWidth / imageRatio;
+      width = window.innerWidth;
+    }
 
     this.context.drawImage(this.imageElement, 0, 0, width, height);
     this.image.targets.forEach((targetRegion: TargetRegion) => {
