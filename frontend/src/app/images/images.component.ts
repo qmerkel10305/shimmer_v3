@@ -103,7 +103,10 @@ export class ImagesComponent implements AfterViewInit {
       width = window.innerWidth;
     }
 
-    this.context.drawImage(this.imageElement, 0, 0, width, height);
+    let xdifference = window.innerWidth - width;
+    let ydifference = window.innerHeight - height;
+
+    this.context.drawImage(this.imageElement, xdifference / 2, ydifference / 2, width, height);
     this.image.targets.forEach((targetRegion: TargetRegion) => {
         this.renderTargetRegion(targetRegion);
     });
