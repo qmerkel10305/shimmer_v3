@@ -27,6 +27,10 @@ export class ImagesComponent implements AfterViewInit {
   private image: Image;
   public imageString: String;
 
+  private xDifference: number;
+  private yDifference: number;
+  private canvasElement: HTMLCanvasElement;
+
   @ViewChild('shimmerCanvas') private canvas: ElementRef;
   @ViewChild(TargetClassifierComponent) private classifierWindow: TargetClassifierComponent;
   constructor(private service: ImagesService) {
@@ -36,6 +40,7 @@ export class ImagesComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.canvasElement = this.canvas.nativeElement;
     this.context = this.canvas.nativeElement.getContext('2d');
     this.update();
   }
@@ -103,10 +108,10 @@ export class ImagesComponent implements AfterViewInit {
       width = window.innerWidth;
     }
 
-    let xdifference = window.innerWidth - width;
-    let ydifference = window.innerHeight - height;
+    this.xDifference = window.innerWidth - width;
+    this.yDifference = window.innerHeight - height;
 
-    this.context.drawImage(this.imageElement, xdifference / 2, ydifference / 2, width, height);
+    this.context.drawImage(this.imageElement, this.xDifference / 2, this.yDifference / 2, width, height);
     this.image.targets.forEach((targetRegion: TargetRegion) => {
         this.renderTargetRegion(targetRegion);
     });
