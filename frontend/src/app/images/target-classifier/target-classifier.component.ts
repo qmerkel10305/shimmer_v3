@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { TargetRegion } from 'types/targetRegion';
 import { Target } from 'types/target';
 import { Image } from 'types/image';
@@ -162,5 +162,14 @@ export class TargetClassifierComponent implements AfterViewInit {
         },  (error) => {
             console.error(error);
         });
+    }
+
+    @HostListener('document:keydown', ['$event'])
+    keyDown(event: KeyboardEvent){
+        switch(event.keyCode){
+            case 27: //Escape Key
+                this.close();
+                break;
+        }
     }
 }
