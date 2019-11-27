@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { TargetsService } from 'app/targets/targets.service';
 import { ImagesService } from 'app/images/images.service';
 import { Target } from 'types/target';
@@ -94,10 +94,17 @@ export class TargetEditorComponent implements AfterViewInit {
 
     showTargetAligner() {
         this.showProtractor = true;
-        console.log("Show Protractor");
     }
 
     hideTargetAligner() {
         this.showProtractor = false;
+    }
+    @HostListener('document:keydown', ['$event'])
+    keyDown(event: KeyboardEvent){
+        switch(event.keyCode){
+            case 27: //Escape Key
+                this.close();
+                break;
+        }
     }
 }
