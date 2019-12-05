@@ -174,7 +174,7 @@ export class ImagesComponent implements AfterViewInit {
     // translate coordinates from window to canvas to scaled picture
     const point = new Point(Math.round((event.x - this.xDifference) * (this.imageElement.width / this.imageWidth)),
       Math.round((event.y - this.yDifference) * (this.imageElement.height / this.imageHeight)));
-    console.log(JSON.stringify(point));
+
     this.image.targets.forEach((targetRegion: TargetRegion) => {
       if (targetRegion.contains(point)) {
         this.lock();
