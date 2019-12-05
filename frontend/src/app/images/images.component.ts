@@ -8,7 +8,7 @@ import { TargetRegion } from 'types/targetRegion';
 import { TargetClassifierComponent } from './target-classifier/target-classifier.component';
 import { Target } from 'types/target';
 
-import { HostListener } from "@angular/core";
+import { HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-images',
@@ -167,7 +167,7 @@ export class ImagesComponent implements AfterViewInit {
       // Exit if the target classifier window is showing
       return;
     }
-    if(event.x < this.xDifference || event.y < this.yDifference || 
+    if (event.x < this.xDifference || event.y < this.yDifference ||
       event.x > this.xDifference + this.imageWidth || event.y > this.yDifference + this.imageHeight) {
       return;
     }
