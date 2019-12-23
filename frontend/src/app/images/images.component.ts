@@ -91,27 +91,34 @@ export class ImagesComponent implements AfterViewInit {
   }
 
   /**
-   * Render the image and all target regions
+   * Render the image and all target regions.  Scales the image to preserve aspect ratio
    */
   private render() {
+    // Set image height and width and canvasElement height and width to the height and width of the window
+    // Image height and width will be reassigned later
     this.imageHeight = this.canvasElement.height = window.innerHeight;
     this.imageWidth = this.canvasElement.width = window.innerWidth;
 
     this.context.clearRect(0, 0, this.imageWidth, this.imageHeight);
 
+    // Calculates image and widow ratio to determine which dimension (height or width) we need to scale
     const imageRatio = this.imageElement.width / this.imageElement.height;
     const windowRatio = this.imageWidth / this.imageHeight;
 
+    // If the image has a larger width than height then reset the width
     if (imageRatio < windowRatio) {
       this.imageWidth = window.innerHeight * imageRatio;
-    } else {
+    } else { // If the image has a larger height than width then reset the height
       this.imageHeight = window.innerWidth / imageRatio;
     }
 
+    // Calculate the offset needed for each dimension
     this.xDifference = (window.innerWidth - this.imageWidth) / 2;
     this.yDifference = (window.innerHeight - this.imageHeight) / 2;
 
+    // Function that draws the image with offset and dimensions
     this.context.drawImage(this.imageElement, this.xDifference, this.yDifference, this.imageWidth, this.imageHeight);
+    // Render stored targets onto image
     this.image.targets.forEach((targetRegion: TargetRegion) => {
       this.renderTargetRegion(targetRegion);
     });
@@ -120,6 +127,9 @@ export class ImagesComponent implements AfterViewInit {
     }
   }
 
+  /**
+   * Render target regions along scaled picture
+  */
   private renderTargetRegion(targetRegion: TargetRegion) {
     this.context.fillStyle = 'rgba(127, 255, 127, 0.3)';
     const x1 = (targetRegion.a.x * (this.imageWidth / this.imageElement.width)) + this.xDifference;
@@ -167,6 +177,8 @@ export class ImagesComponent implements AfterViewInit {
       // Exit if the target classifier window is showing
       return;
     }
+
+    // Doesn't allow targets to be drawn in regions where the picture isn't when mouse is clicked
     if (event.x < this.xDifference || event.y < this.yDifference ||
       event.x > this.xDifference + this.imageWidth || event.y > this.yDifference + this.imageHeight) {
       return;
@@ -193,6 +205,7 @@ export class ImagesComponent implements AfterViewInit {
       return;
     }
     this.selecting = true;
+    // Define initial selection point for potential target region
     this.selection = new TargetRegion(new Point(
       Math.round((event.x - this.xDifference) * (this.imageElement.width / this.imageWidth)),
       Math.round((event.y - this.yDifference) * (this.imageElement.height / this.imageHeight))
@@ -205,24 +218,27 @@ export class ImagesComponent implements AfterViewInit {
       return;
     }
 
-    let x, y;
+    let x: number, y: number;
 
+    // Checks to see if x coordinate is greater than image width plus offset, if so sets x to edge of image
     if (event.x > this.imageWidth + this.xDifference) {
       x = this.imageWidth + this.xDifference;
-    } else if (event.x < this.xDifference) {
+    } else if (event.x < this.xDifference) { // Checks to see if x coordinate is in the offset, if so sets x to beginning of image
       x = this.xDifference;
-    } else {
+    } else { // Valid x coordinate
       x = event.x;
     }
 
+    // Checks to see if y coordinate is greater than image height plus offset, if so sets y to edge of image
     if (event.y > this.imageHeight + this.yDifference) {
       y = this.imageHeight + this.yDifference;
-    } else if ( event.y < this.yDifference) {
+    } else if (event.y < this.yDifference) { // Checks to see if y coordinate is in the offset, if so sets y to beginning of image
       y = this.yDifference;
-    } else {
+    } else { // Valid y coordinate
       y = event.y;
     }
 
+    // Intermediate point when mouse is moving
     this.selection.b = new Point(
       Math.round((x - this.xDifference) * (this.imageElement.width / this.imageWidth)),
       Math.round((y - this.yDifference) * (this.imageElement.height / this.imageHeight))
@@ -237,28 +253,32 @@ export class ImagesComponent implements AfterViewInit {
       return;
     }
     if (!this.selecting) {
+      // Exit if an area is not currently being selected
       return;
     }
 
-    let x, y;
+    let x: number, y: number;
 
+    // Checks to see if x coordinate is greater than image width plus offset, if so sets x to edge of image
     if (event.x > this.imageWidth + this.xDifference) {
       x = this.imageWidth + this.xDifference;
-    } else if (event.x < this.xDifference) {
+    } else if (event.x < this.xDifference) { // Checks to see if x coordinate is in the offset, if so sets x to beginning of image
       x = this.xDifference;
-    } else {
+    } else { // Valid x coordinate
       x = event.x;
     }
 
+    // Checks to see if y coordinate is greater than image height plus offset, if so sets y to edge of image
     if (event.y > this.imageHeight + this.yDifference) {
       y = this.imageHeight + this.yDifference;
-    } else if ( event.y < this.yDifference) {
+    } else if (event.y < this.yDifference) { // Checks to see if y coordinate is in the offset, if so sets y to beginning of image
       y = this.yDifference;
-    } else {
+    } else { // Valid y coordinate
       y = event.y;
     }
 
     this.selecting = false;
+    // Final point of the target region
     this.selection.b = new Point(
       Math.round((x - this.xDifference) * (this.imageElement.width / this.imageWidth)),
       Math.round((y - this.yDifference) * (this.imageElement.height / this.imageHeight))
@@ -295,7 +315,7 @@ export class ImagesComponent implements AfterViewInit {
         this.getImage(this.image.id - 1);
         break;
       case 38: // Up Arrow Key
-        var id = parseInt(prompt("Image id number?", "0"));
+        const id = parseInt(prompt("Image id number?", "0"));
         this.getImage(id);
         break;
       case 39: // Right Arrow Key
