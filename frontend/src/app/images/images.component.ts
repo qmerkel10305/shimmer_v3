@@ -307,18 +307,18 @@ export class ImagesComponent implements AfterViewInit {
     if (this.locked) {
       return;
     }
-    switch (event.keyCode) {
-      case 13: // Enter Key
+    switch (event.key) {
+      case 'Enter': // Enter Key
         this.update();
         break;
-      case 37: // Left Arrow Key
+      case 'ArrowLeft': // Left Arrow Key
         this.getImage(this.image.id - 1);
         break;
-      case 38: // Up Arrow Key
-        const id = parseInt(prompt("Image id number?", "0"));
+      case 'ArrowUp': // Up Arrow Key
+        const id = parseInt(prompt('Image id number?', '0'), 10);
         this.getImage(id);
         break;
-      case 39: // Right Arrow Key
+      case 'ArrowRight': // Right Arrow Key
         this.getImage(this.image.id + 1);
         break;
     }

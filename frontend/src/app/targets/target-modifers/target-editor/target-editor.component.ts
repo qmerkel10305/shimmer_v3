@@ -79,7 +79,7 @@ export class TargetEditorComponent implements AfterViewInit {
         this.resetFields();
     }
 
-    update(){
+    update() {
         this.tService.postTarget(this.target).subscribe((target: Target) => {
             this.close();
         }, (error) => {
@@ -87,7 +87,7 @@ export class TargetEditorComponent implements AfterViewInit {
         });
     }
 
-    discard(){
+    discard() {
         this.content.nativeElement.style = 'display: none';
         this.resetFields();
     }
@@ -100,9 +100,9 @@ export class TargetEditorComponent implements AfterViewInit {
         this.showProtractor = false;
     }
     @HostListener('document:keydown', ['$event'])
-    keyDown(event: KeyboardEvent){
-        switch(event.keyCode){
-            case 27: //Escape Key
+    keyDown(event: KeyboardEvent) {
+        switch (event.key) {
+            case 'Escape': // Escape Key
                 this.close();
                 break;
         }

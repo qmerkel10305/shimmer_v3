@@ -1,15 +1,15 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { TargetsService } from "./targets.service";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { TargetsService } from './targets.service';
 import { Target } from 'types/target';
-import { TargetEditorComponent } from "app/targets/target-modifers/target-editor/target-editor.component";
-import { TargetRow } from "types/targetRow";
-import { filter } from "rxjs/operators";
-import { TargetMergerComponent } from "./target-modifers/target-merger/target-merger.component";
+import { TargetEditorComponent } from 'app/targets/target-modifers/target-editor/target-editor.component';
+import { TargetRow } from 'types/targetRow';
+import { filter } from 'rxjs/operators';
+import { TargetMergerComponent } from './target-modifers/target-merger/target-merger.component';
 
 @Component({
-  selector: "app-targets",
-  templateUrl: "./targets.component.html",
-  styleUrls: ["./targets.component.css"]
+  selector: 'app-targets',
+  templateUrl: './targets.component.html',
+  styleUrls: ['./targets.component.css']
 })
 export class TargetsComponent implements OnInit {
   public rows: TargetRow[] = [];
@@ -25,47 +25,44 @@ export class TargetsComponent implements OnInit {
     this.refresh();
   }
 
-  merge(){
-    var filtered = this.rows.filter((row: TargetRow) => row.checked === true);
-    if(filtered.length >= 2){
-      var targets = [];
-      for(let row of filtered) {
+  merge() {
+    const filtered = this.rows.filter((row: TargetRow) => row.checked === true);
+    if (filtered.length >= 2) {
+      const targets = [];
+      for (const row of filtered) {
         targets.push(row.target);
       }
       this.mergeWindow.merge(targets);
-    }
-    else {
-      alert("Please select at least 2 targets");
+    } else {
+      alert('Please select at least 2 targets');
     }
   }
 
-  edit(){
-    var filtered = this.rows.filter((row: TargetRow) => row.checked === true);
-    if(filtered.length === 1){
+  edit() {
+    const filtered = this.rows.filter((row: TargetRow) => row.checked === true);
+    if (filtered.length === 1) {
       this.editWindow.edit(filtered[0].target);
-    }
-    else{
-      alert("Please select only 1 target");
+    } else {
+      alert('Please select only 1 target');
     }
   }
 
-  async delete(){
-    var filtered = this.rows.filter((row: TargetRow) => row.checked === true);
-    if(filter.length > 0 && confirm("Do you want to delete " + filtered.length + " targets?")) {
+  async delete() {
+    const filtered = this.rows.filter((row: TargetRow) => row.checked === true);
+    if (filter.length > 0 && confirm('Do you want to delete ' + filtered.length + ' targets?')) {
+    } else {
+      alert('Please select at least 1 target');
     }
-    else{
-      alert("Please select at least 1 target");
-    }
-    for(let target of filtered){
+    for (const target of filtered) {
       await this.service.deleteTarget(target.target).toPromise();
     }
     this.refresh();
   }
 
-  refresh(){
+  refresh() {
     this.rows = [];
     this.service.getAllTargets().subscribe((targets: Target[]) => {
-      for(let target of targets){
+      for (const target of targets) {
         this.rows.push(new TargetRow(target, false));
       }
     }, (error) => {

@@ -137,22 +137,22 @@ export class TargetClassifierComponent implements AfterViewInit {
         if (this.target.id === null) {
             // Create a new target and target region
             this.service.createTarget(this.image, this.target, this.targetRegion).subscribe((response: any) => {
-                let target: Target = response.target;
-                let targetRegion: TargetRegion = response.target_region;
+                const target: Target = response.target;
+                const targetRegion: TargetRegion = response.target_region;
                 this.targetSubmitted.emit(target);
                 this.targetRegionSubmitted.emit(targetRegion);
                 this.close();
             }, (error) => {
                 console.error(error);
             });
-        } else {
-            //this.service.putTarget(this.target).subscribe((target: Target) => {
-            //    this.targetSubmitted.emit(target);
-            //    this.close();
-            //}, (error) => {
-            //    console.error(error);
-            //});
-        }
+        } /*else {
+            this.service.putTarget(this.target).subscribe((target: Target) => {
+                this.targetSubmitted.emit(target);
+                this.close();
+            }, (error) => {
+                console.error(error);
+            });
+        } */
     }
 
     discard() {
@@ -165,9 +165,9 @@ export class TargetClassifierComponent implements AfterViewInit {
     }
 
     @HostListener('document:keydown', ['$event'])
-    keyDown(event: KeyboardEvent){
-        switch(event.keyCode){
-            case 27: //Escape Key
+    keyDown(event: KeyboardEvent) {
+        switch (event.key) {
+            case 'Escape': // Escape Key
                 this.close();
                 break;
         }

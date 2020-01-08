@@ -21,7 +21,7 @@ export class TargetsService {
     return this.http.get<Target[]>(`${environment.api_url}/target/`);
   }
 
-  getThumbnailURL(id: number){
+  getThumbnailURL(id: number) {
     return `${environment.api_url}/target/${id}/thumb.jpg`;
   }
 

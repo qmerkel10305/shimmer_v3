@@ -29,15 +29,15 @@ export class TargetMergerComponent implements AfterViewInit {
         this.targets = targets;
     }
 
-    close(){
+    close() {
         this.windowClosed.emit(true);
         this.content.nativeElement.style = 'display: none';
     }
-    
+
     select(id: number) {
-        var temp : number[] = [];
-        for(let target of this.targets) {
-            if(target.id != id){
+        const temp: number[] = [];
+        for (const target of this.targets) {
+            if (target.id !== id) {
                 temp.push(target.id);
             }
         }
@@ -48,9 +48,9 @@ export class TargetMergerComponent implements AfterViewInit {
     }
 
     @HostListener('document:keydown', ['$event'])
-    keyDown(event: KeyboardEvent){
-        switch(event.keyCode){
-            case 27: //Escape Key
+    keyDown(event: KeyboardEvent) {
+        switch (event.key) {
+            case 'Escape': // Escape Key
                 this.close();
                 break;
         }
