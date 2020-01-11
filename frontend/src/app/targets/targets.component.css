@@ -17,7 +17,7 @@ table td, table th {
     text-align: left;
     background: white;
 }
-.targetThumb {
+img {
     width: 200px;
     height: 200px;
 }
@@ -30,4 +30,9 @@ table th.notes {
 
 table th.target_picture {
     width: 200px
+}
+
+.pictureHeader {
+    width: 200px;
+    height: 200px;
 }
