@@ -39,7 +39,7 @@
         </thead>
         <tr *ngFor="let row of rows">
             <td><input type="checkbox" [(ngModel)]="row.checked"></td>
-            <td class="targetThumb"><img src={{service.getThumbnailURL(row.target.id)}}></td>
+            <td class="pictureHeader"><img src={{service.getThumbnailURL(row.target.id)}}></td>
             <td>{{row.target.id}}</td>
             <td>{{row.target.target_type}}</td>
             <td *ngIf="row.showCharacteristics">{{row.target.shape}}</td>
