@@ -12,7 +12,6 @@ class ShimmerTarget(JSONObject):
         regions = self.target.get_target_regions()
         for region in regions:
             region.delete_region()
-        self.target.delete_target()
 
     ############################################################################
     ############################ JSONObject Methods ############################
