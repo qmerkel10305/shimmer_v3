@@ -290,9 +290,15 @@ export class ImagesComponent implements AfterViewInit {
     }
     if (this.selection.a.x > this.selection.b.x) {
       // This ensures a is smaller than b
-      const temp = this.selection.a;
-      this.selection.a = this.selection.b;
-      this.selection.b = temp;
+      const x_temp = this.selection.a.x;
+      this.selection.a.x = this.selection.b.x;
+      this.selection.b.x = x_temp;
+    }
+    if (this.selection.a.y > this.selection.b.y) {
+      // This ensures a is smaller than b
+      const y_temp = this.selection.a.y;
+      this.selection.a.y = this.selection.b.y;
+      this.selection.b.y = y_temp;
     }
 
     this.lock();
