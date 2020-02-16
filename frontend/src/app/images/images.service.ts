@@ -34,9 +34,9 @@ export class ImagesService {
   }
 
   createTarget(image: Image, target: Target, targetRegion: TargetRegion): Observable<any> {
-    let submit_object: any = {
-      "target": target,
-      "target_region": targetRegion
+    const submit_object: any = {
+      'target': target,
+      'target_region': targetRegion
     }
     return this.http.post<any>(`${environment.api_url}/image/${image.id}/target`, submit_object);
   }
