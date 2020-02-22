@@ -1,4 +1,8 @@
 import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+
+import { switchMap } from 'rxjs/operators';
+
 import { ImagesService } from './images.service';
 
 import { Point } from 'types/point';
@@ -35,7 +39,11 @@ export class ImagesComponent implements AfterViewInit {
 
   @ViewChild('shimmerCanvas') private canvas: ElementRef;
   @ViewChild(TargetClassifierComponent) private classifierWindow: TargetClassifierComponent;
-  constructor(private service: ImagesService) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private service: ImagesService
+  ) {
     this.locked = false;
     this.selecting = false;
     this.selection = null;
@@ -44,50 +52,45 @@ export class ImagesComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.canvasElement = this.canvas.nativeElement;
     this.context = this.canvas.nativeElement.getContext('2d');
-    this.update();
+    this.route.paramMap.subscribe(
+      (params: ParamMap) => {
+        const id: string = params.get('id');
+        if (id === "next") {
+          this.loadNextImage();
+          return;
+        }
+        this.service.getImage(parseInt(id)).subscribe(
+          (image: Image) => {
+            this.image = image;
+            this.imageString = 'Image Id: ' + image.id.toString();
+            this.imageElement = new (window as any).Image();
+            this.imageElement.src = this.service.getImageURL(image);
+            this.imageElement.onload = () => {
+              this.render();
+            };
+          },
+          (error: any) => {
+            alert('Failed to load image: ' + error.message);
+            console.error(error);
+          }
+        )
+      }
+    );
   }
 
-  update() {
+  /**
+   * Redirect to the next image from the server
+   */
+  private loadNextImage() {
     this.service.getNext().subscribe(
       (image: Image) => {
-        this.image = image;
-        this.imageString = 'Image Id: ' + image.id.toString();
-        this.imageElement = new (window as any).Image();
-        this.imageElement.src = this.service.getImageURL(image);
-        this.imageElement.onload = () => {
-          this.render();
-        };
+        this.router.navigate([`/images/${image.id}`]);
       },
       (error: any) => {
         alert('Failed to load next image: ' + error.message);
         console.error(error);
       }
     );
-  }
-
-  /**
-   * Uses the service getImage to subscribe to the selected image
-   * @param id the id of the image to get
-   */
-  getImage(id) {
-    id = Math.round(id);
-    if (!isNaN(id) && id >= 0) {
-      this.service.getImage(id).subscribe(
-        (image: Image) => {
-          this.image = image;
-          this.imageString = 'Image Id: ' + image.id.toString();
-          this.imageElement = new (window as any).Image();
-          this.imageElement.src = this.service.getImageURL(image);
-          this.imageElement.onload = () => {
-            this.render();
-          };
-        },
-        (error: any) => {
-          alert('Failed to load next image: ' + error.message);
-          console.error(error);
-        }
-      );
-    }
   }
 
   /**
@@ -315,17 +318,17 @@ export class ImagesComponent implements AfterViewInit {
     }
     switch (event.key) {
       case 'Enter': // Enter Key
-        this.update();
+        this.loadNextImage();
         break;
       case 'ArrowLeft': // Left Arrow Key
-        this.getImage(this.image.id - 1);
+        this.router.navigate([`/images/${this.image.id - 1}`]);
         break;
       case 'ArrowUp': // Up Arrow Key
         const id = parseInt(prompt('Image id number?', '0'), 10);
-        this.getImage(id);
+        this.router.navigate([`/images/${id}`]);
         break;
       case 'ArrowRight': // Right Arrow Key
-        this.getImage(this.image.id + 1);
+        this.router.navigate([`/images/${this.image.id + 1}`]);
         break;
     }
   }

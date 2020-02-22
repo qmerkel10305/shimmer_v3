@@ -12,6 +12,11 @@ const routes: Routes = [
     },
     {
         path: 'images',
+        redirectTo: '/images/next',
+        pathMatch: 'full'
+    },
+    {
+        path: 'images/:id',
         component: ImagesComponent
     },
     {
@@ -21,7 +26,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forRoot(
+        routes,
+        // For debugging only
+        // { enableTracing: true }
+    )],
+    exports: [RouterModule]
 })
 export class AppRoutingModule { }
