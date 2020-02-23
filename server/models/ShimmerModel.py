@@ -146,3 +146,9 @@ class ShimmerModel():
         for old_id in target_ids:
             old_target = self.tgt(old_id)
             arc_target.absorb_target(old_target.target)
+
+    def get_flight_id(self):
+        """
+        Gets the current flight id
+        """
+        return self.queue.get_flight_id()

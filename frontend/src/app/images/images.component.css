@@ -1,0 +1,13 @@
+#smallMenu {
+    color: white;
+    text-align: right;
+    display: inline;
+    top:0;
+    position: absolute;
+    z-index: 3;
+}
+
+.text span{
+    padding: 7px;
+    background-color: rgba(0, 0, 0, 0.8);
+}

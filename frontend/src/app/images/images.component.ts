@@ -30,6 +30,8 @@ export class ImagesComponent implements AfterViewInit {
   private selection: TargetRegion;
   private image: Image;
   public imageString: String;
+  public flightString: String;
+
 
   private xDifference: number;
   private yDifference: number;
@@ -50,6 +52,15 @@ export class ImagesComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.service.getFlightID().subscribe(
+      (temp: String) => {
+        this.flightString = 'Flight ID: ' + temp;
+      },
+      (error: any) => {
+        alert('Failed to get flight id: ' + error.message);
+        console.error(error);
+      }
+    );
     this.canvasElement = this.canvas.nativeElement;
     this.context = this.canvas.nativeElement.getContext('2d');
     this.route.paramMap.subscribe(

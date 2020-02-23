@@ -33,6 +33,10 @@ export class ImagesService {
     return this.http.get<Target>(`${environment.api_url}/target/${id}`);
   }
 
+  getFlightID(): Observable<string> {
+    return this.http.get<string>(`${environment.api_url}/flight`);
+  }
+
   createTarget(image: Image, target: Target, targetRegion: TargetRegion): Observable<any> {
     const submit_object: any = {
       'target': target,

@@ -36,3 +36,11 @@ table th.target_picture {
     width: 200px;
     height: 200px;
 }
+
+.spacing {
+    height: 29px;
+}
+
+span {
+    color: red;
+}

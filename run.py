@@ -4,7 +4,7 @@ import json
 from flask import Flask, request, send_file, redirect, url_for
 from flask_cors import CORS
 
-from server.models.GlobalModel import init_model
+from server.models.GlobalModel import init_model, get_model
 from server.controllers.ImageController import image_api
 from server.controllers.TargetController import target_api
 
@@ -52,6 +52,13 @@ def next_img():
     Redirect to images/next
     """
     return redirect(url_for('image_api.getNext'))
+
+@app.route('/flight')
+def flight_id():
+    """
+    Returns the flight id number
+    """
+    return str(get_model().get_flight_id())
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(epilog="You must specify either flight or directory.")
