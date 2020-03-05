@@ -56,7 +56,6 @@ def postImageTarget(idx):
 @image_api.route("/<int:idx>/region/<int:tr_id>", methods=['GET'])
 @serialize
 def getTargetRegion(idx, tr_id):
-
     try:
         for target_region in get_model().img(idx).get_target_regions():
             if target_region.id == tr_id:
@@ -75,3 +74,17 @@ def deleteTargetRegion(idx, tr_id):
         abort(404)
     except KeyError:
         abort(404)
+
+
+@image_api.route("/<int:idx>/targets-near", methods=['GET'])
+@serialize
+def getTargetsNear(idx):
+    img = get_model().img(idx).image
+    x = float(request.args.get("x"))
+    y = float(request.args.get("y"))
+    distance = float(request.args.get("distance", 50))
+    coord = img.coord(x, y, to_wgs84=False)
+    targets = get_model().get_targets_near(coord, distance)
+    if targets is None:
+        abort(406)
+    return targets

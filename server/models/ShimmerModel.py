@@ -152,3 +152,9 @@ class ShimmerModel():
         Gets the current flight id
         """
         return self.queue.get_flight_id()
+
+    def get_targets_near(self, coord, distance):
+        targets = self.queue.flight.targets_near(coord, distance)
+        if targets is None:
+            return None
+        return [ShimmerTarget(target) for target in targets]
