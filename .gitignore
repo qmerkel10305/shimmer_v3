@@ -3,3 +3,6 @@ __pycache__
 *.pyc
 static
 node_modules
+
+# Virtual environment for dependencies
+venv/
