@@ -36,3 +36,10 @@ def create_mock_target_region_and_dict(a={'x': 0, 'y': 0}, b={'x': 1, 'y': 1}):
                                    coord1=(a['x'], a['y']), coord2=(b['x'], b['y']))
     mock_target.image = MockImage([mock_target])
     return dict_mock_target, mock_target
+
+def create_mock_incorrect_region(a={'x': 0, 'y': 1}, b={'x': 1, 'y': 0}):
+    mock_target = MockTargetRegion(1, target=create_mock_target(),image=None, flight=MockFlight(mock_directory=True),
+                               coord1=(a['x'], a['y']), coord2=(b['x'], b['y']))
+    mock_target.image = MockImage([mock_target])
+    return mock_target
+

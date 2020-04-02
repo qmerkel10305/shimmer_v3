@@ -3,7 +3,7 @@ import json
 
 from server.models.ShimmerTargetRegion import ShimmerTargetRegion
 
-from generate import create_mock_target_region_and_dict
+from generate import create_mock_target_region_and_dict, create_mock_incorrect_region
 
 class TestShimmerImage(unittest.TestCase):
     def setUp(self):
@@ -18,3 +18,10 @@ class TestShimmerImage(unittest.TestCase):
         target_region = self.target_region.serialize()
         self.assertEquals(target_region["id"], 1)
         # TODO Test other attributes
+
+    def testCheck_Corners(self):
+        self.assertEquals(False, self.target_region.check_corners())
+        test = create_mock_incorrect_region()
+        test_region = ShimmerTargetRegion(test)
+        self.assertEquals(True, test_region.check_corners())
+

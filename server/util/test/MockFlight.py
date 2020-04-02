@@ -2,7 +2,7 @@ import os
 import tempfile
 import atexit
 
-from ARC.Flight import FlightCore
+from ARC.flight import FlightCore
 
 from server.util.test.MockImage import MockImage
 from server.util.test.MockTarget import MockTarget
@@ -20,6 +20,9 @@ class MockFlight(FlightCore):
             self.folder = self.mock_dir.name
             os.mkdir(os.path.join(self.folder, "targets"))
             atexit.register(self.tempfile_cleanup)
+
+    def __repr__(self):
+        return "MockFlight: {} ::: {}".format(self._images, self._targets)
 
     def image(self, image_id):
         for img in self._images:
