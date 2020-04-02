@@ -60,11 +60,13 @@
 .targetThumb {
     position: fixed;
     height: 150px;
+    width: 150px;
     z-index: -1;
 }
 
 .targetAligner {
     height: 150px;
+    width: 150px;
     z-index: 1; 
     position: fixed;
 }
