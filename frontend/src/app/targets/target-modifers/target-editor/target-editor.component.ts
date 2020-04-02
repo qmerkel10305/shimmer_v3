@@ -62,7 +62,7 @@ export class TargetEditorComponent implements AfterViewInit {
         this.content.nativeElement.style = 'display: none';
 
         this.imageElement = new (window as any).Image();
-        this.imageElement.src = 'assets/Protractor.png';
+        this.imageElement.src = 'assets/Protractor_White.png';
         this.imageWidth = this.canvasElement.width = 150;
         this.imageHeight = this.canvasElement.height = 150;
         this.offsetX = this.imageWidth / 2;
