@@ -28,6 +28,11 @@ class MockTarget(object):
 
         self._deleted = False
 
+    def __repr__(self):
+        if self._deleted:
+            return "Deleted MockTarget"
+        return "MockTarget {}: {}, {}, {}, {}, {}, {}, {}, {}, {}. {}, {}, {}".format(self.target_id, self.target_type, self.letter, self.letter_color, self.shape, self.background_color, self.orientation, self.notes, self.manual, self.target_regions, self.image, self.flight, self.thumbnail)
+
     def update_target_type(self, value):
         self.target_type = value
 
