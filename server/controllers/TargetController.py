@@ -59,3 +59,11 @@ def deleteTarget(target_id):
     Delete the target with the given id
     """
     get_model().delete_target(target_id)
+
+@target_api.route("/<int:target_id>/regions", methods=['GET'])
+@serialize
+def getTargetRegions(target_id):
+    """
+    Gets the target regions of a target id
+    """
+    return get_model().get_target_regions(target_id)

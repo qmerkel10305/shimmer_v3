@@ -152,3 +152,13 @@ class ShimmerModel():
         Gets the current flight id
         """
         return self.queue.get_flight_id()
+        
+    def get_target_regions(self, target_id):
+        """
+        Gets the target regions for a target
+
+        Arguments:
+            target_id: the target to get the regions of
+        """
+        target = self.tgt(target_id)
+        return [ ShimmerTargetRegion(region) for region in target.target.get_target_regions() ]
