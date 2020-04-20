@@ -74,4 +74,4 @@ def getImageShimmerID(image_id):
     Gets the id number of an image form the database number
     Used with target regions
     """
-    return get_model().get_shimmer_image_id(image_id)
+    return str(get_model().get_shimmer_image_id(image_id))
