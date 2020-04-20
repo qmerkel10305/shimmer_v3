@@ -162,3 +162,16 @@ class ShimmerModel():
         """
         target = self.tgt(target_id)
         return [ ShimmerTargetRegion(region) for region in target.target.get_target_regions() ]
+
+    def get_shimmer_image_id(self, data_id):
+        """
+        Searches through the image_ids numbers to see if one exists with that number
+        Otherwise returns -1
+
+        Arguments:
+            data_id: the database id for an image
+        """
+        for i, id in enumerate(self.image_ids):
+            if(id == data_id):
+                return i
+        return -1

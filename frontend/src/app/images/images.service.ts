@@ -45,6 +45,10 @@ export class ImagesService {
     return this.http.post<any>(`${environment.api_url}/image/${image.id}/target`, submit_object);
   }
 
+  getShimmerImageID(data_id: number): Observable<string> {
+    return this.http.get<string>(`${environment.api_url}/target/database/image/${data_id}`);
+  }
+
   deleteTargetRegion(image: Image, targetRegion: TargetRegion): Observable<TargetRegion> {
     return this.http.delete<TargetRegion>(`${environment.api_url}/image/${image.id}/region/${targetRegion.id}`);
   }

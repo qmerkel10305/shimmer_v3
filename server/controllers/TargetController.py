@@ -67,3 +67,11 @@ def getTargetRegions(target_id):
     Gets the target regions of a target id
     """
     return get_model().get_target_regions(target_id)
+
+@target_api.route("/database/image/<int:image_id>")
+def getImageShimmerID(image_id):
+    """
+    Gets the id number of an image form the database number
+    Used with target regions
+    """
+    return get_model().get_shimmer_image_id(image_id)
