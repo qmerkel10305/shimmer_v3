@@ -28,6 +28,7 @@
                 <th>Checkbox</th>
                 <th>Target Picture</th>
                 <th>Target ID</th>
+                <th>Target Regions</th>
                 <th>Target Type</th>
                 <th>Target Shape</th>
                 <th>Shape Color</th>
@@ -41,6 +42,11 @@
             <td><input type="checkbox" [(ngModel)]="row.checked"></td>
             <td class="pictureHeader"><img src={{service.getThumbnailURL(row.target.id)}}></td>
             <td>{{row.target.id}}</td>
+            <td>
+                <li *ngFor="let region of row.regions">
+                    <a href="/images/{{region.image_id}}">{{region.id}}</a>
+                </li>
+            </td>
             <td>{{row.target.target_type}}</td>
             <td *ngIf="row.showCharacteristics">{{row.target.shape}}</td>
             <td *ngIf="row.showCharacteristics">{{row.target.shape_color}}</td>

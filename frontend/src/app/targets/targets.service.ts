@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 
 import { Target } from 'types/target';
+import { TargetRegion } from 'types/targetRegion';
 
 @Injectable({
   providedIn: 'root'
@@ -35,5 +36,9 @@ export class TargetsService {
 
   deleteTarget(target: Target): Observable<any> {
     return this.http.delete(`${environment.api_url}/target/${target.id}`);
+  }
+
+  getTargetRegions(target_id: number):  Observable<TargetRegion[]> {
+    return this.http.get<TargetRegion[]>(`${environment.api_url}/target/${target_id}/regions`);
   }
 }

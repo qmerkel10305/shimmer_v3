@@ -3,6 +3,7 @@ import { TargetsService } from 'app/targets/targets.service';
 import { ImagesService } from 'app/images/images.service';
 import { Target } from 'types/target';
 import { Image } from 'types/image';
+import { TargetRegion } from 'types/targetRegion';
 
 @Component({
     selector: 'app-target-editor',

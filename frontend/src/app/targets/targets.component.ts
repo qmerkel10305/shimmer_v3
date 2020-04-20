@@ -3,6 +3,7 @@ import { TargetsService } from './targets.service';
 import { Target } from 'types/target';
 import { TargetEditorComponent } from 'app/targets/target-modifers/target-editor/target-editor.component';
 import { TargetRow } from 'types/targetRow';
+import { TargetRegion } from 'types/targetRegion';
 import { filter } from 'rxjs/operators';
 import { TargetMergerComponent } from './target-modifers/target-merger/target-merger.component';
 
@@ -63,7 +64,9 @@ export class TargetsComponent implements OnInit {
     this.rows = [];
     this.service.getAllTargets().subscribe((targets: Target[]) => {
       for (const target of targets) {
-        this.rows.push(new TargetRow(target, false));
+        this.service.getTargetRegions(target.id).subscribe((regions: TargetRegion[]) => {
+          this.rows.push(new TargetRow(target, false, regions));
+        });
       }
     }, (error) => {
       console.error(error);
