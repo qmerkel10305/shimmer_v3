@@ -41,4 +41,9 @@ export class TargetsService {
   getTargetRegions(target_id: number):  Observable<TargetRegion[]> {
     return this.http.get<TargetRegion[]>(`${environment.api_url}/target/${target_id}/regions`);
   }
+
+  getShimmerImageID(data_id: number): Observable<string> {
+    return this.http.get<string>(`${environment.api_url}/target/database/image/${data_id}`);
+  }
 }
+

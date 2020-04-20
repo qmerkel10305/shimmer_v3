@@ -65,6 +65,11 @@ export class TargetsComponent implements OnInit {
     this.service.getAllTargets().subscribe((targets: Target[]) => {
       for (const target of targets) {
         this.service.getTargetRegions(target.id).subscribe((regions: TargetRegion[]) => {
+          for (let i = 0; i < regions.length; i++) {
+            this.service.getShimmerImageID(regions[i].image_id).subscribe((image_id: string) => {
+              regions[i].image_id = parseInt(image_id, 10);
+            });
+          }
           this.rows.push(new TargetRow(target, false, regions));
         });
       }
