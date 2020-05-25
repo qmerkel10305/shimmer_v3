@@ -26,17 +26,25 @@ export class TargetsComponent implements OnInit {
     this.refresh();
   }
 
-  merge() {
+  async merge() {
     const filtered = this.rows.filter((row: TargetRow) => row.checked === true);
     if (filtered.length >= 2) {
       const targets = [];
-      for (const row of filtered) {
-        targets.push(row.target);
+      let row = filtered[0];
+      for (const i of filtered) {
+        if (i.regions.length < row.regions.length) {
+          targets.push(i.target.id);
+        } else if (row !== i) {
+          targets.push(row.target.id);
+          row = i;
+        }
       }
-      this.mergeWindow.merge(targets);
+      await this.service.mergeTargets(row.target.id, targets).toPromise();
+      // this.mergeWindow.merge(targets);
     } else {
       alert('Please select at least 2 targets');
     }
+    this.refresh();
   }
 
   edit() {
@@ -51,11 +59,11 @@ export class TargetsComponent implements OnInit {
   async delete() {
     const filtered = this.rows.filter((row: TargetRow) => row.checked === true);
     if (filter.length > 0 && confirm('Do you want to delete ' + filtered.length + ' targets?')) {
+      for (const target of filtered) {
+        await this.service.deleteTarget(target.target).toPromise();
+      }
     } else {
       alert('Please select at least 1 target');
-    }
-    for (const target of filtered) {
-      await this.service.deleteTarget(target.target).toPromise();
     }
     this.refresh();
   }
