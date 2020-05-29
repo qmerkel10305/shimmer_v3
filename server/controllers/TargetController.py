@@ -8,6 +8,7 @@ from server.models.ShimmerTarget import ShimmerTarget
 from server.util.decorators import serialize
 
 target_api = Blueprint('target_api', __name__)
+region_api = Blueprint('region_api', __name__)
 
 @target_api.errorhandler(ValueError)
 def handle_value_error(error):
@@ -26,6 +27,10 @@ def getAllTargets():
 @serialize
 def getTarget(id):
     return get_model().tgt(id)
+
+@target_api.route("/<int:target_id>/regions/<int:region_id>/thumb.jpg", methods=['GET'])
+def getRegionThumbnail(target_id, region_id):
+    return send_file(open(get_model().get_region_from_target(target_id, region_id).thumbnail_path, 'rb'), mimetype='image/jpg')
 
 @target_api.route("/<int:id>/thumb.jpg", methods=['GET'])
 def getTargetThumbnail(id):

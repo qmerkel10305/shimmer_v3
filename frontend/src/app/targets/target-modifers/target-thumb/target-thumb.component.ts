@@ -1,16 +1,18 @@
 import { Component, Output, EventEmitter, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { Target } from 'types/target';
+import { TargetRegion } from 'types/targetRegion';
 import { TargetsService } from 'app/targets/targets.service';
 
 
 @Component({
-    selector: 'app-target-merger',
-    templateUrl: './target-merger.component.html',
-    styleUrls: ['./target-merger.component.css']
+    selector: 'app-target-thumb',
+    templateUrl: './target-thumb.component.html',
+    styleUrls: ['./target-thumb.component.css']
 })
-export class TargetMergerComponent implements AfterViewInit {
+export class TargetThumbComponent implements AfterViewInit {
 
-    targets: Target[];
+    target: Target;
+    regions: TargetRegion[]
 
     @ViewChild('mergeTargets') private content: ElementRef;
 
@@ -24,9 +26,12 @@ export class TargetMergerComponent implements AfterViewInit {
         this.content.nativeElement.style = 'display: none';
     }
 
-    merge(targets: Target[]) {
+    thumb(target: Target) {
         this.content.nativeElement.style = 'display: absolute';
-        this.targets = targets;
+        this.target = target;
+        this.tService.getTargetRegions(target.id).subscribe((regions: TargetRegion[]) => {
+            this.regions = regions;
+        });
     }
 
     close() {
@@ -35,16 +40,7 @@ export class TargetMergerComponent implements AfterViewInit {
     }
 
     select(id: number) {
-        const temp: number[] = [];
-        for (const target of this.targets) {
-            if (target.id !== id) {
-                temp.push(target.id);
-            }
-        }
-        this.tService.mergeTargets(id, temp).subscribe((target: Target) => {
-            console.log(target);
-            this.close();
-        });
+        console.log(id);
     }
 
     @HostListener('document:keydown', ['$event'])

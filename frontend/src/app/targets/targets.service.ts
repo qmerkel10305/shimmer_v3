@@ -22,8 +22,12 @@ export class TargetsService {
     return this.http.get<Target[]>(`${environment.api_url}/target/`);
   }
 
-  getThumbnailURL(id: number) {
+  getTargetThumbnailURL(id: number) {
     return `${environment.api_url}/target/${id}/thumb.jpg`;
+  }
+
+  getRegionThumbnailURL(target_id: number, region_id: number) {
+    return `${environment.api_url}/target/${target_id}/regions/${region_id}/thumb.jpg`;
   }
 
   mergeTargets(id: number, targets: number[]): Observable<Target> {

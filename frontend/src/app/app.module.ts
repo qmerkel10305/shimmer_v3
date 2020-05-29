@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,7 +10,7 @@ import { ImagesComponent } from './images/images.component';
 import { HomeComponent } from './home/home.component';
 import { TargetClassifierComponent } from './images/target-classifier/target-classifier.component';
 import { TargetEditorComponent } from './targets/target-modifers/target-editor/target-editor.component';
-import { TargetMergerComponent } from './targets/target-modifers/target-merger/target-merger.component';
+import { TargetThumbComponent } from './targets/target-modifers/target-thumb/target-thumb.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +20,7 @@ import { TargetMergerComponent } from './targets/target-modifers/target-merger/t
     HomeComponent,
     TargetClassifierComponent,
     TargetEditorComponent,
-    TargetMergerComponent
+    TargetThumbComponent
   ],
   imports: [
     BrowserModule,

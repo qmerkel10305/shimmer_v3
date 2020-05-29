@@ -8,6 +8,7 @@
                 <div class="sub_menu_item">
                     <button (click)="edit()">Edit</button>
                     <button (click)="merge()">Merge</button>
+                    <button (click)="thumb()">Thumb</button>
                     <button (click)="delete()">Delete</button>
                 </div>
             </div>
@@ -58,4 +59,4 @@
     </table>
 </div>
 <app-target-editor (windowClosed)="refresh()"></app-target-editor>
-<app-target-merger (windowClosed)="refresh()"></app-target-merger>
+<app-target-thumb (windowClosed)="refresh()"></app-target-thumb>

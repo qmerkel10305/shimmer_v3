@@ -1,4 +1,5 @@
 import cv2
+import os
 
 from server.util.JSONObject import JSONObject
 
@@ -6,6 +7,7 @@ from server.util.JSONObject import JSONObject
 class ShimmerTargetRegion(JSONObject):
     def __init__(self, target_region):
         self.target_region = target_region
+        self.thumbnail_path = self.get_thumbnail_if_exists()
 
     @property
     def id(self):
@@ -20,10 +22,25 @@ class ShimmerTargetRegion(JSONObject):
         crop_img = tgtimage[int(self.target_region.coord1[1]):int(self.target_region.coord2[1]),
                             int(self.target_region.coord1[0]):int(self.target_region.coord2[0])]
         # Save the cropped image
-        thumbnail_path = self.target_region.flight.folder + "/targets/target_" + \
+        region_path = self.target_region.flight.folder + "/regions/region_" + \
             str(self.target_region.target_region_id) + ".jpg"
-        cv2.imwrite(thumbnail_path, crop_img)
-        self.target_region.target.update_thumbnail(thumbnail_path)
+        target_path = self.target_region.flight.folder + "/targets/target_" + \
+            str(self.target_region.target_region_id) + ".jpg"
+        cv2.imwrite(region_path, crop_img)
+        os.symlink(region_path, target_path)
+        self.target_region.target.update_thumbnail(target_path)
+
+    def get_thumbnail_if_exists(self):
+        thumbnail_path = self.target_region.flight.folder + "/regions/region_" + \
+            str(self.target_region.target_region_id) + ".jpg"
+        if not os.path.exists(thumbnail_path):
+            self.create_thumbnail()
+        return thumbnail_path
+
+    def delete_thumbnail(self):
+        if self.thumbnail_path and os.path.exists(self.thumbnail_path):
+            os.remove(self.thumbnail_path)
+            
 
     ############################################################################
     ############################ JSONObject Methods ############################

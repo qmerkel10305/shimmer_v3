@@ -5,7 +5,7 @@ import { TargetEditorComponent } from 'app/targets/target-modifers/target-editor
 import { TargetRow } from 'types/targetRow';
 import { TargetRegion } from 'types/targetRegion';
 import { filter } from 'rxjs/operators';
-import { TargetMergerComponent } from './target-modifers/target-merger/target-merger.component';
+import { TargetThumbComponent } from './target-modifers/target-thumb/target-thumb.component';
 
 @Component({
   selector: 'app-targets',
@@ -18,7 +18,7 @@ export class TargetsComponent implements OnInit {
   showTargetFields = true;
 
   @ViewChild(TargetEditorComponent) private editWindow: TargetEditorComponent;
-  @ViewChild(TargetMergerComponent) private mergeWindow: TargetMergerComponent;
+  @ViewChild(TargetThumbComponent) private thumbWindow: TargetThumbComponent;
   constructor(private service: TargetsService) {
   }
 
@@ -51,6 +51,15 @@ export class TargetsComponent implements OnInit {
     const filtered = this.rows.filter((row: TargetRow) => row.checked === true);
     if (filtered.length === 1) {
       this.editWindow.edit(filtered[0].target);
+    } else {
+      alert('Please select only 1 target');
+    }
+  }
+
+  thumb() {
+    const filtered = this.rows.filter((row: TargetRow) => row.checked === true);
+    if (filtered.length === 1) {
+      this.thumbWindow.thumb(filtered[0].target);
     } else {
       alert('Please select only 1 target');
     }

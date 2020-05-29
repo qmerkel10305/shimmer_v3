@@ -175,3 +175,17 @@ class ShimmerModel():
             if(id == data_id):
                 return i
         return -1
+
+    def get_region_from_target(self, target_id, region_id):
+        """
+        Gets a reference to a target_region from a target
+        Used to get the region thumbnail
+
+        Arguments:
+            target_id: the id of the target
+            region_id: the id of the region
+        """
+        target = self.tgt(target_id)
+        for region in target.target.get_target_regions():
+            if region_id == region.target_region_id:
+                return ShimmerTargetRegion(region) 
