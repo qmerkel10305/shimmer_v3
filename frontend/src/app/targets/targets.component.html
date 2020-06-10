@@ -8,6 +8,7 @@
                 <div class="sub_menu_item">
                     <button (click)="edit()">Edit</button>
                     <button (click)="merge()">Merge</button>
+                    <button (click)="thumb()">Thumb</button>
                     <button (click)="delete()">Delete</button>
                 </div>
             </div>
@@ -28,6 +29,7 @@
                 <th>Checkbox</th>
                 <th>Target Picture</th>
                 <th>Target ID</th>
+                <th>Target Regions</th>
                 <th>Target Type</th>
                 <th>Target Shape</th>
                 <th>Shape Color</th>
@@ -39,8 +41,13 @@
         </thead>
         <tr *ngFor="let row of rows">
             <td><input type="checkbox" [(ngModel)]="row.checked"></td>
-            <td class="pictureHeader"><img src={{service.getThumbnailURL(row.target.id)}}></td>
+            <td class="pictureHeader"><img src={{service.getTargetThumbnailURL(row.target.id)}}></td>
             <td>{{row.target.id}}</td>
+            <td>
+                <li *ngFor="let region of row.regions">
+                    <a href="/images/{{region.image_id}}">{{region.id}}</a>
+                </li>
+            </td>
             <td>{{row.target.target_type}}</td>
             <td *ngIf="row.showCharacteristics">{{row.target.shape}}</td>
             <td *ngIf="row.showCharacteristics">{{row.target.shape_color}}</td>
@@ -52,4 +59,4 @@
     </table>
 </div>
 <app-target-editor (windowClosed)="refresh()"></app-target-editor>
-<app-target-merger (windowClosed)="refresh()"></app-target-merger>
+<app-target-thumb (windowClosed)="refresh()"></app-target-thumb>

@@ -4,6 +4,6 @@
             <div class="window_title">Please Select the Best Thumbnail</div>
     </div>
     <div class="window-content">
-        <img class="targetThumb" *ngFor="let target of targets" src={{tService.getThumbnailURL(target.id)}} alt="target.id" (click)="select(target.id)">
+        <img class="targetThumb" *ngFor="let region of regions" src={{tService.getRegionThumbnailURL(target.id,region.id)}} alt="region.id" (click)="select(region.id)">
     </div>
 </div>

@@ -107,7 +107,7 @@ class ShimmerModel():
                     notes=target['notes'], thumb=None, manual=True)
 
         new_region = ShimmerTargetRegion(result[1])
-        new_region.create_thumbnail()
+        new_region.update_target_thumbnail()
 
         return {
             "target" : ShimmerTarget(result[0]),
@@ -152,6 +152,43 @@ class ShimmerModel():
         Gets the current flight id
         """
         return self.queue.get_flight_id()
+        
+    def get_target_regions(self, target_id):
+        """
+        Gets the target regions for a target
+
+        Arguments:
+            target_id: the target to get the regions of
+        """
+        target = self.tgt(target_id)
+        return [ ShimmerTargetRegion(region) for region in target.target.get_target_regions() ]
+
+    def get_shimmer_image_id(self, data_id):
+        """
+        Searches through the image_ids numbers to see if one exists with that number
+        Otherwise returns -1
+
+        Arguments:
+            data_id: the database id for an image
+        """
+        for i, id in enumerate(self.image_ids):
+            if(id == data_id):
+                return i
+        return -1
+
+    def get_region_from_target(self, target_id, region_id):
+        """
+        Gets a reference to a target_region from a target
+        Used to get the region thumbnail
+
+        Arguments:
+            target_id: the id of the target
+            region_id: the id of the region
+        """
+        target = self.tgt(target_id)
+        for region in target.target.get_target_regions():
+            if region_id == region.target_region_id:
+                return ShimmerTargetRegion(region) 
 
     def get_targets_near(self, coord, distance):
         targets = self.queue.flight.targets_near(coord, distance)

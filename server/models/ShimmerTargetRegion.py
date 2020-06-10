@@ -1,4 +1,5 @@
 import cv2
+import os
 
 from server.util.JSONObject import JSONObject
 
@@ -6,6 +7,7 @@ from server.util.JSONObject import JSONObject
 class ShimmerTargetRegion(JSONObject):
     def __init__(self, target_region):
         self.target_region = target_region
+        self.thumbnail_path = self.get_thumbnail_if_exists()
 
     @property
     def id(self):
@@ -31,14 +33,35 @@ class ShimmerTargetRegion(JSONObject):
         # Set coordinates for cropped image
         crop_img = tgtimage[int(y[0]) : int(y[1]), int(x[0]) : int(x[1])]
         # Save the cropped image
-        thumbnail_path = (
-            self.target_region.flight.folder
-            + "/targets/target_"
-            + str(self.target_region.target_region_id)
-            + ".jpg"
-        )
-        cv2.imwrite(thumbnail_path, crop_img)
-        self.target_region.target.update_thumbnail(thumbnail_path)
+        region_path = self.target_region.flight.folder + "/regions/region_" + \
+            str(self.target_region.target_region_id) + ".jpg"
+        target_path = self.target_region.flight.folder + "/targets/target_" + \
+            str(self.target_region.target_region_id) + ".jpg"
+        cv2.imwrite(region_path, crop_img)
+        #try:
+        #    os.symlink(region_path, target_path)
+        #except FileExistsError:
+        #    pass
+
+    def get_thumbnail_if_exists(self):
+        thumbnail_path = self.target_region.flight.folder + "/regions/region_" + \
+            str(self.target_region.target_region_id) + ".jpg"
+        if not os.path.exists(thumbnail_path):
+            self.create_thumbnail()
+        return thumbnail_path
+
+    def delete_thumbnail(self):
+        if self.thumbnail_path and os.path.exists(self.thumbnail_path):
+            os.remove(self.thumbnail_path)
+
+    def update_target_thumbnail(self):
+        #target_path = self.target_region.flight.folder + "/targets/target_" + \
+        #    str(self.target_region.target.target_id) + ".jpg"
+        #if os.path.exists(self.target_region.target.thumbnail):
+        #    os.remove(self.target_region.target.thumbnail)
+        #os.symlink(self.thumbnail_path, target_path)
+        self.target_region.target.update_thumbnail(self.thumbnail_path)
+            
 
     def check_corners(self):
         return (

@@ -3,8 +3,9 @@ import { TargetsService } from './targets.service';
 import { Target } from 'types/target';
 import { TargetEditorComponent } from 'app/targets/target-modifers/target-editor/target-editor.component';
 import { TargetRow } from 'types/targetRow';
+import { TargetRegion } from 'types/targetRegion';
 import { filter } from 'rxjs/operators';
-import { TargetMergerComponent } from './target-modifers/target-merger/target-merger.component';
+import { TargetThumbComponent } from './target-modifers/target-thumb/target-thumb.component';
 
 @Component({
   selector: 'app-targets',
@@ -17,7 +18,7 @@ export class TargetsComponent implements OnInit {
   showTargetFields = true;
 
   @ViewChild(TargetEditorComponent) private editWindow: TargetEditorComponent;
-  @ViewChild(TargetMergerComponent) private mergeWindow: TargetMergerComponent;
+  @ViewChild(TargetThumbComponent) private thumbWindow: TargetThumbComponent;
   constructor(private service: TargetsService) {
   }
 
@@ -25,17 +26,25 @@ export class TargetsComponent implements OnInit {
     this.refresh();
   }
 
-  merge() {
+  async merge() {
     const filtered = this.rows.filter((row: TargetRow) => row.checked === true);
     if (filtered.length >= 2) {
       const targets = [];
-      for (const row of filtered) {
-        targets.push(row.target);
+      let row = filtered[0];
+      for (const i of filtered) {
+        if (i.regions.length < row.regions.length) {
+          targets.push(i.target.id);
+        } else if (row !== i) {
+          targets.push(row.target.id);
+          row = i;
+        }
       }
-      this.mergeWindow.merge(targets);
+      await this.service.mergeTargets(row.target.id, targets).toPromise();
+      // this.mergeWindow.merge(targets);
     } else {
       alert('Please select at least 2 targets');
     }
+    this.refresh();
   }
 
   edit() {
@@ -47,14 +56,23 @@ export class TargetsComponent implements OnInit {
     }
   }
 
+  thumb() {
+    const filtered = this.rows.filter((row: TargetRow) => row.checked === true);
+    if (filtered.length === 1) {
+      this.thumbWindow.thumb(filtered[0].target);
+    } else {
+      alert('Please select only 1 target');
+    }
+  }
+
   async delete() {
     const filtered = this.rows.filter((row: TargetRow) => row.checked === true);
     if (filter.length > 0 && confirm('Do you want to delete ' + filtered.length + ' targets?')) {
+      for (const target of filtered) {
+        await this.service.deleteTarget(target.target).toPromise();
+      }
     } else {
       alert('Please select at least 1 target');
-    }
-    for (const target of filtered) {
-      await this.service.deleteTarget(target.target).toPromise();
     }
     this.refresh();
   }
@@ -63,7 +81,14 @@ export class TargetsComponent implements OnInit {
     this.rows = [];
     this.service.getAllTargets().subscribe((targets: Target[]) => {
       for (const target of targets) {
-        this.rows.push(new TargetRow(target, false));
+        this.service.getTargetRegions(target.id).subscribe((regions: TargetRegion[]) => {
+          for (let i = 0; i < regions.length; i++) {
+            this.service.getShimmerImageID(regions[i].image_id).subscribe((image_id: string) => {
+              regions[i].image_id = parseInt(image_id, 10);
+            });
+          }
+          this.rows.push(new TargetRow(target, false, regions));
+        });
       }
     }, (error) => {
       console.error(error);

@@ -32,7 +32,6 @@ export class ImagesComponent implements AfterViewInit {
   public imageString: String;
   public flightString: String;
 
-
   private xDifference: number;
   private yDifference: number;
   private canvasElement: HTMLCanvasElement;
@@ -62,15 +61,15 @@ export class ImagesComponent implements AfterViewInit {
       }
     );
     this.canvasElement = this.canvas.nativeElement;
-    this.context = this.canvas.nativeElement.getContext('2d');
+    this.context = this.canvasElement.getContext('2d');
     this.route.paramMap.subscribe(
       (params: ParamMap) => {
         const id: string = params.get('id');
-        if (id === "next") {
+        if (id === 'next') {
           this.loadNextImage();
           return;
         }
-        this.service.getImage(parseInt(id)).subscribe(
+        this.service.getImage(parseInt(id, 10)).subscribe(
           (image: Image) => {
             this.image = image;
             this.imageString = 'Image Id: ' + image.id.toString();
@@ -84,7 +83,7 @@ export class ImagesComponent implements AfterViewInit {
             alert('Failed to load image: ' + error.message);
             console.error(error);
           }
-        )
+        );
       }
     );
   }

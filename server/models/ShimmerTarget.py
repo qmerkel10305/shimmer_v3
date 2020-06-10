@@ -1,4 +1,5 @@
 from server.util.JSONObject import JSONObject
+from server.models.ShimmerTargetRegion import ShimmerTargetRegion
 
 class ShimmerTarget(JSONObject):
     def __init__(self, target):
@@ -11,7 +12,9 @@ class ShimmerTarget(JSONObject):
     def delete(self):
         regions = self.target.get_target_regions()
         for region in regions:
-            region.delete_region()
+            target_region = ShimmerTargetRegion(region)
+            target_region.delete_thumbnail()
+            target_region.target_region.delete_region()
 
     ############################################################################
     ############################ JSONObject Methods ############################
