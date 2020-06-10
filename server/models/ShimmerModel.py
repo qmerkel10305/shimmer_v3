@@ -189,3 +189,9 @@ class ShimmerModel():
         for region in target.target.get_target_regions():
             if region_id == region.target_region_id:
                 return ShimmerTargetRegion(region) 
+
+    def get_targets_near(self, coord, distance):
+        targets = self.queue.flight.targets_near(coord, distance)
+        if targets is None:
+            return None
+        return [ShimmerTarget(target) for target in targets]

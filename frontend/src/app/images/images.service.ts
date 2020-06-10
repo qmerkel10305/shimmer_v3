@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -31,6 +31,16 @@ export class ImagesService {
 
   getTarget(id: number): Observable<Target> {
     return this.http.get<Target>(`${environment.api_url}/target/${id}`);
+  }
+
+  getTargetsNear(image_id: number, x: number, y: number, distance?: number): Observable<Target[]> {
+    let params = new HttpParams();
+    params = params.append('x', String(x));
+    params = params.append('y', String(y));
+    if (distance) {
+      params = params.append('distance', String(distance));
+    }
+    return this.http.get<Target[]>(`${environment.api_url}/image/${image_id}/targets-near`, {params : params});
   }
 
   getFlightID(): Observable<string> {

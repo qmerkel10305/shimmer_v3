@@ -11,6 +11,8 @@ from server.util.test.MockModel import with_mock_model
 from server.util.test.MockTarget import MockTarget
 from server.util.test.MockImage import MockImage
 
+import server.models.GlobalModel as GlobalModel
+
 app = Flask(__name__)
 app.register_blueprint(target_api, url_prefix='/target')
 
@@ -112,6 +114,7 @@ class TestTargetController(unittest.TestCase):
         self.app.delete('/target/1')
 
         target = self.app.get('/target/1')
+        print(GlobalModel.model.queue.flight)
         self.assertEquals(404, target._status_code)
 
 
