@@ -107,7 +107,7 @@ class ShimmerModel():
                     notes=target['notes'], thumb=None, manual=True)
 
         new_region = ShimmerTargetRegion(result[1])
-        new_region.create_thumbnail()
+        new_region.update_target_thumbnail()
 
         return {
             "target" : ShimmerTarget(result[0]),

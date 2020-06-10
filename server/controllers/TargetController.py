@@ -1,6 +1,6 @@
 import json
 
-from flask import Blueprint, request, abort, send_file
+from flask import Blueprint, request, abort, send_file, make_response
 from jinja2 import TemplateNotFound
 
 from server.models.GlobalModel import get_model
@@ -8,7 +8,6 @@ from server.models.ShimmerTarget import ShimmerTarget
 from server.util.decorators import serialize
 
 target_api = Blueprint('target_api', __name__)
-region_api = Blueprint('region_api', __name__)
 
 @target_api.errorhandler(ValueError)
 def handle_value_error(error):
@@ -30,11 +29,15 @@ def getTarget(id):
 
 @target_api.route("/<int:target_id>/regions/<int:region_id>/thumb.jpg", methods=['GET'])
 def getRegionThumbnail(target_id, region_id):
-    return send_file(open(get_model().get_region_from_target(target_id, region_id).thumbnail_path, 'rb'), mimetype='image/jpg')
+    response = make_response(send_file(get_model().get_region_from_target(target_id, region_id).thumbnail_path, mimetype='image/jpg'))
+    response.cache_control.no_store = True
+    return response
 
 @target_api.route("/<int:id>/thumb.jpg", methods=['GET'])
 def getTargetThumbnail(id):
-    return send_file(open(get_model().get_target(id).target.thumbnail, 'rb'), mimetype='image/jpg')
+    response = make_response(send_file(get_model().get_target(id).target.thumbnail, mimetype='image/jpg'))
+    response.cache_control.no_store = True
+    return response
 
 @target_api.route("/<int:target_id>", methods=['POST'])
 @serialize
@@ -73,10 +76,15 @@ def getTargetRegions(target_id):
     """
     return get_model().get_target_regions(target_id)
 
-@target_api.route("/database/image/<int:image_id>")
+@target_api.route("/database/image/<int:image_id>", methods=['GET'])
 def getImageShimmerID(image_id):
     """
     Gets the id number of an image form the database number
     Used with target regions
     """
     return str(get_model().get_shimmer_image_id(image_id))
+
+@target_api.route("/<int:target_id>/regions/<int:region_id>/update", methods=['POST'])
+@serialize
+def updateTargetThumbnail(target_id, region_id):
+    get_model().get_region_from_target(target_id, region_id).update_target_thumbnail()

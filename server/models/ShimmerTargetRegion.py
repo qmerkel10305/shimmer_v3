@@ -27,8 +27,10 @@ class ShimmerTargetRegion(JSONObject):
         target_path = self.target_region.flight.folder + "/targets/target_" + \
             str(self.target_region.target_region_id) + ".jpg"
         cv2.imwrite(region_path, crop_img)
-        os.symlink(region_path, target_path)
-        self.target_region.target.update_thumbnail(target_path)
+        #try:
+        #    os.symlink(region_path, target_path)
+        #except FileExistsError:
+        #    pass
 
     def get_thumbnail_if_exists(self):
         thumbnail_path = self.target_region.flight.folder + "/regions/region_" + \
@@ -40,6 +42,14 @@ class ShimmerTargetRegion(JSONObject):
     def delete_thumbnail(self):
         if self.thumbnail_path and os.path.exists(self.thumbnail_path):
             os.remove(self.thumbnail_path)
+
+    def update_target_thumbnail(self):
+        #target_path = self.target_region.flight.folder + "/targets/target_" + \
+        #    str(self.target_region.target.target_id) + ".jpg"
+        #if os.path.exists(self.target_region.target.thumbnail):
+        #    os.remove(self.target_region.target.thumbnail)
+        #os.symlink(self.thumbnail_path, target_path)
+        self.target_region.target.update_thumbnail(self.thumbnail_path)
             
 
     ############################################################################

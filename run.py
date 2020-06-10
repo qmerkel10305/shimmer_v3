@@ -15,7 +15,6 @@ CORS(app)
 # Add api controllers
 app.register_blueprint(image_api, url_prefix='/image')
 app.register_blueprint(target_api, url_prefix='/target')
-app.register_blueprint(region_api, url_prefix='/region')
 
 @app.route('/')
 def index():
