@@ -12,7 +12,7 @@ import { TargetsService } from 'app/targets/targets.service';
 export class TargetThumbComponent implements AfterViewInit {
 
     target: Target;
-    regions: TargetRegion[]
+    regions: TargetRegion[];
 
     @ViewChild('mergeTargets') private content: ElementRef;
 
@@ -39,8 +39,9 @@ export class TargetThumbComponent implements AfterViewInit {
         this.content.nativeElement.style = 'display: none';
     }
 
-    select(id: number) {
-        console.log(id);
+    async select(id: number) {
+        await this.tService.updateTargetThumbnail(this.target.id, id).toPromise();
+        this.close();
     }
 
     @HostListener('document:keydown', ['$event'])
