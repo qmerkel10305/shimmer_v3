@@ -1,11 +1,10 @@
 import json
 
-from flask import Blueprint, request, abort, send_file, make_response
-from jinja2 import TemplateNotFound
+from flask import Blueprint, request, send_file, make_response
 
 from server.models.GlobalModel import get_model
-from server.models.ShimmerTarget import ShimmerTarget
 from server.util.decorators import serialize
+from pathlib import Path
 
 target_api = Blueprint('target_api', __name__)
 
@@ -88,3 +87,16 @@ def getImageShimmerID(image_id):
 @serialize
 def updateTargetThumbnail(target_id, region_id):
     get_model().get_region_from_target(target_id, region_id).update_target_thumbnail()
+
+
+@target_api.route("/submit", methods=['GET'])
+def submitTargets():
+    targets = get_model().get_all_targets()
+    client = get_model().client
+    for t in targets:
+        target_json = t.serialize_interop()
+        print(target_json)
+        odlc_id = client.post_odlc(target_json)
+        print(t.target.thumbnail)
+        client.put_odlc_image(odlc_id, Path(t.target.thumbnail).read_bytes())
+    return str(odlc_id)

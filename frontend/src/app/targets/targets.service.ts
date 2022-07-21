@@ -53,5 +53,9 @@ export class TargetsService {
   updateTargetThumbnail(target_id: number, region_id: number) {
     return this.http.post(`${environment.api_url}/target/${target_id}/regions/${region_id}/update`, null);
   }
+
+  submitTargets() {
+    return this.http.get<string>(`${environment.api_url}/target/submit`)
+  }
 }
 

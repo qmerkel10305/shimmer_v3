@@ -1,5 +1,8 @@
 from server.util.JSONObject import JSONObject
 from server.models.ShimmerTargetRegion import ShimmerTargetRegion
+import pyproj
+import ARC
+
 
 class ShimmerTarget(JSONObject):
     def __init__(self, target):
@@ -46,3 +49,42 @@ class ShimmerTarget(JSONObject):
         self.target.update_background_color(new_target["shape_color"])
         self.target.update_orientation(new_target["orientation"])
         self.target.update_notes(new_target["notes"])
+        
+    def serialize_interop(self):
+        mission = 2
+
+        directions = {'N': 0, 'NE': 45, 'E': 90, 'SE': 135,
+              'S': 180, 'SW': 225, 'W': 270, 'NW': 315,
+              'N': 360}
+
+        def orientation2direction(orientation):
+            min_dist = 360
+            min_dir = None
+
+            for direction, angle in directions.items():
+                dist = abs(orientation-angle)
+                if dist < min_dist:
+                    min_dist = dist
+                    min_dir = direction
+
+            return min_dir
+
+        x, y = self.target.coord
+        target_projection = pyproj.Proj(init="epsg:%d" % self.target.srid)
+        lon, lat = pyproj.transform(target_projection, ARC.presets.wgs84, x, y)
+        shape = ARC.Shape[self.target.shape]
+        shape_color = ARC.Color[self.target.background_color]
+        letter_color = ARC.Color[self.target.letter_color]
+        return {
+            "type": (self.target.target_type.value if type(self.target.target_type) is ARC.TargetType else self.target.target_type) + 1,
+            "mission": mission,
+            "latitude": lat,
+            "longitude": lon,
+            "orientation": orientation2direction(self.target.orientation),
+            "shape": shape.value + 1,
+            "alphanumeric": self.target.letter,
+            "shapeColor": shape_color.value + 1,
+            "alphanumericColor": letter_color.value + 1,
+            "description": self.target.notes,
+            "autonomous": False
+        }

@@ -94,4 +94,11 @@ export class TargetsComponent implements OnInit {
       console.error(error);
     });
   }
+
+  submit() {
+    this.service.submitTargets().subscribe((tmp: string) => {}, (error) => {
+      console.error(error);
+    })
+    alert("Target(s) submitted");
+  }
 }
