@@ -2,7 +2,12 @@
     <div class="menu_logo">
         <div class="menu_title">Sh<span>immer</span></div>
         <div class="menu_list">
-            <a>File</a>
+            <div class="sub_menu">
+                <button class="drop_button">File</button>
+                <div class="sub_menu_item">
+                    <button (click)="submit()">Submit</button>
+                </div>
+            </div>
             <div class="sub_menu">
                 <button class="drop_button">Edit</button>
                 <div class="sub_menu_item">

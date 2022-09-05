@@ -1,6 +1,7 @@
 from server.models.ShimmerImage import ShimmerImage
 from server.models.ShimmerTarget import ShimmerTarget
 from server.models.ShimmerTargetRegion import ShimmerTargetRegion
+from interop_clients import InteropClient
 
 class ShimmerModel():
     """
@@ -19,6 +20,7 @@ class ShimmerModel():
         while image is not None:
             self.image_ids.append(image.image_id)
             image = self.queue.get_next_image()
+        self.client = InteropClient("http://10.10.130.10:80", "north-carolina-state-university", "4184601216")
 
     def img(self, idx):
         """
