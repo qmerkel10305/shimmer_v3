@@ -1,9 +1,0 @@
-<div #mergeTargets class="window">
-   <div class="window_menu">
-            <div class="window_close" (click)="close()">X</div>
-            <div class="window_title">Please Select the Best Thumbnail</div>
-    </div>
-    <div class="window-content">
-        <img class="targetThumb" *ngFor="let region of regions" src={{tService.getRegionThumbnailURL(target.id,region.id)}} alt="region.id" (click)="select(region.id)">
-    </div>
-</div>
