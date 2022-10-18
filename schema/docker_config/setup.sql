@@ -1,0 +1,2 @@
+CREATE USER arcstandard WITH PASSWORD 'arc';
+GRANT ALL PRIVILEGES ON DATABASE imagery TO arcstandard;
