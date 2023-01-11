@@ -1,2 +1,11 @@
-Flask==1.0.2
-Flask-Cors==3.0.7
+fastapi==0.85.0
+uvicorn==0.18.3
+sqlalchemy==1.4.42
+pyproj==3.4.0
+GeoAlchemy2==0.12.5
+python-multipart==0.0.5
+py3exiv2==0.11.0
+aiofiles==0.3.2
+numpy==1.23.4
+opencv-python==4.6.0.66
+psycopg2-binary==2.9.5
