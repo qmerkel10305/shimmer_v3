@@ -73,8 +73,8 @@ def get_latlon(img: ImageMetadata) -> Tuple[float, float]:
     """
     img.read()
     return (
-        img["Xmp.ncsu.GLOBAL_POSITION_INT.lat"].value,
-        img["Xmp.ncsu.GLOBAL_POSITION_INT.lon"].value,
+        float(img["Xmp.ncsu.GLOBAL_POSITION_INT.lat"].value) / 1e7,
+        float(img["Xmp.ncsu.GLOBAL_POSITION_INT.lon"].value) / 1e7,
     )
 
 
