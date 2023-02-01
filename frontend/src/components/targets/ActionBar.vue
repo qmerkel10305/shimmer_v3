@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { Target } from "@/types/Target";
-import ThumbModal from "@/components/targets/ThumbModal.vue";
-import EditModal from "@/components/targets/EditModal.vue";
+import ThumbModal from "@/components/targets/modals/ThumbModal.vue";
+import EditModal from "@/components/targets/modals/EditModal.vue";
 
 const props = defineProps({
   targets: { type: Array<Target>, required: true },

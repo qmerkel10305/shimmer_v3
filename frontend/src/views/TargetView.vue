@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import type { Target } from "@/types/Target";
-import StandardTable from "@/components/targets/StandardTable.vue";
-import EmergentTable from "@/components/targets/EmergentTable.vue";
+import StandardTable from "@/components/targets/tables/StandardTable.vue";
+import EmergentTable from "@/components/targets/tables/EmergentTable.vue";
 import ActionBar from "@/components/targets/ActionBar.vue";
 
 var targets: Target[] = reactive([
