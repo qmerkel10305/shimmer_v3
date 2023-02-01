@@ -3,7 +3,7 @@ import { RouterLink } from "vue-router";
 </script>
 
 <template>
-  <nav class="bg-black font-sans text-2xl rounded-b-md">
+  <nav class="bg-black font-sans text-2xl">
     <ul class="flex py-2">
       <li class="mx-8">
         <RouterLink
@@ -11,8 +11,8 @@ import { RouterLink } from "vue-router";
           class="text-white font-mono"
           active-class="active"
           exact
-          ><span style="color: red">Sh</span>immer</RouterLink
-        >
+          ><span style="color: red">Sh</span>immer
+        </RouterLink>
       </li>
       <li class="mr-6">
         <RouterLink
@@ -20,8 +20,8 @@ import { RouterLink } from "vue-router";
           class="text-white hover:bg-red-400 rounded-sm"
           active-class="active"
           exact
-          >Images</RouterLink
-        >
+          >Images
+        </RouterLink>
       </li>
       <li class="mr-6">
         <RouterLink
@@ -29,8 +29,8 @@ import { RouterLink } from "vue-router";
           class="text-white hover:bg-red-400 rounded-sm"
           active-class="active"
           exact
-          >Targets</RouterLink
-        >
+          >Targets
+        </RouterLink>
       </li>
     </ul>
   </nav>
