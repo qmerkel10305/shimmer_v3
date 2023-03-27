@@ -112,3 +112,77 @@ class Flight(FlightCreate):
 
     class Config:
         orm_mode = True
+        
+class TargetBase(BaseModel):
+    """
+    Class representing a image in the database with minimal information
+
+    Inherits:
+        BaseModel: Pydantic BaseModel
+    
+    Attributes:
+        flight_id (int): The flight id of the target
+        path (str): The path the original image for the target on disk
+        low_quality_jpg (Union[str, None]): The path for the low quality image on disk. Defaults to None
+        high_quality_jpg (Union[str, None]): The path for the high quality image on disk. Defaults to None
+    """
+        
+    
+    flight_id: int 
+    target_type: str 
+    letter: Union[str,None] = None
+    shape: Union[str,None] = None
+    background_color: Union[str,None] = None 
+    letter_color: Union[str,None] = None
+    orientation: Union[int,None] = None 
+    notes: Union[str,None] = None 
+
+
+
+
+
+class TargetCreate(TargetBase):
+    """
+    Class representing information needed to create a new image in the database
+
+    Inherits:
+        TargetBase
+    
+    Attributes:
+        date_time (datetime): The datetime when the image of the target was taken.
+        nadir (bool): Boolean if the target is nadir or not.
+        geom (str): WKT string representing the target.
+    """
+
+    geom: str # 
+    manual: bool #
+    image_id: int
+    thumbnail: str #
+
+
+class TargetUpdate(TargetBase):
+    """
+    Class representing information needed to update a new image in the database
+
+    Inherits:
+        ImageBase
+    
+    Attributes:
+        target_id (int): The id of the target in the database to update.
+    """
+    target_id: int
+     
+ 
+
+
+class Target(TargetUpdate, TargetCreate):
+    """
+    Class representing information about a Target stored in the database
+
+    Inherits:
+        TargetUpdate
+        TargetCreate
+    """
+    class Config:
+        orm_mode = True
+

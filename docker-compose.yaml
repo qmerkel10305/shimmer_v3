@@ -7,6 +7,7 @@ services:
     environment:
       - HADES_TESTING=True
       - ARC_FLIGHT=-1
+      - ARC_FLIGHT=${ARC_FLIGHT}
       - ARC_DB_HOST=db
     depends_on:
       db:
