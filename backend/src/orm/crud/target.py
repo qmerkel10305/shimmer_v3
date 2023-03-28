@@ -84,7 +84,11 @@ def update_target(target: schema.TargetUpdate, db: Session) -> models.Target:
     db.refresh(db_target)
     return db_target
 
+def get_target_region(target_id : int, region_id : int,flight_id : int, db: Session) -> models.TargetRegion:
+    return db.query(models.TargetRegion).filter(models.TargetRegion.flight_id == flight_id).filter(models.TargetRegion.target_id == target_id).filter(models.TargetRegion.target_region_id == region_id).one()
 
-#def get_region_thumbnail(db: Session, target_id: int, region_id: int) -> 
-#def get_target_thumbnail(db: Session, flight_id:int, target_id: int) -> models.Image.thumbnail:
- #   return db.query(models.Target).filter(models.Flight.flight_id == flight_id).filter(models.Target.target_id == target_id).one().path
+def get_target_regions(target_id : int, flight_id : int, db: Session) -> List[models.TargetRegion]:
+    return db.query(models.TargetRegion).filter(models.TargetRegion.flight_id == flight_id).filter(models.TargetRegion.target_id == target_id).all()
+
+def get_target_thumbnail(flight_id:int, target_id: int, db: Session ) -> models.Image.thumbnail:
+    return db.query(models.Target).filter(models.TargetRegion.flight_id == flight_id).filter(models.TargetRegion.target_id == target_id).one()
