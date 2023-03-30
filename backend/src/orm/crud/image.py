@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 from orm import models, schema
+from datetime import datetime
 
 
 def create_image(db: Session, image: schema.ImageCreate) -> models.Image:
@@ -62,3 +63,12 @@ def get_new_image_id(db: Session, flight_id: int) -> int:
         int: The next image id
     """
     return len(db.query(models.Image).filter(models.Image.flight_id == flight_id).all())
+
+def get_all_images(db:Session, flight_id: int) -> list[models.Image]:
+    return db.query(models.Image).filter(models.Image.flight_id == flight_id).order_by(models.Image.date_time).all()
+
+def get_image_by_id(db:Session, flight_id: int, image_id: int) -> models.Image:
+    return db.query(models.Image).filter(models.Image.flight_id == flight_id, models.Image.image_id == image_id).one()
+
+def get_images_after_time(db:Session, flight_id: int, date_time: datetime) -> list[models.Image]:
+    return db.query(models.Image).filter(models.Image.flight_id == flight_id, models.Image.date_time > date_time).order_by(models.Image.date_time).all()
