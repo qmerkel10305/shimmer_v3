@@ -220,3 +220,4 @@ def get_coord_from_img(
             return res_lat, res_lon
         else:
             return easting, northing
+    

@@ -7,11 +7,10 @@ if os.getenv("HADES_TESTING", "False") == "True":
 
 from fastapi import FastAPI
 
-from routers import admin, image
+from routers import image
 from routers.hades.api import router as hades_router
 
 app = FastAPI()
-app.include_router(admin.router)
 app.include_router(hades_router)
 app.include_router(image.router)
 

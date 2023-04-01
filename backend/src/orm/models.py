@@ -67,6 +67,16 @@ class Image(Base):
 
     targets = relationship("Target", backref="image")
 
+    def GetImagePath(self) -> str:
+        if self.Path is not "":
+            return self.Path
+        elif self.high_quality_jpg is not None:
+            return self.high_quality_jpg
+        elif self.low_quality_jpg is not None:
+            return self.low_quality_jpg
+        else:
+            raise Exception("Image not found")
+    
 class Target(Base):
     """
     Class representing an Target in the database
