@@ -50,7 +50,7 @@ def create_target(db: Session, target : CreateTarget) -> models.Target:
     return db_target
      
     
-def delete_target(target_id: int, db: Session) -> models.Target:
+def delete_target(flight_id: int, target_id: int, db: Session) -> models.Target:
     target = db.query(models.Target).filter(models.Flight.flight_id == flight_id).filter(models.Target.target_id == target_id).one()
     db.delete(target)
     db.commit()
@@ -92,3 +92,23 @@ def get_target_regions(target_id : int, flight_id : int, db: Session) -> List[mo
 
 def get_target_thumbnail(flight_id:int, target_id: int, db: Session ) -> models.Image.thumbnail:
     return db.query(models.Target).filter(models.TargetRegion.flight_id == flight_id).filter(models.TargetRegion.target_id == target_id).one()
+
+def get_targets_near(self, coord, distance, db:Session):
+    centroid = sqlalchemy.func.ST_Centroid(models.Target.geom)
+
+    return db.query(
+        target,
+        sqlalchemy.func.ST_SRID(target.geom).label("srid"),
+        sqlalchemy.func.ST_X(centroid).label("x"),
+        sqlalchemy.func.ST_Y(centroid).label("y"),
+    ).filter(target.flight_id == self.flight_id).filter(
+                targets_alias.geom.ST_Centroid().ST_DWithin(ewkt, distance)
+            ).order_by(targets_alias.geom.ST_Centroid().ST_Distance(ewkt).asc()).all()
+
+def create_target_region(flight_id, target_id, image_id, top_left, bottom_right, db:Session):
+    db_target_region = models.TargetRegion(flight_id = flight_id, target_id = target_id, image_id = image_id, top_left = top_left, bottom_right = bottom_right, manual = True)
+    db.add(db_target_region)
+    db.commit()
+    db.refresh(db_target_region)
+    return db_target_region
+    

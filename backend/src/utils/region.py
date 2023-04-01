@@ -33,4 +33,4 @@ def create_region_thumbnail(flight_folder:str, flight_id: int, target_id: int, t
     cv2.imwrite(region_path, crop_img)
 
     return region_path
-
+    
