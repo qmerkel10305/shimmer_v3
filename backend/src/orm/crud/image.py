@@ -71,4 +71,27 @@ def get_image_by_id(db:Session, flight_id: int, image_id: int) -> models.Image:
     return db.query(models.Image).filter(models.Image.flight_id == flight_id, models.Image.image_id == image_id).one()
 
 def get_images_after_time(db:Session, flight_id: int, date_time: datetime) -> list[models.Image]:
+<<<<<<< Updated upstream
     return db.query(models.Image).filter(models.Image.flight_id == flight_id, models.Image.date_time > date_time).order_by(models.Image.date_time).all()
+=======
+    return db.query(models.Image).filter(models.Image.flight_id == flight_id, models.Image.date_time > date_time).order_by(models.Image.date_time).all()
+
+def get_target_regions(db:Session, flight_id: int, image_id: int) -> List[models.TargetRegion]:
+    return db.query(models.TargetRegion).filter(models).filter(models.TargetRegion.image_id == image_id).all()
+
+def get_target_region(db: Session, flight_id:int, image_id:int, region_id:int) -> models.TargetRegion:
+    try:
+        for tr in get_target_regions(db, flight_id, image_id):
+            if tr.target_region_id == region_id:
+              return tr
+           
+    except KeyError:
+        raise HTTPException(status_code=404, detail="There is no region at that index")
+       
+
+def delete_target_region(db:Session, flight_id, image_id, target_region_id):
+    region = db.query(models.TargetRegion).filter(models.TargetRegion.flight_id == flight_id).filter(models.TargetRegion.image_id == image_id).filter(models.TargetRegion.target_region_id == region_id).one()
+    db.delete(region)
+    db.commit()
+    return region
+>>>>>>> Stashed changes
