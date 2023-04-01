@@ -13,16 +13,15 @@ const emergentTargets = computed(() => {
     return t.type === "Emergent";
   });
 });
-function selectTargets(id: number) {
-  const modelValue = [...props.modelValue];
-  const index = modelValue.indexOf(id);
-  if (index !== -1) {
-    modelValue.splice(index, 1);
-  } else {
-    modelValue.push(id);
-  }
-  emit("update:modelValue", modelValue);
-}
+
+const checkedTargets = computed({
+  get() {
+    return props.modelValue;
+  },
+  set(localCheckedTargets) {
+    emit("update:modelValue", localCheckedTargets);
+  },
+});
 </script>
 
 <template>
@@ -39,11 +38,7 @@ function selectTargets(id: number) {
     <tbody class="bg-white/[.85] divide-y divide-slate-900">
       <tr v-for="t in emergentTargets" :key="t.id">
         <td>
-          <input
-            type="checkbox"
-            :value="modelValue"
-            @input="selectTargets(t.id)"
-          />
+          <input type="checkbox" :value="t.id" v-model="checkedTargets" />
         </td>
         <td class="grid place-items-center p-1">
           <img :src="t.thumb" class="max-w-xs" />

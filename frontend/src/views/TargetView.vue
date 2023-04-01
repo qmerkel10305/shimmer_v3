@@ -1,28 +1,22 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import type { Target } from "@/types/Target";
+import { Point } from "@/types/Point";
 import StandardTable from "@/components/targets/tables/StandardTable.vue";
 import EmergentTable from "@/components/targets/tables/EmergentTable.vue";
 import ActionBar from "@/components/targets/ActionBar.vue";
+import { TargetRegion } from "@/types/Region";
 
 var targets: Target[] = reactive([
   {
     thumb: "/temp/8.jpg",
     id: 0,
     type: "Standard",
-    regions: [
-      {
-        top_left: { x: 0, y: 0 },
-        bottom_right: { x: 0, y: 0 },
-        target_id: 0,
-        image_id: 0,
-        id: 0,
-      },
-    ],
+    regions: [new TargetRegion(new Point(0, 0), new Point(0, 0), 0, 0, 0)],
     letter: "C",
-    letter_color: "Yellow",
-    shape: "Semi Circle",
-    shape_color: "Orange",
+    letter_color: "yellow",
+    shape: "semicircle",
+    shape_color: "orange",
     orientation: 0,
   },
   {
@@ -30,25 +24,13 @@ var targets: Target[] = reactive([
     id: 1,
     type: "Standard",
     regions: [
-      {
-        top_left: { x: 0, y: 0 },
-        bottom_right: { x: 0, y: 0 },
-        target_id: 1,
-        image_id: 0,
-        id: 1,
-      },
-      {
-        top_left: { x: 0, y: 0 },
-        bottom_right: { x: 0, y: 0 },
-        target_id: 1,
-        image_id: 0,
-        id: 3,
-      },
+      new TargetRegion(new Point(0, 0), new Point(0, 0), 0, 1, 1),
+      new TargetRegion(new Point(0, 0), new Point(0, 0), 0, 1, 3),
     ],
     letter: "C",
-    letter_color: "Yellow",
-    shape: "Semi Circle",
-    shape_color: "Orange",
+    letter_color: "yellow",
+    shape: "semicircle",
+    shape_color: "orange",
     orientation: 0,
   },
   {
@@ -56,29 +38,11 @@ var targets: Target[] = reactive([
     id: 2,
     type: "Emergent",
     regions: [
-      {
-        top_left: { x: 0, y: 0 },
-        bottom_right: { x: 0, y: 0 },
-        target_id: 2,
-        image_id: 0,
-        id: 2,
-      },
-      {
-        top_left: { x: 0, y: 0 },
-        bottom_right: { x: 0, y: 0 },
-        target_id: 2,
-        image_id: 0,
-        id: 4,
-      },
-      {
-        top_left: { x: 0, y: 0 },
-        bottom_right: { x: 0, y: 0 },
-        target_id: 2,
-        image_id: 0,
-        id: 5,
-      },
+      new TargetRegion(new Point(0, 0), new Point(0, 0), 0, 2, 2),
+      new TargetRegion(new Point(0, 0), new Point(0, 0), 0, 2, 4),
+      new TargetRegion(new Point(0, 0), new Point(0, 0), 0, 2, 5),
     ],
-    notes: "This dumbass is just in a field",
+    notes: "Example target sitting in field",
   },
 ]);
 

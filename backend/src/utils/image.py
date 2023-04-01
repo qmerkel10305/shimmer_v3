@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import pyproj
 from pyexiv2.metadata import ImageMetadata
+from pyproj import Transformer
 
 from utils.camera import LUCID_PHOENIX_12MM, Camera
 from utils.location import Location
@@ -103,18 +104,16 @@ def as_wkt(
         xmax, ymax = img.dimensions[0], img.dimensions[1]
 
     corners = (
-        get_coord_from_img(xmin, ymin, to_wgs84=False),
-        get_coord_from_img(xmax, 0, to_wgs84=False),
-        get_coord_from_img(xmax, ymax, to_wgs84=False),
-        get_coord_from_img(0, ymax, to_wgs84=False),
+        get_coord_from_img(img, xmin, ymin, to_wgs84=False),
+        get_coord_from_img(img, xmax, 0, to_wgs84=False),
+        get_coord_from_img(img, xmax, ymax, to_wgs84=False),
+        get_coord_from_img(img, 0, ymax, to_wgs84=False),
     )
 
-    wkt = "POLYGON(({c[0][0]} {c[0][1]}, {c[1][0]} {c[1][1]}, {c[2][0]} {c[2][1]}, {c[3][0]} {c[3][1]}, {c[0][0]} {c[0][1]}))".format(
-        c=corners
-    )
+    wkt = f"POLYGON(({corners[0][0]} {corners[0][1]}, {corners[1][0]} {corners[1][1]}, {corners[2][0]} {corners[2][1]}, {corners[3][0]} {corners[3][1]}, {corners[0][0]} {corners[0][1]}))"
 
     if extended:
-        wkt = "SRID={0};".format(Location.get_location(*get_latlon(img))) + wkt
+        wkt = f"SRID={Location.get_location(*get_latlon(img)).srid};" + wkt
 
     return wkt
 
@@ -147,12 +146,13 @@ def get_coord_from_img(
     img.read()
     lat, lon = get_latlon(img)
     loc = Location.get_location(lat, lon)
+    t= Transformer.from_proj(WGS84, loc.projection)
 
     if x is None and y is None:
         if to_wgs84:
             return lat, lon
         else:
-            return pyproj.transform(WGS84, loc.projection, lon, lat)
+            return t.transform(lon, lat)
     elif x is None or y is None:
         raise AttributeError("X and Y must both be set or unset.")
     else:
@@ -171,18 +171,18 @@ def get_coord_from_img(
             x, y = undistorted[0, 0]
 
         # Coord in defined UTM coordinate system
-        center_coord = pyproj.transform(WGS84, loc.projection, lon, lat)
+        center_coord = t.transform(lon, lat)
 
         center = (img.dimensions[0] / 2, img.dimensions[1] / 2)
         width_m = (
             2
-            * img["Xmp.ncsu.GLOBAL_POSITION_INT.relative_alt"].value
+            * float(img["Xmp.ncsu.GLOBAL_POSITION_INT.relative_alt"].value)
             / 1e3
             * math.tan(math.radians(camera.hfov / 2))
         )
         height_m = (
             2
-            * img["Xmp.ncsu.GLOBAL_POSITION_INT.relative_alt"].value
+            * float(img["Xmp.ncsu.GLOBAL_POSITION_INT.relative_alt"].value)
             / 1e3
             * math.tan(math.radians(camera.vfov / 2))
         )
@@ -193,13 +193,13 @@ def get_coord_from_img(
         delta_x = (x - center[0]) * width_m_per_px
         delta_y = (y - center[1]) * height_m_per_px
 
-        dist = math.sqrt(delta_x ** 2 + delta_y ** 2)
+        dist = math.sqrt(delta_x**2 + delta_y**2)
         angle_from_x = math.atan2(delta_y, delta_x)
 
         if img["Xmp.ncsu.VFR_HUD.heading"].value is not None:
-            heading = img["Xmp.ncsu.VFR_HUD.heading"].value / 1e2
+            heading = float(img["Xmp.ncsu.VFR_HUD.heading"].value) / 1e2
         else:
-            heading = img["Xmp.ncsu.GLOBAL_POSITION_INT.heading"].value
+            heading = float(img["Xmp.ncsu.GLOBAL_POSITION_INT.heading"].value)
 
         angle_from_N = heading - math.pi / 2 + angle_from_x
 
@@ -214,8 +214,8 @@ def get_coord_from_img(
 
         if to_wgs84:
             # Project UTM back to WGS84 for result
-            res_lon, res_lat = pyproj.transform(
-                loc.projection, WGS84, easting, northing
+            res_lon, res_lat = t.transform(
+                easting, northing
             )
             return res_lat, res_lon
         else:

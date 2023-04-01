@@ -5,7 +5,7 @@ import NavBar from "./components/NavBar.vue";
 
 <template>
   <div
-    class="h-screen bg-red-600 bg-arc-logo bg-cover bg-no-repeat overflow-hidden"
+    class="bg-red-600 bg-arc-logo bg-cover bg-no-repeat flex flex-col h-screen"
   >
     <header>
       <NavBar />

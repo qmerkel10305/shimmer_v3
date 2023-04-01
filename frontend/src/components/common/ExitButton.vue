@@ -1,20 +1,7 @@
-<script setup lang="ts">
-defineProps({
-  modelValue: {
-    type: Boolean,
-    required: true,
-  },
-});
-const emit = defineEmits(["update:modelValue"]);
-
-function closeWindow() {
-  emit("update:modelValue", false);
-}
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <svg
-    @click="closeWindow()"
     xmlns="http://www.w3.org/2000/svg"
     class="w-8 h-8 text-red-900 cursor-pointer"
     fill="none"

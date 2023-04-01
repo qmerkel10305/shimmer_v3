@@ -1,7 +1,6 @@
 import os
-
 from orm.database import get_db
-from tools.create_test_data import create_test_data
+from utils.tools import create_test_data
 
 if os.getenv("HADES_TESTING", "False") == "True":
     create_test_data(next(get_db()))

@@ -1,5 +1,6 @@
 from typing import Union
 from typing import Literal
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -10,13 +11,14 @@ class RequestInfo(BaseModel):
 
     Inherits:
         BaseModel: Pydantic BaseModel
-    
+
     Attributes:
         image_type (Literal["low", "high", "orig"]): The image type of the downlinked image
-        remote_id (Union[int, None]): The remote_id of the image downlinked. 
+        remote_id (Optional[int]): The remote_id of the image downlinked.
             If given, will update an image in the database instead of create. Defaults to None
-        extension (Union[str, None]): The file extension of the image. Defaults to None
+        extension (Optional[str]): The file extension of the image. Defaults to None
     """
+
     image_type: Literal["low", "high", "orig"]
-    remote_id: Union[int, None] = None
-    extension: Union[str, None] = None
+    remote_id: Optional[int] = None
+    extension: Optional[str] = None

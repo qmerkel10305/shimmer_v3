@@ -1,4 +1,4 @@
-import type { TargetRegion } from "./Target";
+import type { TargetRegion } from "./Region";
 
 export interface Image {
   id: number;

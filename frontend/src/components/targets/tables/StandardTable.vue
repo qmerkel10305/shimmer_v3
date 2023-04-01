@@ -14,15 +14,20 @@ const standardTargets = computed(() => {
   });
 });
 
-function selectTargets(id: number) {
-  const modelValue = [...props.modelValue];
-  const index = modelValue.indexOf(id);
-  if (index !== -1) {
-    modelValue.splice(index, 1);
-  } else {
-    modelValue.push(id);
+const checkedTargets = computed({
+  get() {
+    return props.modelValue;
+  },
+  set(localCheckedTargets) {
+    emit("update:modelValue", localCheckedTargets);
+  },
+});
+
+function capitalize(s: string | undefined) {
+  if (s == undefined) {
+    return "";
   }
-  emit("update:modelValue", modelValue);
+  return s[0].toUpperCase() + s.slice(1);
 }
 </script>
 
@@ -44,21 +49,17 @@ function selectTargets(id: number) {
     <tbody class="bg-white/[.85] divide-y divide-slate-900">
       <tr v-for="t in standardTargets" :key="t.id">
         <td>
-          <input
-            type="checkbox"
-            :value="modelValue"
-            @input="selectTargets(t.id)"
-          />
+          <input type="checkbox" :value="t.id" v-model="checkedTargets" />
         </td>
         <td class="grid place-items-center p-1">
           <img :src="t.thumb" class="max-w-xs" />
         </td>
         <td>{{ t.id }}</td>
         <td>{{ t.regions.map((tr) => tr.id) }}</td>
-        <td>{{ t.shape }}</td>
-        <td>{{ t.shape_color }}</td>
-        <td>{{ t.letter }}</td>
-        <td>{{ t.letter_color }}</td>
+        <td>{{ capitalize(t.shape) }}</td>
+        <td>{{ capitalize(t.shape_color) }}</td>
+        <td>{{ capitalize(t.letter) }}</td>
+        <td>{{ capitalize(t.letter_color) }}</td>
         <td>{{ t.orientation }}</td>
       </tr>
     </tbody>

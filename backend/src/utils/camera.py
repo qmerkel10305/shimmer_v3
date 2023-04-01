@@ -23,7 +23,7 @@ class Camera:
             A matrix representing the camera
         distortion_coefficients (np.ndarray):
             Input vector of distortion coefficients
-        
+
         See UndistoredPoints (https://docs.opencv.org/3.4/da/d54/group__imgproc__transform.html#ga55c716492470bfe86b0ee9bf3a1f0f7e)
         for more information about camera_matrix and distortion_coefficients
     """
