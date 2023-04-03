@@ -3,6 +3,14 @@ from pyexiv2.metadata import ImageMetadata
 import argparse
 
 if __name__ == "__main__":
+    """
+    Script to take in image and return the latitude and longitude
+
+    Args:
+        (image): the image file to use
+        (px): the x value of the pixel starting from [0,0] in top left
+        (py): the y value of the pixel starting from [0,0] in top left
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("image", required=True, type=str)
     parser.add_argument("px", required=True, type=int)

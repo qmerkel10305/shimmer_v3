@@ -8,7 +8,7 @@ import pyproj
 from pyexiv2.metadata import ImageMetadata
 from pyproj import Transformer
 
-from utils.camera import GOPRO_HERO_11, Camera
+from utils.camera import GOPRO_HERO_11_4_3, Camera
 from utils.location import Location
 
 WGS84 = pyproj.Proj("epsg:4326")
@@ -124,7 +124,7 @@ def get_coord_from_img(
     y: int = None,
     undistort: bool = True,
     to_wgs84: bool = True,
-    camera: Camera = GOPRO_HERO_11,
+    camera: Camera = GOPRO_HERO_11_4_3,
 ) -> Tuple[float, float]:
     """
     Get coordinates from an image

@@ -49,6 +49,13 @@ LUCID_PHOENIX_16MM = Camera(
     make="Lucid", model="PHX200S", lens="Computar 1.1' 16 mm F2.8", hfov=48.2, vfov=36.2
 )
 
-GOPRO_HERO_11 = Camera(
-    make="GoPro", model="Hero 11 Black", lens="Computar 1.1' 16 mm F2.8", hfov=48.2, vfov=36.2
+# Gopro info
+# https://community.gopro.com/s/article/HERO11-Black-Digital-Lenses-FOV-Information?language=en_US
+
+GOPRO_HERO_11_16_9 = Camera(
+    make="GoPro", model="Hero 11 Black", lens="Linear, 16:9, Hypersmooth off", hfov=92, vfov=61
+)
+
+GOPRO_HERO_11_4_3 = Camera(
+    make="GoPro", model="Hero 11 Black", lens="Linear, 4:3, Hypersmooth off", hfov=92, vfov=76
 )
