@@ -8,7 +8,7 @@ import pyproj
 from pyexiv2.metadata import ImageMetadata
 from pyproj import Transformer
 
-from utils.camera import LUCID_PHOENIX_12MM, Camera
+from utils.camera import GOPRO_HERO_11, Camera
 from utils.location import Location
 
 WGS84 = pyproj.Proj("epsg:4326")
@@ -124,7 +124,7 @@ def get_coord_from_img(
     y: int = None,
     undistort: bool = True,
     to_wgs84: bool = True,
-    camera: Camera = LUCID_PHOENIX_12MM,
+    camera: Camera = GOPRO_HERO_11,
 ) -> Tuple[float, float]:
     """
     Get coordinates from an image
@@ -146,7 +146,7 @@ def get_coord_from_img(
     img.read()
     lat, lon = get_latlon(img)
     loc = Location.get_location(lat, lon)
-    t= Transformer.from_proj(WGS84, loc.projection)
+    t = Transformer.from_proj(WGS84, loc.projection)
 
     if x is None and y is None:
         if to_wgs84:
@@ -214,10 +214,7 @@ def get_coord_from_img(
 
         if to_wgs84:
             # Project UTM back to WGS84 for result
-            res_lon, res_lat = t.transform(
-                easting, northing
-            )
+            res_lon, res_lat = t.transform(easting, northing)
             return res_lat, res_lon
         else:
             return easting, northing
-    

@@ -48,3 +48,7 @@ LUCID_PHOENIX_12MM = Camera(
 LUCID_PHOENIX_16MM = Camera(
     make="Lucid", model="PHX200S", lens="Computar 1.1' 16 mm F2.8", hfov=48.2, vfov=36.2
 )
+
+GOPRO_HERO_11 = Camera(
+    make="GoPro", model="Hero 11 Black", lens="Computar 1.1' 16 mm F2.8", hfov=48.2, vfov=36.2
+)
