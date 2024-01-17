@@ -4,6 +4,7 @@ Dependencies:
 - uvicorn: `$ pip install uvicorn`
 - python-multipart: `$ pip install python-multipart`
 - FastAPI: `$ pip install fastapi`
+- dotenv: `pip install -U python-dotenv`
 - Docker: Install Docker Client on Windows machine
 - MinIO: Follow instructions under "Docker" on the MinIO website to install Minio & run `$ pip install minio`
 <hr/>
@@ -23,7 +24,7 @@ Dependencies:
 <hr/>
 
 ## API Paths
-- /shimmer/ - POST image
+- /shimmer/ - POST image (This will be the request made by the plane)
 - /list/ - list all images stored in Images bucket
 <hr/>
 

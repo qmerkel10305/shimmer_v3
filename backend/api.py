@@ -8,6 +8,14 @@ from minio import Minio
 from minio.error import S3Error
 from minio.commonconfig import Tags
 
+from dotenv import load_dotenv
+load_dotenv("../.env",verbose=True) # load the .env file from the parent directory
+
+'''
+* TODO Fix reassignment of the flightID
+*
+'''
+
 
 #Declare FastAPI App
 app = FastAPI()
@@ -18,21 +26,40 @@ client = Minio(
     secret_key="aerial12",
     secure=False
 )
-bucket="images"
+bucket=os.environ['flightID']
 temp_directory="./temp_images"
 
-#Check that "images" bucket exists
-exists = client.bucket_exists(bucket)
+@app.get('/setFlightID/{flight_id}')
+async def setFlightID(flight_id):
+    '''
+    Sets the Flight ID for this flight
+    '''
+    os.environ['flightID']=str(flight_id)
+    bucket=os.environ.get('flightID')
+    checkBucket()
+    return(bucket)
 
-if not exists:
-    raise Exception('\"images\" bucket not found')
-else:
-    print("Bucket \"images\" exists")
+@app.get('/checkBucket/')
+def checkBucket():
+    '''
+    Checks that the bucket that we are wanting to use exists, if it does not exist, it will create a bucket, will print to console the bucket being used.
+    Acts both as a function called within the program before any additions are made to the bucket and as a method for the user the check the bucket they are using
+    '''
+    
+    exists = client.bucket_exists(str(bucket))
+
+    if not exists:
+        client.make_bucket(bucket_name=bucket)
+    print("Using bucket: "+bucket)
+    return("Using bucket: "+bucket)
     
     
 @app.post('/shimmer/')
-#Recieves image from post request and stores it in the ./Images/ directory
 async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = Form(None)):
+    '''
+    Recieves image from post request and stores it in the database
+    '''
+    checkBucket()
     #Delete all files in temp_images
     for old_file in os.listdir(temp_directory):
         path = os.path.join(temp_directory,old_file)
@@ -58,13 +85,14 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         os.remove(path)
         return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
 
-#Lists all files in the "images" bucket
 @app.get('/list/')
 async def listImages():
+    '''
+    Lists all files in the active bucket
+    '''
+    checkBucket()
     imgs = list()
     for i in client.list_objects(bucket_name=bucket,recursive=True):
         imgs.append(i.object_name)
     imgs.sort()
     return imgs
-
-@app.get('/setFlightID/')
