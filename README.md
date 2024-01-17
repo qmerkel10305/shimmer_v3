@@ -1,16 +1,3 @@
-# Shimmer Target Viewer
-The shimmer target viewer is a node based web-app using Angular2 and flask.
-Software requirements:
-* Node.js
-* Provisioned vms
-* Angularjs (installable running `npm install -g @angular/cli`)
-
-## Building the Frontend
-To build the frontend, navigate to `./frontend` and run `ng build`
-## Running the Frontend
-To run the frontend, navigate to `./frontend` and run `ng serve`
-Once this is complete, shimmer can accessed by going `localhost:4200`. This can be done on either the groundpc vm or your own machine.
-## Running the Backend
-To start up the backend run `python3 ./run.py` on the groundpc vm. 
-
-NOTE: This will not work on your local machine since it utilizes the ARC module. Follow the instructions in codelabs for how to simulate a flight.
+## Dev
+This is the figma chronicaling our plan.
+https://www.figma.com/file/7gw8BuD5Aw0YhyVdel2Ib8/Untitled?type=whiteboard&node-id=2%3A383&t=ohx3HofwaXslAgt3-1
