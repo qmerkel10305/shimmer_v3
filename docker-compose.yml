@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  frontend:
+    build: 
+      context: frontend
+    env_file:
+      - .env
+    ports:
+      - "${FRONTEND_EXTERNAL_PORT:?error}:3000"
+
+  # backend:
+  #   build:
+  #     context: backend
+  #   env_file:
+  #     - .env
+  #
+  # db:
+  #   image: docker.io/surrealdb/surrealdb:1.0.0
+  #   env_file:
+  #     - .env
+  #   ports: 
+  #     - ${DB_PORT:?error}:$DB_PORT
+  #   volumes:
+  #     - /db
+  #   entrypoint: 
+  #     - /surreal 
+  #     - start 
+  #     - --user
+  #     - ${DB_USER:?error}
+  #     - --pass
+  #     - ${DB_PASSWORD:?error}
+  #     - --bind
+  #     - 0.0.0.0:${DB_PORT:?error}
+  #     # - file://db
