@@ -8,6 +8,11 @@ from minio import Minio
 from minio.error import S3Error
 from minio.commonconfig import Tags
 
+import asyncio
+import websockets
+
+async with websockets.serve(sendtoFront,'localhost',8080):
+    await asyncio.Future()
 from dotenv import load_dotenv
 load_dotenv("../.env",verbose=True) # load the .env file from the parent directory
 
@@ -16,6 +21,7 @@ load_dotenv("../.env",verbose=True) # load the .env file from the parent directo
 *
 '''
 
+print(input()) #Possibility for setting internal flight id
 
 #Declare FastAPI App
 app = FastAPI()
@@ -28,7 +34,6 @@ client = Minio(
 )
 bucket=os.environ['flightID']
 temp_directory="./temp_images"
-
 @app.get('/setFlightID/{flight_id}')
 async def setFlightID(flight_id):
     '''
@@ -73,7 +78,6 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
     #Checks if the image is already in the database
     try:
         client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))
-        os.remove(path)
         return("File Already Exists")
     #Runs if the image doesn't already exist
     except(Exception):
@@ -82,7 +86,9 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         client.fput_object(bucket_name=bucket,object_name=file.filename,file_path=str(path),tags=new_tag,metadata={"Camera-Location": loc, "Width": str(im.width), "Height": str(im.height)})
         Image.Image.close(im)
         print(path)
-        os.remove(path)
+        
+        asyncio.run(wssMain(path))
+        
         return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
 
 @app.get('/list/')
@@ -96,3 +102,8 @@ async def listImages():
         imgs.append(i.object_name)
     imgs.sort()
     return imgs
+
+async def sendtoFront(path,websocket):
+    with Image.open(path) as im:
+        await websocket.send(im)
+

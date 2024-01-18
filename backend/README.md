@@ -7,8 +7,8 @@ Dependencies:
 - dotenv: `pip install -U python-dotenv`
 - Docker: Install Docker Client on Windows machine
 - MinIO: Follow instructions under "Docker" on the MinIO website to install Minio & run `$ pip install minio`
+- websockets: `$ pip install websockets`
 <hr/>
-
 ## Deploying
 ##### 1. MinIO
 - Start container on docker. 
