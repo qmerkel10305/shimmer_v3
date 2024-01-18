@@ -28,10 +28,11 @@ app = FastAPI()
 #Declare Minio Server
 client = Minio(
     "127.0.0.1:9000",
-    access_key="admin",
-    secret_key="aerial12",
+    access_key=os.environ.get(MINIO_ROOT_USER),
+    secret_key=os.environ.get(MINIO_ROOT_PASSWORD),
     secure=False
 )
+
 bucket=os.environ['flightID']
 temp_directory="./temp_images"
 @app.get('/setFlightID/{flight_id}')
