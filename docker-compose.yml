@@ -17,14 +17,14 @@ services:
   #
   db:
     image: quay.io/minio/minio:latest
-    command: server --console-address ":9090" /minio/mnt/data
+    command: server --console-address ":${BACKEND_CONSOLE_PORT:?error}" /minio/mnt/data
     ports:
-      - "9000:9000" # API server
-      - "9090:9090" # Web console
+      - "${BACKEND_API_EXTERNAL_PORT:?error}:9000" # API server
+      - "${BACKEND_CONSOLE_PORT:?error}:${BACKEND_CONSOLE_PORT:?error}" # Web console
     env_file:
       - .env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ["CMD", "curl", "-f", "http://localhost:${BACKEND_API_EXTERNAL_PORT:?error}/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 3
