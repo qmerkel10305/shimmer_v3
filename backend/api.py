@@ -1,5 +1,5 @@
 from PIL import Image
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI, UploadFile, File, Form, WebSocket
 import io
 import os
 from typing import Optional
@@ -18,22 +18,24 @@ app = FastAPI()
 #Declare Minio Server
 client = Minio(
     "127.0.0.1:9000",
-    access_key=os.environ.get(MINIO_ROOT_USER),
-    secret_key=os.environ.get(MINIO_ROOT_PASSWORD),
+    
+    # access_key=os.environ.get(MINIO_ROOT_USER),
+    # secret_key=os.environ.get(MINIO_ROOT_PASSWORD),
+    access_key="admin"
+    secret_key="arcshimmer"
     secure=False
 )
-
-bucket=os.environ['flightID']
+bucket="images"
 temp_directory="./temp_images"
-@app.get('/setFlightID/{flight_id}')
-async def setFlightID(flight_id):
-    '''
-    Sets the Flight ID for this flight
-    '''
-    os.environ['flightID']=str(flight_id)
-    bucket=os.environ.get('flightID')
-    checkBucket()
-    return(bucket)
+# @app.get('/setFlightID/{flight_id}')
+# async def setFlightID(flight_id):
+#     '''
+#     Sets the Flight ID for this flight
+#     '''
+#     os.environ['flightID']=str(flight_id)
+#     bucket=os.environ.get('flightID')
+#     checkBucket()
+#     return(bucket)
 
 @app.get('/checkBucket/')
 def checkBucket():
@@ -49,7 +51,14 @@ def checkBucket():
     print("Using bucket: "+bucket)
     return("Using bucket: "+bucket)
     
-    
+ 
+@app.websocket("/ws")
+async def websocket(websocket:WebSocket, im:Image):
+    await websocket.accept()
+    while True:
+        if await websocket.recieve_text != None:
+            
+   
 @app.post('/shimmer/')
 async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = Form(None)):
     '''
@@ -79,8 +88,9 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         print(path)
         
         asyncio.run(sendtoFront(path))
-        
-        return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
+    
+    
+    return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
 
 @app.get('/list/')
 async def listImages():
