@@ -11,25 +11,15 @@ from minio.commonconfig import Tags
 import asyncio
 import websockets
 
-async with websockets.serve(sendtoFront,'localhost',8080):
-    await asyncio.Future()
-from dotenv import load_dotenv
-load_dotenv("../.env",verbose=True) # load the .env file from the parent directory
-
-'''
-* TODO Fix reassignment of the flightID
-*
-'''
-
-print(input()) #Possibility for setting internal flight id
+#TODO figure out how to get websocket working
 
 #Declare FastAPI App
 app = FastAPI()
 #Declare Minio Server
 client = Minio(
     "127.0.0.1:9000",
-    access_key="admin",
-    secret_key="aerial12",
+    access_key=os.environ.get(MINIO_ROOT_USER),
+    secret_key=os.environ.get(MINIO_ROOT_PASSWORD),
     secure=False
 )
 bucket=os.environ['flightID']
@@ -87,7 +77,7 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         Image.Image.close(im)
         print(path)
         
-        asyncio.run(wssMain(path))
+        asyncio.run(sendtoFront(path))
         
         return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
 

@@ -4,7 +4,6 @@ Dependencies:
 - uvicorn: `$ pip install uvicorn`
 - python-multipart: `$ pip install python-multipart`
 - FastAPI: `$ pip install fastapi`
-- dotenv: `pip install -U python-dotenv`
 - Docker: Install Docker Client on Windows machine
 - MinIO: Follow instructions under "Docker" on the MinIO website to install Minio & run `$ pip install minio`
 - websockets: `$ pip install websockets`
