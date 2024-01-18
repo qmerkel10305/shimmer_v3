@@ -15,21 +15,16 @@ services:
   #   env_file:
   #     - .env
   #
-  # db:
-  #   image: docker.io/surrealdb/surrealdb:1.0.0
-  #   env_file:
-  #     - .env
-  #   ports: 
-  #     - ${DB_PORT:?error}:$DB_PORT
-  #   volumes:
-  #     - /db
-  #   entrypoint: 
-  #     - /surreal 
-  #     - start 
-  #     - --user
-  #     - ${DB_USER:?error}
-  #     - --pass
-  #     - ${DB_PASSWORD:?error}
-  #     - --bind
-  #     - 0.0.0.0:${DB_PORT:?error}
-  #     # - file://db
+  db:
+    image: quay.io/minio/minio:latest
+    command: server --console-address ":9090" /minio/mnt/data
+    ports:
+      - "9000:9000" # API server
+      - "9090:9090" # Web console
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
