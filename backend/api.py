@@ -11,9 +11,6 @@ from minio.commonconfig import Tags
 import asyncio
 import websockets
 
-# from dotenv import load_dotenv
-# load_dotenv("../.env",verbose=True) # load the .env file from the parent directory
-
 #TODO figure out how to get websocket working
 
 #Declare FastAPI App
@@ -21,10 +18,11 @@ app = FastAPI()
 #Declare Minio Server
 client = Minio(
     "127.0.0.1:9000",
+    
     # access_key=os.environ.get(MINIO_ROOT_USER),
     # secret_key=os.environ.get(MINIO_ROOT_PASSWORD),
-    access_key="admin",
-    secret_key="arcshimmer",
+    access_key="admin"
+    secret_key="arcshimmer"
     secure=False
 )
 bucket="images"
@@ -57,18 +55,18 @@ def checkBucket():
 @app.websocket("/ws")
 async def websocket(websocket:WebSocket):
     await websocket.accept()
-            
+
 async def imgToFront(websocket:WebSocket,im:Image):
     '''
-    Sends img to frontend
+    Sends image to frontend
     '''
     await websocket.send(im)
-async def boxToFront(websocket:WebSocket,data:dict):
+async def dataToFront(websocket:WebSocket,data:dict):
     '''
-    sends json data of estimated target location to frontend
+    Sends data of estimated target location to frontend
     '''
     await websocket.send(data)
-            
+   
 @app.post('/shimmer/')
 async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = Form(None)):
     '''
@@ -112,7 +110,11 @@ async def listImages():
     imgs.sort()
     return imgs
 
-@app.post('/data/')
-async def dataFromADLC(data:dict):
-    
 
+@app.post('/data/')
+async def dataFromADLC(data:dict,object_name:str):
+    '''
+    Recieves data from ADLC and sends it to db and to frontend
+    '''
+    client.set_object_tags(bucket,object_name,tags=data)
+    dataToFront(data)
