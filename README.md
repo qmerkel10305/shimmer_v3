@@ -10,7 +10,7 @@ $ docker compose up
 ```
 All configurable variables are in the project roots .env folder.
 
-##Minio Upgrade
+## Minio Upgrade
 ```shell
 $ docker compose pull
 ```
