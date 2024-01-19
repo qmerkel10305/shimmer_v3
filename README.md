@@ -4,6 +4,6 @@ https://www.figma.com/file/7gw8BuD5Aw0YhyVdel2Ib8/Untitled?type=whiteboard&node-
 
 ## Deployment
 ```shell
-Docker compose up
+`$ docker compose up`
 ```
 All configurable variables are in the project roots .env folder.
