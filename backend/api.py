@@ -11,6 +11,9 @@ from minio.commonconfig import Tags
 import asyncio
 import websockets
 
+# from dotenv import load_dotenv
+# load_dotenv("../.env",verbose=True) # load the .env file from the parent directory
+
 #TODO figure out how to get websocket working
 
 #Declare FastAPI App
@@ -18,16 +21,15 @@ app = FastAPI()
 #Declare Minio Server
 client = Minio(
     "127.0.0.1:9000",
-    
     # access_key=os.environ.get(MINIO_ROOT_USER),
     # secret_key=os.environ.get(MINIO_ROOT_PASSWORD),
-    access_key="admin"
-    secret_key="arcshimmer"
+    access_key="admin",
+    secret_key="arcshimmer",
     secure=False
 )
 bucket="images"
 temp_directory="./temp_images"
-# @app.get('/setFlightID/{flight_id}')
+# @app.get('/setFlightID/{flight_id}') TODO implement later
 # async def setFlightID(flight_id):
 #     '''
 #     Sets the Flight ID for this flight
@@ -53,12 +55,20 @@ def checkBucket():
     
  
 @app.websocket("/ws")
-async def websocket(websocket:WebSocket, im:Image):
+async def websocket(websocket:WebSocket):
     await websocket.accept()
-    while True:
-        if await websocket.recieve_text != None:
             
-   
+async def imgToFront(websocket:WebSocket,im:Image):
+    '''
+    Sends img to frontend
+    '''
+    await websocket.send(im)
+async def boxToFront(websocket:WebSocket,data:dict):
+    '''
+    sends json data of estimated target location to frontend
+    '''
+    await websocket.send(data)
+            
 @app.post('/shimmer/')
 async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = Form(None)):
     '''
@@ -87,10 +97,8 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         Image.Image.close(im)
         print(path)
         
-        asyncio.run(sendtoFront(path))
-    
-    
-    return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
+        asyncio.run(imgToFront(im))
+        return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
 
 @app.get('/list/')
 async def listImages():
@@ -104,7 +112,7 @@ async def listImages():
     imgs.sort()
     return imgs
 
-async def sendtoFront(path,websocket):
-    with Image.open(path) as im:
-        await websocket.send(im)
+@app.post('/data/')
+async def dataFromADLC(data:dict):
+    
 
