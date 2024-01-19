@@ -53,11 +53,19 @@ def checkBucket():
     
  
 @app.websocket("/ws")
-async def websocket(websocket:WebSocket, im:Image):
+async def websocket(websocket:WebSocket):
     await websocket.accept()
-    while True:
-        if await websocket.recieve_text != None:
-            
+
+async def imgToFront(websocket:WebSocket,im:Image):
+    '''
+    Sends image to frontend
+    '''
+    await websocket.send(im)
+async def dataToFront(websocket:WebSocket,data:dict):
+    '''
+    Sends data of estimated target location to frontend
+    '''
+    await websocket.send(data)
    
 @app.post('/shimmer/')
 async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = Form(None)):
@@ -87,10 +95,8 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         Image.Image.close(im)
         print(path)
         
-        asyncio.run(sendtoFront(path))
-    
-    
-    return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
+        asyncio.run(imgToFront(im=im))
+        return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
 
 @app.get('/list/')
 async def listImages():
@@ -104,7 +110,11 @@ async def listImages():
     imgs.sort()
     return imgs
 
-async def sendtoFront(path,websocket):
-    with Image.open(path) as im:
-        await websocket.send(im)
 
+@app.post('/data/')
+async def dataFromADLC(data:dict,object_name:str):
+    '''
+    Recieves data from ADLC and sends it to db and to frontend
+    '''
+    client.set_object_tags(bucket,object_name,tags=data)
+    dataToFront(data)
