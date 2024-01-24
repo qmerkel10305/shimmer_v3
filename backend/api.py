@@ -21,8 +21,8 @@ client = Minio(
     
     # access_key=os.environ.get(MINIO_ROOT_USER),
     # secret_key=os.environ.get(MINIO_ROOT_PASSWORD),
-    access_key="admin"
-    secret_key="arcshimmer"
+    access_key="admin",
+    secret_key="arcshimmer",
     secure=False
 )
 bucket="images"
