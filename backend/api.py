@@ -1,5 +1,5 @@
 from PIL import Image
-from fastapi import FastAPI, UploadFile, File, Form, WebSocket
+from fastapi import FastAPI, UploadFile, File, Form, WebSocket, HTTPException, Response
 import io
 import os
 from typing import Optional
@@ -13,8 +13,30 @@ import websockets
 
 #TODO figure out how to get websocket working
 
+
 #Declare FastAPI App
 app = FastAPI()
+
+#Create the connection manager (this is for one client, different manager for multiple)
+class Manager:
+    def __init__(self) -> None:
+        self.active_connection: WebSocket = None
+
+    async def connect(self, websocket: WebSocket):
+        self.active_connection = websocket
+    
+    async def disconnect(self, websocket: WebSocket):
+        await self.active_connection.close()
+        self.active_connection = None
+        
+    async def sendImgData(self, websocket:WebSocket, flight_id, img_id):
+        if self.active_connection == None:
+            raise HTTPException("No connection active", status_code=400)
+        data = {"flight_id":flight_id,"img_id":img_id}
+        await self.active_connection.send_json(data)
+    
+    
+
 #Declare Minio Server
 client = Minio(
     "127.0.0.1:9000",
@@ -54,18 +76,11 @@ def checkBucket():
  
 @app.websocket("/ws")
 async def websocket(websocket:WebSocket):
-    await websocket.accept()
-
-async def imgToFront(websocket:WebSocket,im:Image):
-    '''
-    Sends image to frontend
-    '''
-    await websocket.send(im)
-async def dataToFront(websocket:WebSocket,data:dict):
-    '''
-    Sends data of estimated target location to frontend
-    '''
-    await websocket.send(data)
+    await Manager.connect(websocket)
+    while True:
+        testVar =  await websocket.receive_text()
+        print(testVar)
+        
    
 @app.post('/shimmer/')
 async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = Form(None)):
@@ -82,6 +97,8 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
     path = os.path.join(temp_directory,file.filename)
     print(path)
     im.save(path)
+    #Set the data to send to frontend
+    img_data = {"flight_id":bucket,"img_id":file.filename}
     #Upload image to database
     #Checks if the image is already in the database
     try:
@@ -95,8 +112,14 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         Image.Image.close(im)
         print(path)
         
-        asyncio.run(imgToFront(im))
+        #Send data to frontend, notifying that an image has been added
+        await Manager.sendImgData(img_data)
         return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
+
+@app.get("/get_img/{img_id}")
+async def getImg(img_id:str):
+    img = client.get_object(bucket_name=bucket,object_name=img_id).data
+    return Response(content=img,media_type="image/png")
 
 @app.get('/list/')
 async def listImages():
@@ -109,12 +132,3 @@ async def listImages():
         imgs.append(i.object_name)
     imgs.sort()
     return imgs
-
-
-@app.post('/data/')
-async def dataFromADLC(data:dict,object_name:str):
-    '''
-    Recieves data from ADLC and sends it to db and to frontend
-    '''
-    client.set_object_tags(bucket,object_name,tags=data)
-    dataToFront(data)
