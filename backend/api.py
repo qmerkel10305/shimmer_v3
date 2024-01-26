@@ -29,7 +29,7 @@ class Manager:
         await self.active_connection.close()
         self.active_connection = None
         
-    async def sendImgData(self, websocket:WebSocket, flight_id, img_id):
+    async def sendImgData(self, flight_id, img_id):
         if self.active_connection == None:
             raise HTTPException("No connection active", status_code=400)
         data = {"flight_id":flight_id,"img_id":img_id}
@@ -59,6 +59,15 @@ temp_directory="./temp_images"
 #     checkBucket()
 #     return(bucket)
 
+manager = Manager()
+@app.websocket("/ws")
+async def websocket(websocket:WebSocket):
+    await websocket.accept()
+    await manager.connect(websocket)
+    while True:
+        testVar =  await websocket.receive_text()
+        print(testVar)
+
 @app.get('/checkBucket/')
 def checkBucket():
     '''
@@ -73,14 +82,7 @@ def checkBucket():
     print("Using bucket: "+bucket)
     return("Using bucket: "+bucket)
     
- 
-@app.websocket("/ws")
-async def websocket(websocket:WebSocket):
-    await Manager.connect(websocket)
-    while True:
-        testVar =  await websocket.receive_text()
-        print(testVar)
-        
+
    
 @app.post('/shimmer/')
 async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = Form(None)):
@@ -98,7 +100,6 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
     print(path)
     im.save(path)
     #Set the data to send to frontend
-    img_data = {"flight_id":bucket,"img_id":file.filename}
     #Upload image to database
     #Checks if the image is already in the database
     try:
@@ -113,7 +114,7 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         print(path)
         
         #Send data to frontend, notifying that an image has been added
-        await Manager.sendImgData(img_data)
+        await Manager.sendImgData(manager,flight_id=bucket,img_id=file.filename)
         return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
 
 @app.get("/get_img/{img_id}")
