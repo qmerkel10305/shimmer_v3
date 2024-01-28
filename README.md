@@ -5,12 +5,19 @@ https://www.figma.com/file/7gw8BuD5Aw0YhyVdel2Ib8/Untitled?type=whiteboard&node-
 </hr>
 
 ## Deployment
+To deploy a production environment use
 ```shell
-$ docker compose up
+docker compose -f docker-compose.yml -f docker-compose-prod.yml up
 ```
+
+To deploy a dev environment with hot reloading use
+```shell
+$ docker compose watch
+```
+
 All configurable variables are in the project roots .env folder.
 
 ## Minio Upgrade
 ```shell
-$ docker compose pull
+$ docker compose up --pull always
 ```

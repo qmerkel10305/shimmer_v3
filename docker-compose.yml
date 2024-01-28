@@ -3,11 +3,17 @@ version: '3'
 services:
   frontend:
     build: 
+      dockerfile: dev.dockerfile
       context: frontend
-    env_file:
-      - .env
     ports:
-      - "${FRONTEND_EXTERNAL_PORT:?error}:3000"
+      - "${FRONTEND_EXTERNAL_PORT:?error}:8080"
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app
+        - action: rebuild
+          path: ./frontend/package.json
 
   # backend:
   #   build:
