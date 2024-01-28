@@ -12,13 +12,16 @@ import "@fontsource/roboto/400-italic.css";
 import "@fontsource/roboto/500-italic.css";
 import "@fontsource/roboto/700-italic.css";
 import { StyledEngineProvider } from "@mui/material/styles";
+import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <StyledEngineProvider>
-      <CssBaseline>
-        <App />
-      </CssBaseline>
-    </StyledEngineProvider>
+    <BrowserRouter>
+      <StyledEngineProvider>
+        <CssBaseline>
+          <App />
+        </CssBaseline>
+      </StyledEngineProvider>
+    </BrowserRouter>
   </React.StrictMode>,
 );

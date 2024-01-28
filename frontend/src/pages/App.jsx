@@ -1,19 +1,15 @@
-import { Autocomplete, TextField, Typography } from "@mui/material";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Login from "./Login.jsx";
+import Shimmer from "./Shimmer.jsx";
 
 export default function App() {
   return (
-    <main className="flex flex-col items-center w-screen h-screen justify-center">
-      <Typography variant="h3" className="italic">
-        Shimmer
-      </Typography>
-      <Autocomplete
-        disablePortal
-        id="combo-box-demo"
-        options={["something"]}
-        sx={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} label="Flight Id" />}
-        freeSolo
-      />
-    </main>
+    <div>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/shimmer" element={<Shimmer />} />
+      </Routes>
+    </div>
   );
 }
