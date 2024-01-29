@@ -10,7 +10,6 @@ from minio.commonconfig import Tags
 
 import asyncio
 import websockets
-
 #TODO figure out how to get websocket working
 
 

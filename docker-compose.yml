@@ -15,12 +15,12 @@ services:
         - action: rebuild
           path: ./frontend/package.json
 
-  # backend:
-  #   build:
-  #     context: backend
-  #   env_file:
-  #     - .env
-  #
+  backend:
+    build:
+      context: backend
+    env_file:
+      - .env
+  
   db:
     image: quay.io/minio/minio:latest
     command: server --console-address ":${BACKEND_CONSOLE_PORT:?error}" /minio/mnt/data
