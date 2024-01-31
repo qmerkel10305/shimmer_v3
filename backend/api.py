@@ -48,7 +48,7 @@ client = Minio(
     secret_key="arcshimmer",
     secure=False
 )
-bucket="test_images"
+bucket="testimages"
 temp_directory="./temp_images"
 # @app.get('/setFlightID/{flight_id}') TODO implement later
 # async def setFlightID(flight_id):
@@ -123,9 +123,12 @@ async def getImg(img_id:str):
     img = client.get_object(bucket_name=bucket,object_name=img_id).data
     return Response(content=img,media_type="image/png")
 
-@app.get("/getFlights/")
+@app.get("/get_flights/")
 async def getFlights():
-    return(client.list_buckets())
+    flights = []
+    for flight in client.list_buckets():
+        flights.append(flight.name)
+    return flights
 
 @app.get('/list/')
 async def listImages():
