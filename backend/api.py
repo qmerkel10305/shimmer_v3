@@ -3,6 +3,7 @@ from fastapi import FastAPI, UploadFile, File, Form, WebSocket, HTTPException, R
 import io
 import os
 from typing import Optional
+import json
 
 from minio import Minio
 from minio.error import S3Error
@@ -11,8 +12,6 @@ from minio.commonconfig import Tags
 import asyncio
 import websockets
 #TODO figure out how to get websocket working
-
-
 #Declare FastAPI App
 app = FastAPI()
 
@@ -40,15 +39,15 @@ class Manager:
 
 #Declare Minio Server
 client = Minio(
-    "db:9000",
+    "db:"+os.environ.get(DB_API_EXTERNAL_PORT,"9000"),
     
-    # access_key=os.environ.get(MINIO_ROOT_USER),
-    # secret_key=os.environ.get(MINIO_ROOT_PASSWORD),
-    access_key="admin",
-    secret_key="arcshimmer",
+    access_key=os.environ.get(MINIO_ROOT_USER,"admin"),
+    secret_key=os.environ.get(MINIO_ROOT_PASSWORD,"arcshimmer"),
+    # access_key="admin",
+    # secret_key="arcshimmer",
     secure=False
 )
-bucket="testimages"
+bucket=os.environ.get(FLIGHT_ID,"testimages")
 temp_directory="./temp_images"
 # @app.get('/setFlightID/{flight_id}') TODO implement later
 # async def setFlightID(flight_id):
@@ -123,12 +122,12 @@ async def getImg(img_id:str):
     img = client.get_object(bucket_name=bucket,object_name=img_id).data
     return Response(content=img,media_type="image/png")
 
-@app.get("/get_flights/")
+@app.get("/get_flights")
 async def getFlights():
     flights = []
     for flight in client.list_buckets():
         flights.append(flight.name)
-    return flights
+    return (flights)
 
 @app.get('/list/')
 async def listImages():
