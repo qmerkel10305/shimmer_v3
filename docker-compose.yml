@@ -20,17 +20,19 @@ services:
       context: backend
     env_file:
       - .env
+    ports:
+      - "${BACKEND_EXTERNAL_PORT:?error}:8000"
   
   db:
     image: quay.io/minio/minio:latest
-    command: server --console-address ":${BACKEND_CONSOLE_PORT:?error}" /minio/mnt/data
+    command: server --console-address ":${DB_CONSOLE_PORT:?error}" /minio/mnt/data
     ports:
-      - "${BACKEND_API_EXTERNAL_PORT:?error}:9000" # API server
-      - "${BACKEND_CONSOLE_PORT:?error}:${BACKEND_CONSOLE_PORT:?error}" # Web console
+      - "${DB_API_EXTERNAL_PORT:?error}:9000" # API server
+      - "${DB_CONSOLE_PORT:?error}:${DB_CONSOLE_PORT:?error}" # Web console
     env_file:
       - .env
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${BACKEND_API_EXTERNAL_PORT:?error}/minio/health/live"]
+      test: ["CMD", "curl", "-f", "http://localhost:${DB_API_EXTERNAL_PORT:?error}/minio/health/live"]
       interval: 30s
       timeout: 20s
       retries: 3
