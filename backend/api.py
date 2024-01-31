@@ -5,6 +5,7 @@ import os
 from typing import Optional
 import json
 
+from fastapi.middleware.cors import CORSMiddleware
 from minio import Minio
 from minio.error import S3Error
 from minio.commonconfig import Tags
@@ -15,9 +16,19 @@ import websockets
 #Declare FastAPI App
 app = FastAPI()
 
-#Create the connection manager (this is for one client, different manager for multiple)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# Create the connection manager (this is for one client, different manager for multiple)
 class Manager:
     
+
     def __init__(self) -> None:
         self.noConnectionException = HTTPException(status_code=400,detail="No connection active")
         self.active_connection: WebSocket = None
@@ -25,10 +36,12 @@ class Manager:
     async def connect(self, websocket: WebSocket):
         self.active_connection = websocket
     
+
     async def disconnect(self, websocket: WebSocket):
         await self.active_connection.close()
         self.active_connection = None
         
+
     async def sendImgData(self, flight_id, img_id):
         if self.active_connection == None:
             raise self.noConnectionException
@@ -38,11 +51,11 @@ class Manager:
     
 
 #Declare Minio Server
+
 client = Minio(
-    "db:"+os.environ.get(DB_API_EXTERNAL_PORT,"9000"),
-    
-    access_key=os.environ.get(MINIO_ROOT_USER,"admin"),
-    secret_key=os.environ.get(MINIO_ROOT_PASSWORD,"arcshimmer"),
+    "db:" + os.environ.get("DB_API_EXTERNAL_PORT", "9000"),
+    access_key=os.environ.get("MINIO_ROOT_USER", "admin"),
+    secret_key=os.environ.get("MINIO_ROOT_PASSWORD", "arcshimmer"),
     # access_key="admin",
     # secret_key="arcshimmer",
     secure=False
