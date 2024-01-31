@@ -18,7 +18,9 @@ app = FastAPI()
 
 #Create the connection manager (this is for one client, different manager for multiple)
 class Manager:
+    
     def __init__(self) -> None:
+        self.noConnectionException = HTTPException(status_code=400,detail="No connection active")
         self.active_connection: WebSocket = None
 
     async def connect(self, websocket: WebSocket):
@@ -30,11 +32,10 @@ class Manager:
         
     async def sendImgData(self, flight_id, img_id):
         if self.active_connection == None:
-            raise HTTPException(status_code=400, message="No connection active")
+            raise self.noConnectionException
         data = {"flight_id":flight_id,"img_id":img_id}
 
         await self.active_connection.send_json(data)
-    
     
 
 #Declare Minio Server
@@ -47,7 +48,7 @@ client = Minio(
     secret_key="arcshimmer",
     secure=False
 )
-bucket="images"
+bucket="test_images"
 temp_directory="./temp_images"
 # @app.get('/setFlightID/{flight_id}') TODO implement later
 # async def setFlightID(flight_id):
@@ -121,6 +122,10 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
 async def getImg(img_id:str):
     img = client.get_object(bucket_name=bucket,object_name=img_id).data
     return Response(content=img,media_type="image/png")
+
+@app.get("/getFlights/")
+async def getFlights():
+    return(client.list_buckets())
 
 @app.get('/list/')
 async def listImages():
