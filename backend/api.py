@@ -30,15 +30,16 @@ class Manager:
         
     async def sendImgData(self, flight_id, img_id):
         if self.active_connection == None:
-            raise HTTPException("No connection active", status_code=400)
+            raise HTTPException(status_code=400, message="No connection active")
         data = {"flight_id":flight_id,"img_id":img_id}
+
         await self.active_connection.send_json(data)
     
     
 
 #Declare Minio Server
 client = Minio(
-    "127.0.0.1:9000",
+    "db:9000",
     
     # access_key=os.environ.get(MINIO_ROOT_USER),
     # secret_key=os.environ.get(MINIO_ROOT_PASSWORD),
