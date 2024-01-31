@@ -13,6 +13,7 @@ import { useState } from 'react';
 export default function Flight() {
   const { flightId } = useParams();
   const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const toServer = new WebSocket('ws://localhost:8000/ws');
