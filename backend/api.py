@@ -120,7 +120,7 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
 @app.get("/get_img/{img_id}")
 async def getImg(img_id:str):
     img = client.get_object(bucket_name=bucket,object_name=img_id).data
-    return Response(content=img,media_type="image/png")
+    return Response(content=img,media_type="image")
 
 @app.get("/get_flights")
 async def getFlights():
