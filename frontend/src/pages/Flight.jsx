@@ -15,6 +15,18 @@ export default function Flight() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
+  const toServer = new WebSocket('ws://localhost:8000/ws');
+
+  toServer.addEventListener('message', (event) => {
+    console.log(`Received message ${event.data}`);
+  });
+  toServer.addEventListener('close', (event) =>
+    console.log(`Socket closed ${event.data}`),
+  );
+  toServer.addEventListener('error', (event) =>
+    console.log(`Error logged ${event.data}`),
+  );
+
   return (
     <main>
       <nav className='flex flex-row justify-between items-center p-2 bg-blue-300 rounded-b-xl'>
