@@ -60,8 +60,8 @@ client = Minio(
     # secret_key="arcshimmer",
     secure=False
 )
-bucket=os.environ.get(FLIGHT_ID,"testimages")
 temp_directory="./temp_images"
+bucket = os.environ.get("FLIGHT_ID", "testimages")
 # @app.get('/setFlightID/{flight_id}') TODO implement later
 # async def setFlightID(flight_id):
 #     '''
