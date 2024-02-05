@@ -3,7 +3,6 @@ from fastapi import FastAPI, UploadFile, File, Form, WebSocket, HTTPException, R
 import io
 import os
 from typing import Optional
-import json
 
 from fastapi.middleware.cors import CORSMiddleware
 from minio import Minio
@@ -33,16 +32,15 @@ class Manager:
         self.noConnectionException = HTTPException(status_code=400,detail="No connection active")
         self.active_connection: WebSocket = None
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self, websocket: WebSocket) -> None:
         self.active_connection = websocket
-    
 
-    async def disconnect(self, websocket: WebSocket):
+    async def disconnect(self, websocket: WebSocket) -> None:
         await self.active_connection.close()
         self.active_connection = None
         
 
-    async def sendImgData(self, flight_id, img_id):
+    async def sendImgData(self, flight_id, img_id) -> None:
         if self.active_connection == None:
             raise self.noConnectionException
         data = {"flight_id":flight_id,"img_id":img_id}
@@ -82,7 +80,7 @@ async def websocket(websocket:WebSocket):
         print(testVar)
 
 @app.get('/checkBucket/')
-def checkBucket():
+def checkBucket() -> str:
     '''
     Checks that the bucket that we are wanting to use exists, if it does not exist, it will create a bucket, will print to console the bucket being used.
     Acts both as a function called within the program before any additions are made to the bucket and as a method for the user the check the bucket they are using
@@ -131,19 +129,19 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
 
 @app.get("/get_img/{img_id}")
-async def getImg(img_id:str):
+async def getImg(img_id:str) -> Response:
     img = client.get_object(bucket_name=bucket,object_name=img_id).data
     return Response(content=img,media_type="image")
 
 @app.get("/get_flights")
-async def getFlights():
+async def getFlights() -> list:
     flights = []
     for flight in client.list_buckets():
         flights.append(flight.name)
     return (flights)
 
 @app.get('/list/')
-async def listImages():
+async def listImages() -> list:
     '''
     Lists all files in the active bucket
     '''
