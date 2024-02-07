@@ -156,3 +156,45 @@ async def listImages() -> list:
         imgs.append(i.object_name)
     imgs.sort()
     return imgs
+
+# TODO Add functionality to inject metadata
+# @app.get('/list/{flight_id}')
+# async def listImages(flight_id:str) -> dict[str,dict]:
+#     '''
+#     Lists all files in the active bucket
+#     '''
+#     checkBucket()
+#     imgs = dict()
+#     for i in client.list_objects(bucket_name=flight_id,recursive=True):
+#         img = client.get_object(flight_id,i.object_name)
+#         img_binary = img.data
+#         img_data = json.dumps(client.get_object(flight_id,i.object_name))
+        
+#     imgs = dict(sorted(imgs.items(), key=lambda x: x[0]))
+#     return 
+
+
+# Sample code to include metadata in /getimg/ and /list/
+# from fastapi import Response
+
+# @app.get("/get_img/{img_id}")
+# async def getImg(img_id: str) -> Response:
+#     # Retrieve the image object and metadata from MinIO
+#     img_object = client.get_object(bucket_name=bucket, object_name=img_id)
+#     metadata = img_object.metadata
+
+#     # Retrieve the image data
+#     img_data = img_object.data
+
+#     # Set the appropriate headers in the response
+#     headers = {
+#         "Content-Type": img_object.content_type,
+#         "Content-Disposition": f"inline; filename={img_id}"
+#     }
+
+#     # Include the metadata in the headers
+#     for key, value in metadata.items():
+#         headers[f"X-Image-Metadata-{key}"] = value
+
+#     # Return the image data with the headers
+#     return Response(content=img_data, headers=headers)
