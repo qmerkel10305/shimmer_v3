@@ -103,7 +103,7 @@ def checkBucket() -> str:
 @app.post('/shimmer/')
 async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = Form(None))  -> dict|str:
     '''
-    Recieves image from post request and stores it in the database
+    Recieves image from post request, and stores it in the database and sends it to the frontend
     '''
     checkBucket()
     #Delete all files in temp_images
