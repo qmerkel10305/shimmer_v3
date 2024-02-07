@@ -11,7 +11,8 @@ from minio.commonconfig import Tags
 
 import asyncio
 import websockets
-#TODO figure out how to get websocket working
+
+import json
 #Declare FastAPI App
 app = FastAPI()
 
@@ -76,8 +77,12 @@ async def websocket(websocket:WebSocket):
     await websocket.accept()
     await manager.connect(websocket)
     while True:
-        testVar =  await websocket.receive_text()
-        print(testVar)
+        data =  await websocket.receive()
+        if  isinstance(data,dict):
+            if 'type' in data:
+                type = data['type']
+                
+        print(data)
 
 @app.get('/checkBucket/')
 def checkBucket() -> str:
@@ -96,7 +101,7 @@ def checkBucket() -> str:
 
    
 @app.post('/shimmer/')
-async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = Form(None)):
+async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = Form(None))  -> dict|str:
     '''
     Recieves image from post request and stores it in the database
     '''
