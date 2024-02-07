@@ -33,4 +33,6 @@ Dependencies:
 
 ## Testing Cases
 - Upload Image - `curl -X POST 127.0.0.1:8000/shimmer/ -H 'Content-Type:multipart/form-data' -F 'file=@test_IMG.png'`
+- Upload 5 Images - From /backend/ `.$ ./test_post.sh`
 - List Get Request - `curl -X GET 127.0.0.1:8000/list/`
+
