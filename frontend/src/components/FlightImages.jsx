@@ -1,19 +1,19 @@
-import Image from '../components/Image.jsx';
+import { useEffect, useState } from 'react';
+import Image from './Image';
 
-export default function FlightImages() {
-  const imageUrls = [
-    '/0.jpg',
-    '/1.jpg',
-    '/2.jpg',
-    '/3.jpg',
-    '/4.jpg',
-    '/5.jpg',
-    '/6.jpg',
-  ];
+export default function FlightImages({ lastJsonMessage }) {
+  const [imageIds, setImageIds] = useState([]);
+
+  useEffect(() => {
+    if (lastJsonMessage !== null && lastJsonMessage.type === 'img') {
+      setImageIds((prev) => [...prev, lastJsonMessage.img_id]);
+    }
+  }, [lastJsonMessage, setImageIds]);
+
   return (
     <section className='grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] pt-4 px-1 justify-items-center gap-4'>
-      {imageUrls.map((url) => (
-        <Image imageUrl={url} key={url} />
+      {imageIds.map((imageId) => (
+        <Image imageId={imageId} key={imageId} />
       ))}
     </section>
   );
