@@ -36,14 +36,12 @@ export default function Flight() {
     [ReadyState.UNINSTANTIATED]: [<SyncProblemIcon />, 'Not connected'],
   }[readyState];
 
-  if (flightId === liveFlightId) {
-    sendJsonMessage(
-      JSON.stringify({
-        type: 'connect',
-        flight_id: flightId,
-      }),
-    );
-  }
+  sendJsonMessage(
+    JSON.stringify({
+      type: 'connect',
+      flight_id: flightId === liveFlightId ? '' : flightId,
+    }),
+  );
 
   if (lastJsonMessage !== null && lastJsonMessage.type === 'img') {
     if (lastJsonMessage.flight_id !== flightId) {
