@@ -40,7 +40,11 @@ class Manager:
         await self.active_connection.close()
         self.active_connection = None
         
-
+    async def send_str(self, data) -> None:
+        if self.active_connection == None:
+            raise self.noConnectionException
+        await self.active_connection.send_text(data)
+        
     async def sendImgData(self, flight_id, img_id) -> None:
         if self.active_connection == None:
             raise self.noConnectionException
@@ -81,6 +85,15 @@ async def websocket(websocket:WebSocket):
         if  isinstance(data,dict):
             if 'type' in data:
                 type = data['type']
+            if 'flight_id' in data:
+                if data['flight_id'] == "" or data["flight_id"] == None:
+                    manager.send_str(bucket)
+                else:
+                    bucket = data['flight_id']
+                    checkBucket(bucket)
+                    for
+
+        
                 
         print(data)
 
@@ -130,7 +143,7 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         print(path)
         
         #Send data to frontend, notifying that an image has been added
-        await Manager.sendImgData(manager,flight_id=bucket,img_id=file.filename)
+        await manager.sendImgData(flight_id=bucket,img_id=file.filename)
         return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
 
 @app.get("/get_img/{img_id}")
