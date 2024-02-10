@@ -159,9 +159,11 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
     firstSend = False
     checkBucket()
     #Delete all files in temp_images
+    ''' Removed from test flight 1
     for old_file in os.listdir(temp_directory):
         path = os.path.join(temp_directory,old_file)
         os.remove(path)
+    '''
     #Turn the coroutine into an image
     im = Image.open(io.BytesIO(await file.read()))
     path = os.path.join(temp_directory,file.filename)
