@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FlightImages from '../components/FlightImages';
 import HouseIcon from '@mui/icons-material/House';
 import { IconButton, Typography } from '@mui/material';
@@ -7,7 +7,6 @@ import SyncIcon from '@mui/icons-material/Sync';
 import SyncProblemIcon from '@mui/icons-material/SyncProblem';
 import Snackbar from '@mui/material/Snackbar';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { liveFlightId } from './App';
 import { useEffect } from 'react';
@@ -19,12 +18,14 @@ export default function Flight() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { lastJsonMessage, sendJsonMessage, readyState, getWebSocket } =
-    useWebSocket('ws://localhost:8000/ws', {
+  const { lastJsonMessage, sendJsonMessage, readyState } = useWebSocket(
+    'ws://localhost:8000/ws',
+    {
       shouldReconnect: () => true,
       reconnectAttempts: 1000,
       share: false,
-    });
+    },
+  );
 
   useEffect(() => {
     if (readyState === ReadyState.OPEN) {
@@ -38,7 +39,8 @@ export default function Flight() {
   useEffect(() => {
     if (lastJsonMessage !== null && lastJsonMessage.type === 'img') {
       if (flightId === liveFlightId) {
-        navigate(`/${lastJsonMessage.flight_id}/flight`);
+        navigate(`/${lastJsonMessage.flight_id}/flight`, { replace: true });
+        setImageIds((prev) => [...prev, lastJsonMessage.img_id]);
       } else if (lastJsonMessage.flight_id !== flightId) {
         console.error(`Received image which doesn't belong to this flight`);
         console.error(lastJsonMessage);
