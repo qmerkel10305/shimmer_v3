@@ -71,6 +71,10 @@ client = Minio(
 temp_directory="./temp_images"
 global activeFlight
 activeFlight = os.environ.get("FLIGHT_ID", "testimages")
+
+global watchingFlight
+watchingFlight = ""
+
 # @app.get('/setFlightID/{flight_id}') TODO implement later
 # async def setFlightID(flight_id):
 #     '''
@@ -93,6 +97,7 @@ manager = Manager()
 @app.websocket("/ws")
 async def websocket(websocket:WebSocket):
     global activeFlight
+    global watchingFlight
     print("test3")
     await websocket.accept()
     print("test2")
@@ -117,10 +122,9 @@ async def websocket(websocket:WebSocket):
                         except(IndexError):
                             pass
                     else:
-                        activeFlight = data['flight_id']
-                        checkBucket()
-                        for i in client.list_objects(bucket_name=activeFlight):
-                            await manager.sendImgData(activeFlight,i.object_name)
+                        watchingFlight = data['flight_id']
+                        for i in client.list_objects(bucket_name=watchingFlight):
+                            await manager.sendImgData(watchingFlight,i.object_name)
             print("awaiting next message")
     except(RuntimeError):
         return("WS Disconnected")
@@ -152,6 +156,8 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
     
     global firstSend
     global activeFlight
+    global watchingFlight
+    
     if firstSend == True:
         activeFlight = str(datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S"))
     else:
@@ -182,8 +188,10 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         client.fput_object(bucket_name=activeFlight,object_name=file.filename,file_path=str(path),tags=new_tag,metadata={"Camera-Location": loc, "Width": str(im.width), "Height": str(im.height)})
         Image.Image.close(im)
         
-        #Send data to frontend, notifying that an image has been added
-        await manager.sendImgData(flight_id=activeFlight,img_id=file.filename)
+        if watchingFlight == activeFlight:
+            #Send data to frontend, notifying that an image has been added
+            await manager.sendImgData(flight_id=activeFlight,img_id=file.filename)
+            
         return('success')
 
 @app.get("/get_img/{img_id}")
