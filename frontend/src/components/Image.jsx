@@ -14,7 +14,7 @@ export default function Image({ imageId }) {
           <img src={URL.createObjectURL(data)} className={'w-full h-full'} />
         </div>
       )}
-      <CircularProgress className={isLoading ? 'm-auto' : 'hidden'} />
+      {isLoading && <CircularProgress className='m-auto' />}
     </>
   );
 }
