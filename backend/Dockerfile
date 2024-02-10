@@ -2,10 +2,11 @@ FROM python:3.10
 
 WORKDIR /backend
 
-COPY ./ /backend/
-
 #Installs dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY ./ /backend/
+
 
 #Exposes port 8000 for FastAPI
 EXPOSE 8000

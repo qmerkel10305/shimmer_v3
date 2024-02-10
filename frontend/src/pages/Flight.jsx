@@ -10,6 +10,7 @@ import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { liveFlightId } from './App';
+import { useEffect } from 'react';
 
 export default function Flight() {
   const { flightId } = useParams();
@@ -17,11 +18,12 @@ export default function Flight() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const { lastJsonMessage, sendJsonMessage, readyState } = useWebSocket(
+  const { lastJsonMessage, sendJsonMessage, readyState, getWebSocket } = useWebSocket(
     'ws://localhost:8000/ws',
     {
       shouldReconnect: () => true,
       reconnectAttempts: 1000,
+      share: false,
     },
   );
 
@@ -36,22 +38,36 @@ export default function Flight() {
     [ReadyState.UNINSTANTIATED]: [<SyncProblemIcon />, 'Not connected'],
   }[readyState];
 
-  sendJsonMessage(
-    JSON.stringify({
-      type: 'connect',
-      flight_id: flightId === liveFlightId ? '' : flightId,
-    }),
-  );
+  useEffect(() => {
+    if (readyState === ReadyState.OPEN){
+      console.log('sending json');
+      // getWebSocket().send(JSON.stringify({
+      //   type: 'connect',
+      //   flight_id: flightId === liveFlightId ? '' : flightId,
+      // }))
+      sendJsonMessage(
+        {
+          type: 'connect',
+          flight_id: flightId === liveFlightId ? '' : flightId,
+        },
+        false,
+      )
+      console.log('sent json')
+    }
+  },
+  [readyState]
+  )
+
 
   if (lastJsonMessage !== null && lastJsonMessage.type === 'img') {
-    if (lastJsonMessage.flight_id !== flightId) {
+    if (flightId === liveFlightId) {
+    navigate(`/${lastJsonMessage.flight_id}/flight`);
+  
+    } else if (lastJsonMessage.flight_id !== flightId) {
       console.error(`Received image which doesn't belong to this flight`);
       console.error(lastJsonMessage);
-    } else if (flightId === liveFlightId) {
-      navigate(`/${lastJsonMessage.flight_id}/flight`);
     }
   }
-
   return (
     <main>
       <nav className='flex flex-row justify-between items-center p-2 bg-blue-300 rounded-b-xl'>

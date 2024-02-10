@@ -80,32 +80,45 @@ bucket = os.environ.get("FLIGHT_ID", "testimages")
 #     checkBucket()
 #     return(bucket)
 
+def getLatestBucket():
+    '''
+    Returns the most recent bucket's name
+    '''
+    return sorted(client.list_buckets(), key=lambda bucket: bucket.creation_date, reverse=True)[0].name
+
+
+
 manager = Manager()
 @app.websocket("/ws")
 async def websocket(websocket:WebSocket):
     global bucket
+    print("test3")
     await websocket.accept()
+    print("test2")
     await manager.connect(websocket)
-    while True:
-        try:
-            if manager.active_connection != None:
-                data =  await websocket.receive()
-                print(data)
-                if  isinstance(data,dict):
-                    if 'type' in data:
-                        type = data['type']
-                    if 'flight_id' in data:
-                        if data['flight_id'] == "" or data["flight_id"] == None:
-                            bucket = datetime.datetime.now()
-                            checkBucket()
-                            manager.send_str(bucket)
-                        else:
-                            bucket = data['flight_id']
-                            checkBucket(bucket)
-                            for i in client.list_objects(bucket_name=bucket,recursive=True):
-                                manager.sendImgData(bucket,i.object_name) 
-        except(RuntimeError):
-            return("WS Disconnected")
+    print("test1")
+    try:
+        while True:
+            print("truly waiting")
+            data =  await manager.active_connection.receive_json()
+            print(data)
+            if  isinstance(data,dict):
+                if 'type' in data:
+                    type = data['type']
+                if 'flight_id' in data:
+                    if data['flight_id'] == "" or data["flight_id"] == None:
+                        bucket = getLatestBucket()
+                        print("---------------------------------" + bucket + "-----------------------------------")
+                        for i in client.list_objects(bucket_name=bucket):
+                            await manager.sendImgData(bucket,i.object_name)
+                    else:
+                        bucket = data['flight_id']
+                        checkBucket()
+                        for i in client.list_objects(bucket_name=bucket):
+                            await manager.sendImgData(bucket,i.object_name)
+            print("awaiting next message")
+    except(RuntimeError):
+        return("WS Disconnected")
             
         
 
@@ -122,8 +135,7 @@ def checkBucket() -> str:
     print("Using bucket: "+bucket)
     return("Using bucket: "+bucket)
     
-def getLatestBucket():
-    return str(sorted(client.list_buckets(), key=lambda bucket: bucket.creation_date, reverse=True)[0])
+
     
 
    
@@ -154,10 +166,10 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
     #Upload image to database
     #Checks if the image is already in the database
     try:
-        client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))
+        client.stat_object(bucket_name=bucket,object_name=file.filename)
         return("File Already Exists")
     #Runs if the image doesn't already exist
-    except(S3Error, Exception):
+    except(S3Error):
         new_tag = Tags(for_object=True)
         new_tag["process"]="True"
         client.fput_object(bucket_name=bucket,object_name=file.filename,file_path=str(path),tags=new_tag,metadata={"Camera-Location": loc, "Width": str(im.width), "Height": str(im.height)})
@@ -165,7 +177,7 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         
         #Send data to frontend, notifying that an image has been added
         await manager.sendImgData(flight_id=bucket,img_id=file.filename)
-        return{"status":client.fget_object(bucket_name=bucket,object_name=file.filename,file_path=str(path))}
+        return('success')
 
 @app.get("/get_img/{img_id}")
 async def getImg(img_id:str) -> Response:
