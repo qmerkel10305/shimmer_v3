@@ -1,7 +1,7 @@
-import { Navigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import FlightImages from '../components/FlightImages';
 import HouseIcon from '@mui/icons-material/House';
-import { Icon, IconButton, Typography } from '@mui/material';
+import { IconButton, Typography } from '@mui/material';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import SyncIcon from '@mui/icons-material/Sync';
 import SyncProblemIcon from '@mui/icons-material/SyncProblem';
