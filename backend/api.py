@@ -108,10 +108,14 @@ async def websocket(websocket:WebSocket):
                     type = data['type']
                 if 'flight_id' in data:
                     if data['flight_id'] == "" or data["flight_id"] == None:
-                        activeFlight = getLatestBucket()
-                        print("---------------------------------" + activeFlight + "-----------------------------------")
-                        for i in client.list_objects(bucket_name=activeFlight):
-                            await manager.sendImgData(activeFlight,i.object_name)
+                        try:
+                            activeFlight = getLatestBucket()
+                            checkBucket()
+                            print("---------------------------------" + activeFlight + "-----------------------------------")
+                            for i in client.list_objects(bucket_name=activeFlight):
+                                await manager.sendImgData(activeFlight,i.object_name)
+                        except(IndexError):
+                            pass
                     else:
                         activeFlight = data['flight_id']
                         checkBucket()
