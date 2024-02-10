@@ -5,9 +5,9 @@ import TargetPopup from './TargetPopup';
 export default function FlightImages({ imageIds }) {
   const [overlayState, setOverlayState] = useState({
     open: false,
-    imageUrl: '',
   });
   const openOverlay = (imageUrl) => setOverlayState({ open: true, imageUrl });
+  const closeOverlay = () => setOverlayState({ open: false });
 
   useEffect(() => {
     if (overlayState.open) {
@@ -33,11 +33,18 @@ export default function FlightImages({ imageIds }) {
   }, [overlayState]);
 
   return (
-    <section className='grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] pt-4 px-1 justify-items-center gap-4 relative'>
+    <section className='grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] pt-4 px-1 justify-items-center gap-4'>
       {imageIds.map((imageId) => (
-        <Image imageId={imageId} key={imageId} onClick={openOverlay} />
+        <Image
+          imageId={imageId}
+          key={imageId}
+          openOverlay={openOverlay}
+          closeOverlay={closeOverlay}
+        />
       ))}
-      {imageIds && <TargetPopup overlayState={overlayState} />}
+      {imageIds && (
+        <TargetPopup overlayState={overlayState} closeOverlay={closeOverlay} />
+      )}
     </section>
   );
 }
