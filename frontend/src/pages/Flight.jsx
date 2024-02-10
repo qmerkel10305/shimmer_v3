@@ -55,7 +55,7 @@ export default function Flight() {
       <SyncIcon className='animate-spin transform rotate-180' />,
       'Connecting...',
     ],
-    [ReadyState.OPEN]: [<PublishedWithChangesIcon />, 'Connection opened'],
+    [ReadyState.OPEN]: [<PublishedWithChangesIcon />, 'Connection is live'],
     [ReadyState.CLOSING]: [<SyncProblemIcon />, 'Connection closing'],
     [ReadyState.CLOSED]: [<SyncProblemIcon />, 'Connection closed'],
     [ReadyState.UNINSTANTIATED]: [<SyncProblemIcon />, 'Not connected'],
