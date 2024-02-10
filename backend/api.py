@@ -17,6 +17,7 @@ import datetime
 global firstSend
 firstSend = True
 
+
 #Declare FastAPI App
 app = FastAPI()
 
@@ -68,17 +69,17 @@ client = Minio(
     secure=False
 )
 temp_directory="./temp_images"
-global bucket
-bucket = os.environ.get("FLIGHT_ID", "testimages")
+global activeFlight
+activeFlight = os.environ.get("FLIGHT_ID", "testimages")
 # @app.get('/setFlightID/{flight_id}') TODO implement later
 # async def setFlightID(flight_id):
 #     '''
 #     Sets the Flight ID for this flight
 #     '''
 #     os.environ['flightID']=str(flight_id)
-#     bucket=os.environ.get('flightID')
+#     activeFlight=os.environ.get('flightID')
 #     checkBucket()
-#     return(bucket)
+#     return(activeFlight)
 
 def getLatestBucket():
     '''
@@ -91,7 +92,7 @@ def getLatestBucket():
 manager = Manager()
 @app.websocket("/ws")
 async def websocket(websocket:WebSocket):
-    global bucket
+    global activeFlight
     print("test3")
     await websocket.accept()
     print("test2")
@@ -107,15 +108,15 @@ async def websocket(websocket:WebSocket):
                     type = data['type']
                 if 'flight_id' in data:
                     if data['flight_id'] == "" or data["flight_id"] == None:
-                        bucket = getLatestBucket()
-                        print("---------------------------------" + bucket + "-----------------------------------")
-                        for i in client.list_objects(bucket_name=bucket):
-                            await manager.sendImgData(bucket,i.object_name)
+                        activeFlight = getLatestBucket()
+                        print("---------------------------------" + activeFlight + "-----------------------------------")
+                        for i in client.list_objects(bucket_name=activeFlight):
+                            await manager.sendImgData(activeFlight,i.object_name)
                     else:
-                        bucket = data['flight_id']
+                        activeFlight = data['flight_id']
                         checkBucket()
-                        for i in client.list_objects(bucket_name=bucket):
-                            await manager.sendImgData(bucket,i.object_name)
+                        for i in client.list_objects(bucket_name=activeFlight):
+                            await manager.sendImgData(activeFlight,i.object_name)
             print("awaiting next message")
     except(RuntimeError):
         return("WS Disconnected")
@@ -128,12 +129,12 @@ def checkBucket() -> str:
     Checks that the bucket that we are wanting to use exists, if it does not exist, it will create a bucket, will print to console the bucket being used.
     Acts both as a function called within the program before any additions are made to the bucket and as a method for the user the check the bucket they are using
     '''
-    exists = client.bucket_exists(str(bucket))
+    exists = client.bucket_exists(str(activeFlight))
 
     if not exists:
-        client.make_bucket(bucket_name=bucket)
-    print("Using bucket: "+bucket)
-    return("Using bucket: "+bucket)
+        client.make_bucket(bucket_name=activeFlight)
+    print("Using bucket: "+activeFlight)
+    return("Using bucket: "+activeFlight)
     
 
     
@@ -146,11 +147,11 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
     '''
     
     global firstSend
-    global bucket
+    global activeFlight
     if firstSend == True:
-        bucket = str(datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S"))
+        activeFlight = str(datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S"))
     else:
-        bucket = getLatestBucket()
+        activeFlight = getLatestBucket()
     firstSend = False
     checkBucket()
     #Delete all files in temp_images
@@ -166,22 +167,22 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
     #Upload image to database
     #Checks if the image is already in the database
     try:
-        client.stat_object(bucket_name=bucket,object_name=file.filename)
+        client.stat_object(bucket_name=activeFlight,object_name=file.filename)
         return("File Already Exists")
     #Runs if the image doesn't already exist
     except(S3Error):
         new_tag = Tags(for_object=True)
         new_tag["process"]="True"
-        client.fput_object(bucket_name=bucket,object_name=file.filename,file_path=str(path),tags=new_tag,metadata={"Camera-Location": loc, "Width": str(im.width), "Height": str(im.height)})
+        client.fput_object(bucket_name=activeFlight,object_name=file.filename,file_path=str(path),tags=new_tag,metadata={"Camera-Location": loc, "Width": str(im.width), "Height": str(im.height)})
         Image.Image.close(im)
         
         #Send data to frontend, notifying that an image has been added
-        await manager.sendImgData(flight_id=bucket,img_id=file.filename)
+        await manager.sendImgData(flight_id=activeFlight,img_id=file.filename)
         return('success')
 
 @app.get("/get_img/{img_id}")
 async def getImg(img_id:str) -> Response:
-    img = client.get_object(bucket_name=bucket,object_name=img_id).data
+    img = client.get_object(bucket_name=activeFlight,object_name=img_id).data
     return Response(content=img,media_type="image")
 
 @app.get("/get_flights")
@@ -198,7 +199,7 @@ async def listImages() -> list:
     '''
     checkBucket()
     imgs = list()
-    for i in client.list_objects(bucket_name=bucket,recursive=True):
+    for i in client.list_objects(bucket_name=activeFlight,recursive=True):
         imgs.append(i.object_name)
     imgs.sort()
     return imgs
