@@ -63,7 +63,7 @@ export default function Flight() {
 
   return (
     <main>
-      <nav className='flex flex-row justify-between items-center p-2 bg-blue-300 rounded-b-xl'>
+      <nav className='flex flex-row justify-between items-center p-2 bg-red-500 rounded-b-xl'>
         <IconButton onClick={() => navigate('/')} className='p-0'>
           <HouseIcon />
         </IconButton>
