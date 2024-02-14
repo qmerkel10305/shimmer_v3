@@ -11,7 +11,6 @@ export default function FlightImages({ imageIds }) {
 
   useEffect(() => {
     if (overlayState.open) {
-      console.log('set');
       const close = (e) => {
         if (e.key === `Escape`) {
           console.log('Escape Pressed');
@@ -25,10 +24,7 @@ export default function FlightImages({ imageIds }) {
         }
       };
       window.addEventListener('keydown', close);
-      return () => {
-        console.log('deleted');
-        window.removeEventListener('keydown', close);
-      };
+      return () => window.removeEventListener('keydown', close);
     }
   }, [overlayState]);
 
