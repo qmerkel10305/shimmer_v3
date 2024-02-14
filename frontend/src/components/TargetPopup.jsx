@@ -29,6 +29,7 @@ export default function TargetPopup({ overlayState, closeOverlay }) {
                   letter={target.letter}
                   coordinates={coordinates}
                   imageUrl={overlayState.imageUrl}
+                  key={target.letter}
                 />
               ))}
               <IconButton className='aspect-square w-[20vw] rounded-xl border-2 border-solid border-red-500'>
