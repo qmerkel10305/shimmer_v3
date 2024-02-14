@@ -19,7 +19,7 @@ export default function Flight() {
   const [isOpen, setIsOpen] = useState(false);
 
   const { lastJsonMessage, sendJsonMessage, readyState } = useWebSocket(
-    'ws://localhost:8000/ws',
+    'ws://localhost:5000/ws',
     {
       shouldReconnect: () => true,
       reconnectAttempts: 1000,

@@ -3,7 +3,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Image({ imageId, openOverlay }) {
   const { isLoading, data } = useFetch(
-    `http://localhost:8000/get_img/${imageId}`,
+    `http://localhost:5000/get_img/${imageId}`,
     {
       formatter: (response) =>
         response.blob().then((blob) => URL.createObjectURL(blob)),

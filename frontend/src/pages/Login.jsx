@@ -7,7 +7,7 @@ import { liveFlightId } from './App';
 export default function Login() {
   const navigate = useNavigate();
 
-  const apiUrl = 'http://localhost:8000/get_flights/';
+  const apiUrl = 'http://localhost:5000/get_flights/';
   let {
     isLoading,
     error,

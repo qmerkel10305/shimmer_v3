@@ -14,7 +14,7 @@ COPY ./ /backend/
 EXPOSE 8000
 
 #Starts the FastAPI server
-CMD uvicorn api:app --host=0.0.0.0
+CMD uvicorn api:app --host=0.0.0.0 --port=5000
 
 
 STOPSIGNAL SIGKILL
