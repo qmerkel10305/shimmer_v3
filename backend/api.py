@@ -75,7 +75,7 @@ activeFlight = os.environ.get("FLIGHT_ID", "testimages")
 global watchingFlight
 watchingFlight = ""
 
-adlcAddress = "0.0.0.0:{0}".format(os.environ("ADLC_PORT",None))
+adlcAddress = "0.0.0.0:{0}".format(os.environ.get("ADLC_PORT",None))
 
 # @app.get('/setFlightID/{flight_id}') TODO implement later
 # async def setFlightID(flight_id):
