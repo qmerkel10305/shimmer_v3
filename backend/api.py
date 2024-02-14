@@ -100,6 +100,7 @@ manager = Manager()
 async def websocket(websocket:WebSocket):
     global activeFlight
     global watchingFlight
+    global firstSend
     print("test3")
     await websocket.accept()
     print("test2")
@@ -116,9 +117,13 @@ async def websocket(websocket:WebSocket):
                 if 'flight_id' in data:
                     if data['flight_id'] == "" or data["flight_id"] == None:
                         try:
-                            activeFlight = getLatestBucket()
-                            watchingFlight = getLatestBucket()
+                            if firstSend == True:
+                                activeFlight = str(datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S"))
+                            else:
+                                activeFlight = getLatestBucket()
+                            firstSend = False
                             checkBucket()
+                            watchingFlight = getLatestBucket()
                             print("---------------------------------" + activeFlight + "-----------------------------------")
                             for i in client.list_objects(bucket_name=activeFlight):
                                 await manager.sendImgData(activeFlight,i.object_name)
@@ -156,7 +161,7 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
     '''
     Recieves image from post request, and stores it in the database and sends it to the frontend
     '''
-    
+    print("test")
     global firstSend
     global activeFlight
     global watchingFlight
