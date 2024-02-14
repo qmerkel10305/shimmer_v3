@@ -11,6 +11,7 @@ from minio.commonconfig import Tags
 
 import asyncio
 import websockets
+import requests
 
 import datetime
 
@@ -59,7 +60,6 @@ class Manager:
     
 
 #Declare Minio Server
-
 client = Minio(
     "db:" + os.environ.get("DB_API_EXTERNAL_PORT", "9000"),
     access_key=os.environ.get("MINIO_ROOT_USER", "admin"),
@@ -74,6 +74,8 @@ activeFlight = os.environ.get("FLIGHT_ID", "testimages")
 
 global watchingFlight
 watchingFlight = ""
+
+adlcAddress = "0.0.0.0:{0}".format(os.environ("ADLC_PORT",None))
 
 # @app.get('/setFlightID/{flight_id}') TODO implement later
 # async def setFlightID(flight_id):
@@ -115,6 +117,7 @@ async def websocket(websocket:WebSocket):
                     if data['flight_id'] == "" or data["flight_id"] == None:
                         try:
                             activeFlight = getLatestBucket()
+                            watchingFlight = getLatestBucket()
                             checkBucket()
                             print("---------------------------------" + activeFlight + "-----------------------------------")
                             for i in client.list_objects(bucket_name=activeFlight):
@@ -191,6 +194,11 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
         if watchingFlight == activeFlight:
             #Send data to frontend, notifying that an image has been added
             await manager.sendImgData(flight_id=activeFlight,img_id=file.filename)
+            
+        try:
+            requests.get(adlcAddress,params=im)
+        except:
+            print("ADLC not connected")
             
         return('success')
 
