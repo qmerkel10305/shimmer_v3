@@ -195,13 +195,6 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[di
     path = os.path.join(temp_directory,file.filename)
     print(path)
     im.save(path)
-    #Verify Metadata
-    if metadata is None:
-        print("Invalid Metadata Supplied - Defaulting to width and height")
-        metadata = {"width":im.width, "height":im.height}
-    else:
-        #metadata = json.loads(metadata)
-        print("Valid Metadata Supplied")
     #Set the data to send to frontend
     #Upload image to database
     #Checks if the image is already in the database
@@ -210,8 +203,17 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[di
         return("File Already Exists")
     #Runs if the image doesn't already exist
     except(S3Error):
+        #Verify Metadata
+        if metadata is None:
+            print("Invalid Metadata Supplied - Defaulting to width and height")
+            metadata = {"width":im.width, "height":im.height}
+        else:
+            #metadata = json.loads(metadata)
+            print("Valid Metadata Supplied")
+            
         new_tag = Tags(for_object=True)
         new_tag["process"]="True"
+        
         client.fput_object(bucket_name=activeFlight,object_name=file.filename,file_path=str(path),tags=new_tag,metadata=metadata)
         Image.Image.close(im)
         
@@ -223,7 +225,7 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[di
             requests.get(adlcAddress,params=im)
         except:
             print("ADLC not connected")
-            
+        print("---------------------------------------------------")
         return('success')
 
 @app.get("/get_img/{img_id}")
