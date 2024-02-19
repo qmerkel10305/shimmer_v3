@@ -13,6 +13,7 @@ import asyncio
 import websockets
 import requests
 
+import json
 import datetime
 
 global firstSend
@@ -168,7 +169,7 @@ def checkBucket() -> str:
 
    
 @app.post('/shimmer/')
-async def create_upload_file(file: UploadFile = File(...), metadata: Optional[dict] = Form(None))  -> dict|str:
+async def create_upload_file(file: UploadFile = File(...), metadata: Optional[dict] = Form(None))  -> str:
     '''
     Recieves image from post request, and stores it in the database and sends it to the frontend
     '''
@@ -199,6 +200,7 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[di
         print("Invalid Metadata Supplied - Defaulting to width and height")
         metadata = {"width":im.width, "height":im.height}
     else:
+        #metadata = json.loads(metadata)
         print("Valid Metadata Supplied")
     #Set the data to send to frontend
     #Upload image to database
