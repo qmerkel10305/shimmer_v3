@@ -33,7 +33,9 @@ app.add_middleware(
 
 # Create the connection manager (this is for one client, different manager for multiple)
 class Manager:
-    
+    '''
+    Class to manage the websocket connection
+    '''
 
     def __init__(self) -> None:
         self.noConnectionException = HTTPException(status_code=400,detail="No connection active")
@@ -98,6 +100,10 @@ def getLatestBucket():
 manager = Manager()
 @app.websocket("/ws")
 async def websocket(websocket:WebSocket):
+    '''
+    Websocket endpoint for the frontend to view images.\n
+    The frontend will send an empty string or None if the user is looking for a live feed, and the name of a bucket if they are wanting to look at a past flight
+    '''
     global activeFlight
     global watchingFlight
     global firstSend
@@ -116,20 +122,25 @@ async def websocket(websocket:WebSocket):
                     type = data['type']
                 if 'flight_id' in data:
                     if data['flight_id'] == "" or data["flight_id"] == None:
+                        #Control flow goes here if the user wants a live feed
                         try:
+                            #Checks if the first image downlink of the flight has occured, if not it creates a new bucket for the flight, and tells the rest of the backend that it doesn't need to create a new bucket
                             if firstSend == True:
                                 activeFlight = str(datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S"))
                             else:
                                 activeFlight = getLatestBucket()
                             firstSend = False
                             checkBucket()
+                            #Because the user is wanting a live feed, sets the flight that they are watching to the currently active flight
                             watchingFlight = getLatestBucket()
-                            print("---------------------------------" + activeFlight + "-----------------------------------")
+                            #Sends all images currently in the latest (and watched) flight to the frontend
                             for i in client.list_objects(bucket_name=activeFlight):
                                 await manager.sendImgData(activeFlight,i.object_name)
                         except(IndexError):
+                            #Not entirely sure why this happens, but no problems are caused by this exception block
                             pass
                     else:
+                        #Flow of control goes here if the user is looking at past flights
                         watchingFlight = data['flight_id']
                         for i in client.list_objects(bucket_name=watchingFlight):
                             await manager.sendImgData(watchingFlight,i.object_name)
@@ -157,7 +168,7 @@ def checkBucket() -> str:
 
    
 @app.post('/shimmer/')
-async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = Form(None))  -> dict|str:
+async def create_upload_file(file: UploadFile = File(...), metadata: Optional[dict] = Form(None))  -> dict|str:
     '''
     Recieves image from post request, and stores it in the database and sends it to the frontend
     '''
@@ -183,6 +194,12 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
     path = os.path.join(temp_directory,file.filename)
     print(path)
     im.save(path)
+    #Verify Metadata
+    if metadata is None:
+        print("Invalid Metadata Supplied - Defaulting to width and height")
+        metadata = {"width":im.width, "height":im.height}
+    else:
+        print("Valid Metadata Supplied")
     #Set the data to send to frontend
     #Upload image to database
     #Checks if the image is already in the database
@@ -193,7 +210,7 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
     except(S3Error):
         new_tag = Tags(for_object=True)
         new_tag["process"]="True"
-        client.fput_object(bucket_name=activeFlight,object_name=file.filename,file_path=str(path),tags=new_tag,metadata={"Camera-Location": loc, "Width": str(im.width), "Height": str(im.height)})
+        client.fput_object(bucket_name=activeFlight,object_name=file.filename,file_path=str(path),tags=new_tag,metadata=metadata)
         Image.Image.close(im)
         
         if watchingFlight == activeFlight:
@@ -209,11 +226,17 @@ async def create_upload_file(file: UploadFile = File(...), loc: Optional[str] = 
 
 @app.get("/get_img/{img_id}")
 async def getImg(img_id:str) -> Response:
+    '''
+    Endpoint that displays the specified img
+    '''
     img = client.get_object(bucket_name=activeFlight,object_name=img_id).data
     return Response(content=img,media_type="image")
 
 @app.get("/get_flights")
 async def getFlights() -> list:
+    '''
+    Endpoint to get a list of all created buckets
+    '''
     flights = []
     for flight in client.list_buckets():
         flights.append(flight.name)
