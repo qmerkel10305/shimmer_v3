@@ -173,7 +173,6 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[di
     '''
     Recieves image from post request, and stores it in the database and sends it to the frontend
     '''
-    print("test")
     global firstSend
     global activeFlight
     global watchingFlight
