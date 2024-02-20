@@ -169,14 +169,13 @@ def checkBucket() -> str:
 
    
 @app.post('/shimmer/')
-async def create_upload_file(file: UploadFile = File(...), metadata: Optional[dict] = Form(None))  -> str:
+async def create_upload_file(file: UploadFile = File(...), metadata: Optional[str] = Form(None))  -> str:
     '''
     Recieves image from post request, and stores it in the database and sends it to the frontend
     '''
     global firstSend
     global activeFlight
     global watchingFlight
-    
     if firstSend == True:
         activeFlight = str(datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S"))
     else:
@@ -199,6 +198,7 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[di
     #Checks if the image is already in the database
     try:
         client.stat_object(bucket_name=activeFlight,object_name=file.filename)
+        im.close()
         return("File Already Exists")
     #Runs if the image doesn't already exist
     except(S3Error):
@@ -207,14 +207,14 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[di
             print("Invalid Metadata Supplied - Defaulting to width and height")
             metadata = {"width":im.width, "height":im.height}
         else:
-            #metadata = json.loads(metadata)
-            print("Valid Metadata Supplied")
+            metadata = json.loads(metadata)
+            print("Valid Metadata Supplied: {0}".format(metadata))
             
         new_tag = Tags(for_object=True)
         new_tag["process"]="True"
         
         client.fput_object(bucket_name=activeFlight,object_name=file.filename,file_path=str(path),tags=new_tag,metadata=metadata)
-        Image.Image.close(im)
+        im.close()
         
         if watchingFlight == activeFlight:
             #Send data to frontend, notifying that an image has been added
