@@ -1,5 +1,5 @@
 from PIL import Image
-from fastapi import FastAPI, UploadFile, File, Form, WebSocket, HTTPException, Response
+from fastapi import FastAPI, UploadFile, File, Form, WebSocket, HTTPException, Response, WebSocketDisconnect
 import io
 import os
 from typing import Optional
@@ -148,6 +148,8 @@ async def websocket(websocket:WebSocket):
             print("awaiting next message")
     except(RuntimeError):
         return("WS Disconnected")
+    except(WebSocketDisconnect):
+        return ("WS Disconnected")
             
         
 
