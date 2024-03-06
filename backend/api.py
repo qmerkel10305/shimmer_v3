@@ -108,11 +108,8 @@ async def websocket(websocket:WebSocket):
     global activeFlight
     global watchingFlight
     global firstSend
-    print("test3")
     await websocket.accept()
-    print("test2")
     await manager.connect(websocket)
-    print("test1")
     try:
         while True:
             print("truly waiting")
@@ -169,7 +166,6 @@ def checkBucket() -> str:
 
     
 
-   
 @app.post('/shimmer/')
 async def create_upload_file(file: UploadFile = File(...), metadata: Optional[str] = Form(None))  -> str:
     '''
@@ -210,6 +206,7 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[st
             metadata = {"width":im.width, "height":im.height}
         else:
             metadata = json.loads(metadata)
+            print(metadata)
             print("Valid Metadata Supplied: {0}".format(metadata))
             
         new_tag = Tags(for_object=True)
@@ -234,7 +231,7 @@ async def getImg(img_id:str) -> Response:
     '''
     Endpoint that displays the specified img
     '''
-    img = client.get_object(bucket_name=activeFlight,object_name=img_id).data
+    img = client.get_object(bucket_name=watchingFlight,object_name=img_id).data
     return Response(content=img,media_type="image")
 
 @app.get("/get_flights")
