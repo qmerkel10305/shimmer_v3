@@ -177,7 +177,7 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[st
     '''
     #Turn the coroutine into an image
     im = Image.open(io.BytesIO(await file.read()))
-    path = os.path.join(temp_directory,file.filename)
+    path = os.path.join(temp_directory,str(file.filename))
     print(path)
     im.save(path)
     #Set the data to send to frontend
@@ -192,10 +192,10 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[st
         #Verify Metadata
         if metadata is None:
             print("Invalid Metadata Supplied - Defaulting to width and height")
-            metadata = {"width":im.width, "height":im.height}
+            metadata = {"width":str(im.width), "height":str(im.height)}
         else:
             metadata = json.loads(metadata)
-            print("Valid Metadata Supplied: {0}".format(metadata))
+            print("Valid Metadata Supplied: {0}\n".format(metadata))
             
         new_tag = Tags(for_object=True)
         new_tag["process"]="True"
