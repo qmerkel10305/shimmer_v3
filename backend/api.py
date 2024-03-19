@@ -68,8 +68,6 @@ client = Minio(
     "db:" + os.environ.get("DB_API_EXTERNAL_PORT", "9000"),
     access_key=os.environ.get("MINIO_ROOT_USER", "admin"),
     secret_key=os.environ.get("MINIO_ROOT_PASSWORD", "arcshimmer"),
-    # access_key="admin",
-    # secret_key="arcshimmer",
     secure=False
 )
 temp_directory="./temp_images"
@@ -80,16 +78,6 @@ global watchingFlight
 watchingFlight = ""
 
 adlcAddress = "0.0.0.0:{0}".format(os.environ.get("ADLC_PORT",None))
-
-# @app.get('/setFlightID/{flight_id}') TODO implement later
-# async def setFlightID(flight_id):
-#     '''
-#     Sets the Flight ID for this flight
-#     '''
-#     os.environ['flightID']=str(flight_id)
-#     activeFlight=os.environ.get('flightID')
-#     checkBucket()
-#     return(activeFlight)
 
 def getLatestBucket():
     '''
@@ -244,14 +232,23 @@ async def getFlights() -> list:
         flights.append(flight.name)
     return (flights)
 
-@app.get('/list/')
-async def listImages() -> list:
+@app.get('/list/{flight_id}')
+async def listImages(flight_id:str) -> list:
     '''
     Lists all files in the active bucket
     '''
     checkBucket()
     imgs = list()
-    for i in client.list_objects(bucket_name=activeFlight,recursive=True):
+    for i in client.list_objects(bucket_name=flight_id,recursive=True):
         imgs.append(i.object_name)
     imgs.sort()
     return imgs
+
+@app.get('/get_img_metadata/{img}')
+async def getImgMetadata(img:str) -> dict:
+    '''
+    Endpoint to get the metadata of an image in the flight that the frontend is watching
+    '''
+    img_info = client.stat_object(bucket_name=watchingFlight, object_name=img)
+    metadata = img_info.metadata
+    print(metadata)
