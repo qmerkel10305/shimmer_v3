@@ -167,10 +167,14 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[st
         activeFlight = str(datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S"))
     else:
         activeFlight = getLatestBucket()
+        
+    if (watchingFlight == ""):
+        watchingFlight = activeFlight
+        
     firstSend = False
     checkBucket()
     #Delete all files in temp_images
-    ''' Removed from test flight 1
+    ''' Removed from test flight 1 
     for old_file in os.listdir(temp_directory):
         path = os.path.join(temp_directory,old_file)
         os.remove(path)
@@ -195,7 +199,7 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[st
             metadata = {"width":str(im.width), "height":str(im.height)}
         else:
             metadata = json.loads(metadata)
-            print("Valid Metadata Supplied: {0}\n".format(metadata))
+            print("Valid Metadata Supplied: {0}".format(metadata))
             
         new_tag = Tags(for_object=True)
         new_tag["process"]="True"
@@ -205,7 +209,10 @@ async def create_upload_file(file: UploadFile = File(...), metadata: Optional[st
         
         if watchingFlight == activeFlight:
             #Send data to frontend, notifying that an image has been added
-            await manager.sendImgData(flight_id=activeFlight,img_id=file.filename)
+            try:
+                await manager.sendImgData(flight_id=activeFlight,img_id=file.filename)
+            except HTTPException:
+                print("Frontend Connection Inactive")
             
         try:
             requests.get(adlcAddress,params=im)
@@ -247,8 +254,11 @@ async def listImages(flight_id:str) -> list:
 @app.get('/get_img_metadata/{img}')
 async def getImgMetadata(img:str) -> dict:
     '''
-    Endpoint to get the metadata of an image in the flight that the frontend is watching
+    Endpoint to get the metadata of an image in the flight that the frontend is watching 
     '''
-    img_info = client.stat_object(bucket_name=watchingFlight, object_name=img)
-    metadata = img_info.metadata
-    print(metadata)
+    img_info = client.stat_object(bucket_name=watchingFlight, object_name=img).metadata
+    metadata = {}
+    for field in img_info:
+        if ("x-amz" in field):
+            metadata[field] = img_info[field]
+    return metadata
