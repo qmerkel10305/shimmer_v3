@@ -44,18 +44,30 @@ class Manager:
         self.active_connection: WebSocket = None
 
     async def connect(self, websocket: WebSocket) -> None:
+        '''
+        Sets the Manager's active connection to the Websocket connection
+        '''
         self.active_connection = websocket
 
     async def disconnect(self, websocket: WebSocket) -> None:
+        '''
+        Closes the WS connection, and removes the active connection
+        '''
         await self.active_connection.close()
         self.active_connection = None
         
-    async def send_str(self, data) -> None:
+    async def send_str(self, data:str | int) -> None:
+        '''
+        Sends a str over the WS connection
+        '''
         if self.active_connection == None:
             raise self.noConnectionException
         await self.active_connection.send_text(data)
         
-    async def sendImgData(self, flight_id, img_id) -> None:
+    async def sendImgData(self, flight_id: str | int, img_id: str | int) -> None:
+        '''
+        Sends an img's data over the WS connection
+        '''
         if self.active_connection == None:
             raise self.noConnectionException
         data = {"type":"img","flight_id":flight_id,"img_id":img_id}
@@ -262,3 +274,4 @@ async def getImgMetadata(img:str) -> dict:
         if ("x-amz" in field):
             metadata[field] = img_info[field]
     return metadata
+
