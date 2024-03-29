@@ -7,9 +7,13 @@ https://www.figma.com/file/7gw8BuD5Aw0YhyVdel2Ib8/Untitled?type=whiteboard&node-
 </hr>
 
 ## Deployment
-1. Navigate to `/opt/arc/` and navigate to newshimmer or shimmerv3?  <!-- Needs fixing, I can't remember exactly what the folder is called -->
+1. Navigate to `/opt/arc/` and navigate to shimmer_new
 2. Run `docker compose pull`
-3. Run `docker compose up -build`
+3. Run `docker compose up --build`
+4. Backend is ready to recieve images.
+    - The frontend is at `localhost:80` and the database (backup way to view images) is at `localhost:9090` with credentials admin, arcshimmer
+5. To shutdown - Ctrl+C the docker task 
+
 <hr/>
 
 ## Dev. Deployment
