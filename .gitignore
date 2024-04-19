@@ -7,3 +7,7 @@ node_modules
 
 # Virtual environment for dependencies
 venv/
+
+
+# Backup images folder
+./backend/backup_images/

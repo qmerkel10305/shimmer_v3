@@ -26,6 +26,8 @@ services:
       watch:
         - action: rebuild
           path: ./backend/api.py
+    volumes:
+      - './backend/backup_images:/backend/backup_images'
 
   db:
     image: quay.io/minio/minio:latest

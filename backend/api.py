@@ -94,7 +94,10 @@ client = Minio(
     secret_key=os.environ.get("MINIO_ROOT_PASSWORD", "arcshimmer"),
     secure=False,
 )
+# For saving only a temp copy, with no local backup
 temp_directory = "./temp_images"
+# Image backup directory
+backup_directory = "./backup_images"
 global activeFlight
 activeFlight = os.environ.get("FLIGHT_ID", "testimages")
 
@@ -192,6 +195,7 @@ async def create_upload_file(
     global watchingFlight
     if firstSend == True:
         activeFlight = getTime()
+        os.mkdir(os.path.join(backup_directory, activeFlight))
     else:
         activeFlight = getLatestBucket()
 
@@ -209,7 +213,10 @@ async def create_upload_file(
 
     # Turn the coroutine into an image - We have to use client.fput because the type UploadFile is not specifically an image, so using fput makes handling the image more efficient
     im = Image.open(io.BytesIO(await file.read()))
+    ''' This is for saving to a temp directory, with no local backup
     path = os.path.join(temp_directory, str(file.filename))
+    '''
+    path = os.path.join(backup_directory, activeFlight, str(file.filename))
     print(path)
     im.save(path)
     # Set the data to send to frontend
@@ -244,6 +251,7 @@ async def create_upload_file(
             # Send data to frontend, notifying that an image has been added
             try:
                 await manager.sendImgData(flight_id=activeFlight, img_id=file.filename)
+                print("Image sent")
             except HTTPException:
                 print("Frontend Connection Inactive")
 

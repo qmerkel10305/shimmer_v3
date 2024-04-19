@@ -35,9 +35,9 @@ Dependencies:
 <hr/>
 
 ## Testing Cases
-- Upload Image - `curl -X POST 127.0.0.1:8000/shimmer/ -H 'Content-Type:multipart/form-data' -F 'file=@test_IMG.png'`
+- Upload Image - `curl -X POST 127.0.0.1:5000/shimmer/ -H 'Content-Type:multipart/form-data' -F 'file=@test_IMG.png'`
 - Upload 5 Images - From /backend/ - `.$ python3 ./test_post.py`
-- List Get Request - `curl -X GET 127.0.0.1:8000/list/`
+- List Get Request - `curl -X GET 127.0.0.1:5000/list/`
 <hr/>
 
 ## Future Development
