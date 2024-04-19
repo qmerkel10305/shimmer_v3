@@ -24,6 +24,7 @@ import requests
 
 import json
 import datetime
+import pytz
 
 global firstSend
 firstSend = True
@@ -140,11 +141,7 @@ async def websocket(websocket: WebSocket):
                         try:
                             # Checks if the first image downlink of the flight has occured, if not it creates a new bucket for the flight, and tells the rest of the backend that it doesn't need to create a new bucket
                             if firstSend == True:
-                                activeFlight = str(
-                                    datetime.datetime.now().strftime(
-                                        "%Y.%m.%d-%H.%M.%S"
-                                    )
-                                )
+                                activeFlight = getTime()
                             else:
                                 activeFlight = getLatestBucket()
                             firstSend = False
@@ -194,7 +191,7 @@ async def create_upload_file(
     global activeFlight
     global watchingFlight
     if firstSend == True:
-        activeFlight = str(datetime.datetime.now().strftime("%Y.%m.%d-%H.%M.%S"))
+        activeFlight = getTime()
     else:
         activeFlight = getLatestBucket()
 
@@ -304,3 +301,10 @@ async def getImgMetadata(img: str) -> dict:
         if "x-amz" in field:
             metadata[field] = img_info[field]
     return metadata
+
+
+def getTime() -> str:
+    """
+    Gets the current time for naming purposes
+    """
+    return str(datetime.datetime.now().astimezone(pytz.timezone('America/New_York')).strftime("%Y.%m.%d-%H.%M.%S"))
