@@ -12,3 +12,4 @@ venv/
 # Backup images folder
 /backend/backup_images/
 # Temp images folder
+/backend/temp_images/
