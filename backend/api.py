@@ -188,14 +188,16 @@ async def create_upload_file(
     file: UploadFile = File(...), metadata: Optional[str] = Form(None)
 ) -> str:
     """
-    Recieves image from post request, and stores it in the database and sends it to the frontend
+    Recieves image from post request, and stores it in the database and sends it to the frontend 
     """
     global firstSend
     global activeFlight
     global watchingFlight
     if firstSend == True:
         activeFlight = getTime()
+        print("---Creating backup folder---")
         os.mkdir(os.path.join(backup_directory, activeFlight))
+        print("---Backup folder created.---")
     else:
         activeFlight = getLatestBucket()
 
