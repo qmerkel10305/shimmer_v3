@@ -13,7 +13,7 @@ COPY ./ /backend/
 #Exposes port 8000 for FastAPI
 EXPOSE 5000
 
-#Starts the FastAPI server
+#Starts the FastAPI server at localhost port 5000
 CMD uvicorn api:app --host=0.0.0.0 --port=5000
 
 
