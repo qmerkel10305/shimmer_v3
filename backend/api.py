@@ -308,8 +308,8 @@ async def getImgMetadata(img: str) -> dict:
     img_info = client.stat_object(bucket_name=watchingFlight, object_name=img).metadata
     metadata = {}
     for field in img_info:
-        if "x-amz" in field:
-            metadata[field] = img_info[field]
+        if "x-amz-meta" in field:
+            metadata[field.replace("x-amz-meta-", '')] = img_info[field]
     return metadata
 
 

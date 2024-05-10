@@ -5,8 +5,9 @@ import TargetPopup from './TargetPopup';
 export default function FlightImages({ imageIds }) {
   const [overlayState, setOverlayState] = useState({
     open: false,
+    imageId: null,
   });
-  const openOverlay = (imageUrl) => setOverlayState({ open: true, imageUrl });
+  const openOverlay = (imageUrl, imageId) => setOverlayState({ open: true, imageUrl, imageId });
   const closeOverlay = () => setOverlayState({ open: false });
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export default function FlightImages({ imageIds }) {
             return {
               open: false,
               imageUrl: prev.imageUrl,
+              imageId: prev.imageId,
             };
           });
           console.log(overlayState);
@@ -39,7 +41,7 @@ export default function FlightImages({ imageIds }) {
         />
       ))}
       {imageIds && (
-        <TargetPopup overlayState={overlayState} closeOverlay={closeOverlay} />
+        <TargetPopup overlayState={overlayState} closeOverlay={closeOverlay}/>
       )}
     </section>
   );

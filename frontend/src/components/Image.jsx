@@ -2,6 +2,7 @@ import useFetch from 'react-fetch-hook';
 import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Image({ imageId, openOverlay }) {
+  console.log(imageId);
   const { isLoading, data } = useFetch(
     `http://localhost:5000/get_img/${imageId}`,
     {
@@ -10,6 +11,7 @@ export default function Image({ imageId, openOverlay }) {
     },
   );
 
+
   return (
     <>
       {!isLoading && (
@@ -17,7 +19,7 @@ export default function Image({ imageId, openOverlay }) {
           <img
             src={data}
             className={'w-full h-full'}
-            onClick={() => openOverlay(data)}
+            onClick={() => openOverlay(data, imageId)}
           />
         </div>
       )}
