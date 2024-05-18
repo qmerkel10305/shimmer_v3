@@ -1,11 +1,5 @@
 # Shimmer V3
 
-## Dev
-This is the figma chronicaling our plan.
-https://www.figma.com/file/7gw8BuD5Aw0YhyVdel2Ib8/Untitled?type=whiteboard&node-id=2%3A383&t=ohx3HofwaXslAgt3-1
-
-<hr/>
-
 ## Deployment
 1. Navigate to `/opt/arc/shimmer_new/`
 2. Run `docker compose pull`
